@@ -5,6 +5,10 @@
 .Principal {
     color: #336a41;
 }
+.rect {
+    height: 50px;
+    width: 100%;
+}
 .bg_principal{
     background-color: #336a41;
 }
@@ -42,9 +46,30 @@
     font-weight: normal;
     font-style: normal;
   }
+@font-face {
+    font-family: 'ClearSansregular';
+    src: url('fonts/font_2.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
+  @font-face {
+    font-family: 'ClearSansNormal';
+    src: url('fonts/font_3.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
 body {
     font-family: 'ClearSans' !important;
 }
 .f_principal{
-    font-family: 'ClearSansLigth' !important;
+    font-family: 'ClearSansLigth';
+}
+.f_regular{
+    font-family: 'ClearSansregular';
+}
+.f_normal{
+    font-family: 'ClearSansNormal';
+}
+.txt_lg {
+    font-size: 30px ;
 }

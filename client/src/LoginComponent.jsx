@@ -103,7 +103,7 @@ export default function LoginComponent({ setIsLoggedIn }) {
                     id="remember-me"
                     name="remember-me"
                     type="checkbox"
-                    className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
+                    className="h-4 w-4 rounded border_principal "
                   />
                   <label htmlFor="remember-me" className="ml-2 block text-sm leading-6 Principal">
                     Recuerdame

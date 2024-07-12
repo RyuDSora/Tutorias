@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import CarouselComponent from './Carrousel';
 
 import axios from 'axios';
 
@@ -14,7 +15,7 @@ export default function DashboardComponent() {
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
   const currentProducts = products.slice(indexOfFirstProduct, indexOfLastProduct);
 
-  const paginate = pageNumber => setCurrentPage(pageNumber);
+  //const paginate = pageNumber => setCurrentPage(pageNumber);
 
   const handleAddToCart = async (productId) => {
     try {
@@ -61,7 +62,7 @@ export default function DashboardComponent() {
   }, [currentPage]);
 
   return (
-    <div className="bg-white">
+    /*<div className="bg-white">
       <ToastContainer />
       <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
         <h2 className="text-xl font-bold text-gray-900">Productos</h2>
@@ -125,5 +126,14 @@ export default function DashboardComponent() {
         </div>
       </div>
     </div>
-  );
+  */
+  <>
+    <div className='Principal uppercase text-center txt_lg f_regular'>Tutorias</div>  
+    <div className='Secundario text-center f_principal'>Encuentra al tutor perfecto para ti</div>
+    {/**<CarouselComponent />*/}
+    <div className='text-center my-2' style={{height:200}}>aqui va el carrousel</div>
+    <div className='text-center my-2'><button className='btn bg_secundario Blanco f_principal'>!Registrate ahora y empieza a aprender de los mejores¡</button></div>
+  </>
+    );
+  
 }

@@ -9,8 +9,8 @@ const HelpCenter = () => {
                 <h1 className="text-3xl font-extrabold text-green-800">Centro de Ayuda</h1>
             </div>
             <p className="text-lg text-green-600 mb-2">Contáctanos para cualquier asistencia o consulta</p>
-            <p className="text-lg text-green-600 mb-2">Email: asitencia_pag@gmail.com</p>
-            <p className="text-lg text-green-600">Teléfono: +504 9990-9090</p>
+            <p className="text-lg text-green-600 mb-2">Email: asitencia_pag@mail.com</p>
+            <p className="text-lg text-green-600">Teléfono: +504 9999-9999*</p>
         </div>
     );
 };

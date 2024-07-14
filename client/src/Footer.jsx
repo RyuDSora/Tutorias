@@ -12,7 +12,7 @@ const LINKS = [
   },
   {
     title: "Recursos",
-    items: ["FAQs", "otros"],
+    items: ["FAQs", "acerca de","Centro de ayuda"],
   },
 ];
 
@@ -38,8 +38,8 @@ export function FooterWithSocialLinks() {
                     <Typography
                       onClick={() => {
                         switch (link) {
-                          case 'Acerca de nosotros':
-                            //navigate('/about-us');
+                          case 'acerca de':
+                            navigate('/about-us');
                             break;
                           case 'Categorías':
                             //navigate('/product-categories');
@@ -54,7 +54,7 @@ export function FooterWithSocialLinks() {
                             //navigate('/events');
                             break;
                           case 'Centro de ayuda':
-                            //navigate('/help-center');
+                            navigate('/help-center');
                             break;
                           default:
                             navigate('/');
@@ -73,7 +73,7 @@ export function FooterWithSocialLinks() {
         <div className="container mx-auto px-4 flex items-center justify-between">
           <div>
             <Typography variant="small" className="text-base text-gray-400">
-              &copy; {currentYear} <a href="https://material-tailwind.com/" className="hover:text-blue-400">Tutorias</a>. Todos
+              &copy; {currentYear} <a href="/about-us" className="hover:text-blue-400">Tutorias</a>. Todos
               los derechos reservados.
             </Typography>
           </div>

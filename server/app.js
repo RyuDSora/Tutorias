@@ -1,9 +1,25 @@
 // Importar las dependencias necesarias
-const express = require('express');
+import express from "express";
+import cors from "cors";
+const PORT = 8000;
+const app = express();
+
+app.use(cors());
+app.use(express.json());
+
+
+app.get('/', (req, res) => {
+  res.status(200).json('Bienvenido, tu aplicación se ha ejecutado correctamente');
+});
+
+app.listen(PORT, () => {
+  console.log(`El servidor está corriendo en http://localhost:${PORT}`);
+});
+
+/*
 const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt');
 const db = require('./utils/database');
-const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const stripe = require('stripe')('sk_test_51P0kZtL1xMfPwf6dWCmv8wAoaHc4o01CBOAMWhBz1rm4vk4NDLoJN0Zpf6wGRgRB1LPREQ61OEdA9LoiUkZhf3MR00VJ4sno7M');
 
@@ -636,4 +652,4 @@ app.listen(3001, async () => {
   // Create default admin user
   await db.createDefaultAdmin();
 
-});
+});*/

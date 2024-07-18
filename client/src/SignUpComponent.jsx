@@ -1,25 +1,36 @@
 import { useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {uriregister} from './components/Urls'
 
 export default function SignUpComponent() {
+  //const [urilogin, seturilogin] = useState('http://localhost:3000/users/register');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [cpassword, setcPassword] = useState('');
+  const [name, setName] = useState('');
+  const [surname, setSurname] = useState('');
+  const [birthDate, setBirthDate] = useState('');
+  const [role, setRole] = useState('estudiante'); // Valor por defecto
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
+    if (password !== cpassword) {
+      toast.error('Las contraseñas no coinciden');
+      return;
+    }
+
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/register`, {
+      const response = await fetch(uriregister, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password, name, surname, birthDate, role }),
       });
-
 
       if (!response.ok) {
         throw new Error('Error al registrar usuario');
@@ -37,7 +48,7 @@ export default function SignUpComponent() {
   return (
     <>
       <ToastContainer />
-      <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8 ">
+      <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-[480px] border_principal rounded-lg">
           <div className="px-6 py-12 shadow sm:rounded-lg sm:px-12">
             <div className="sm:mx-auto sm:w-full sm:max-w-sm">
@@ -46,43 +57,106 @@ export default function SignUpComponent() {
               </h2>
             </div>
             <form onSubmit={handleSubmit} className="space-y-6">
-              <div>
-                <label htmlFor="email" className="block text-sm font-medium leading-6 Principal">
-                  Correo Electronico
-                </label>
-                <div className="mt-2 border border_principal rounded-md">
-                  <input
-                    id="email"
-                    name="email"
-                    type="email"
-                    autoComplete="email"
-                    required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="block w-full rounded-md  py-1.5  shadow-sm ring-1 ring-inset  placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  />
+              <div className='row'>
+                <div className='col-3 Principal'>
+                  <div style={{height:'2.85rem'}} className='d-flex align-items-center'> <span className='small f_principal'>Nombre              </span></div>
+                  <div style={{height:'2.85rem'}} className='d-flex align-items-center'> <span className='small f_principal'>Apellido            </span></div>
+                  <div style={{height:'2.85rem'}} className='d-flex align-items-center'> <span className='small f_principal'>Fecha de Nacimiento </span></div>
+                  <div style={{height:'2.85rem'}} className='d-flex align-items-center'> <span className='small f_principal'>Correo Electronico </span></div>
+                  <div style={{height:'2.85rem'}} className='d-flex align-items-center'> <span className='small f_principal'>Contraseña          </span></div>
+                  <div style={{height:'2.85rem'}} className='d-flex align-items-center'> <span className='small f_principal'>Confirmar Contraseña</span></div>
+                  <div style={{height:'2.85rem'}} className='d-flex align-items-center'> <span className='small f_principal'>Rol                 </span></div>
                 </div>
+                <div className='col-9'>
+                  <div>
+                    <input 
+                      required 
+                      value={name} 
+                      onChange={(e) => setName(e.target.value)} 
+                      type="text" 
+                      autoComplete="name" 
+                      name="name" 
+                      id="name"  
+                      className="form-control block w-full rounded-md py-1.5 shadow-sm ring-1 ring-inset placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 my-2"
+                    />
+                  </div>
+                  <div>
+                    <input
+                      id="surname"
+                      name="surname"
+                      type="text"
+                      autoComplete="surname"
+                      required
+                      value={surname}
+                      onChange={(e) => setSurname(e.target.value)}
+                      className="form-control block w-full rounded-md py-1.5 shadow-sm ring-1 ring-inset placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 my-2"
+                    />
+                  </div>
+                  <div>
+                    <input
+                      id="birthDate"
+                      name="birthDate"
+                      type="date"
+                      autoComplete="birthDate"
+                      required
+                      value={birthDate}
+                      onChange={(e) => setBirthDate(e.target.value)}
+                      className="block w-full rounded-md py-1.5 shadow-sm ring-1 ring-inset placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 my-2"
+                    />
+                  </div>
+                  <div>
+                    <input
+                      id="email"
+                      name="email"
+                      type="email"
+                      autoComplete="email"
+                      required
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="block w-full rounded-md py-1.5 shadow-sm ring-1 ring-inset placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 my-2"
+                    />
+                  </div>
+                  <div>
+                    <input
+                      id="password"
+                      name="password"
+                      type="password"
+                      autoComplete="current-password"
+                      required
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      className="block w-full rounded-md py-1.5 shadow-sm ring-1 ring-inset placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 my-2"
+                    />
+                  </div>
+                  <div>
+                    <input
+                      id="cpassword"
+                      name="cpassword"
+                      type="password"
+                      autoComplete="current-password"
+                      required
+                      value={cpassword}
+                      onChange={(e) => setcPassword(e.target.value)}
+                      className="block w-full rounded-md py-1.5 shadow-sm ring-1 ring-inset placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 my-2"
+                    />
+                  </div>
+                  <div>
+                    <select
+                      id="role"
+                      name="role"
+                      required
+                      value={role}
+                      onChange={(e) => setRole(e.target.value)}
+                      className="block w-full rounded-md py-1.5 shadow-sm ring-1 ring-inset placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 my-2"
+                    >
+                      <option value="tutor">Tutor</option>
+                      <option value="estudiante">Estudiante</option>
+                    </select>
+                  </div>
+              </div>
               </div>
 
-              <div>
-                <div className="flex items-center justify-between">
-                  <label htmlFor="password" className="block text-sm font-medium leading-6 Principal">
-                    Password
-                  </label>
-                </div>
-                <div className="mt-2 border border_principal rounded-md">
-                  <input
-                    id="password"
-                    name="password"
-                    type="password"
-                    autoComplete="current-password"
-                    required
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="block w-full rounded-md border-0 py-1.5  shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  />
-                </div>
-              </div>
+
 
               <div>
                 <button
@@ -91,6 +165,13 @@ export default function SignUpComponent() {
                 >
                   Aceptar
                 </button>
+
+                <br />
+                <br />
+                <hr />
+                <br />
+                <div>loguea con google</div>
+                <div>loguea con facebook</div>
               </div>
             </form>
           </div>

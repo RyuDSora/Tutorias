@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import {URIgetTablesColumns,URIaddTables} from './Urls'
 
 function TableForm() {
   const [tableName, setTableName] = useState('');
@@ -15,7 +16,7 @@ function TableForm() {
 
   const fetchTablesAndColumns = async () => {
     try {
-      const response = await axios.get('http://localhost:3000/tables/get-tables-columns');
+      const response = await axios.get(URIgetTablesColumns);
       setTablesAndColumns(response.data);
     } catch (error) {
       console.error('Error fetching tables and columns:', error);
@@ -56,7 +57,7 @@ function TableForm() {
       payload.foreignKeys = foreignKeys;
     }
     try {
-      await axios.post('http://localhost:3000/tables/create-table', payload);
+      await axios.post(URIaddTables, payload);
       alert('Table created successfully');
       window.location.reload();
     } catch (error) {

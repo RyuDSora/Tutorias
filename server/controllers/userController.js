@@ -1,4 +1,5 @@
 import pool from '../database/db.js';
+import bcrypt from 'bcrypt'; // Importar bcrypt con la sintaxis ES6
 
 // Mostrar todos los registros que posiblemente pueda ver el admin
 export const getAllUsuarios = async (req, res) => {
@@ -33,6 +34,47 @@ export const getUsuario = async (req, res) => {
   }
 };
 
+
+
+export const login = async (req, res) => {
+  const { email, password } = req.body;
+  // Conectar al cliente de la base de datos
+  const client = await pool.connect();
+  try {
+    // Buscar el usuario por email
+    const result = await client.query('SELECT * FROM users WHERE email = $1', [email]);
+    
+    if (result.rows.length === 0) {
+      // El usuario no existe
+      res.status(404).send('Usuario no existe.');
+      return;
+    }
+    
+    const user = result.rows[0];
+    // Verificar la contraseña
+    const isPasswordValid = await bcrypt.compare(password, user.password); // Asumiendo que la contraseña está hasheada
+
+    if (!isPasswordValid) {
+      res.status(401).send('Contraseña incorrecta.');
+      return;
+    }
+    /*
+    if (user.password !== password) {
+      res.status(401).send('Contraseña incorrecta.');
+      return;
+    }*/
+    // Enviar respuesta si la autenticación es exitosa
+    res.json({ message: 'Autenticación exitosa.', user });
+
+  } catch (error) {
+    console.error('Error al buscar el usuario:', error);
+    res.status(500).send('Error al buscar el usuario.');
+  } finally {
+    client.release();
+  }
+
+}
+
 // Crear un nuevo usuario
 export const createUsuario = async (req, res) => {
   const { name, email } = req.body;
@@ -48,6 +90,37 @@ export const createUsuario = async (req, res) => {
   } catch (error) {
     console.error('Error inserting data:', error);
     res.status(500).send('Error inserting data.');
+  } finally {
+    client.release();
+  }
+};
+
+
+export const register = async (req, res) => {
+  const { email, password, name, surname, birthDate, role } = req.body;
+  // Conectar al cliente de la base de datos
+  const client = await pool.connect();
+  try {
+    // Buscar el usuario por email
+    const result = await client.query('SELECT * FROM users WHERE email = $1', [email]);
+    
+    if (result.rows.length === 0) {
+      // El usuario no existe
+      const hashedPassword = bcrypt.hashSync(password, 10);
+      const insertQuery = `
+        INSERT INTO users (email, password, name, last, birth, role)
+        VALUES ($1, $2, $3, $4, $5, $6)
+        RETURNING *;
+      `;
+      const insertResult = await client.query(insertQuery, [email, hashedPassword, name, surname, birthDate, role]);
+      res.status(201).json(insertResult.rows[0]);
+    } else {
+      // El correo electrónico ya está en uso
+      res.status(400).send('El correo electrónico ya está en uso');
+    }
+  } catch (error) {
+    console.error('Error al registrar el usuario:', error);
+    res.status(500).send('Error al registrar el usuario.');
   } finally {
     client.release();
   }

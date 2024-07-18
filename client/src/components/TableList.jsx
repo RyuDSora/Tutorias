@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import {URIgetTables,URIdropTables,URIUpdateTables,URIcheckTables} from './Urls'
 
 function TableList() {
   const [tables, setTables] = useState({});
@@ -13,7 +14,7 @@ function TableList() {
 
   const fetchTables = async () => {
     try {
-      const response = await axios.get('http://localhost:3000/tables/get-tables');
+      const response = await axios.get(URIgetTables);
       setTables(response.data);
     } catch (error) {
       console.error('Error fetching tables:', error);
@@ -22,7 +23,7 @@ function TableList() {
 
   const handleDeleteTable = async (tableName) => {
     try {
-      await axios.delete(`http://localhost:3000/tables/drop-table/${tableName}`);
+      await axios.delete(URIdropTables+tableName);
       fetchTables();
       alert(`Table ${tableName} deleted successfully`);
     } catch (error) {
@@ -54,7 +55,7 @@ function TableList() {
   const handleUpdateSubmit = async (event) => {
     event.preventDefault();
     try {
-      await axios.put(`http://localhost:3000/tables/update-table/${updateTableName}`, {
+      await axios.put(URIUpdateTables+updateTableName, {
         addColumns,
         dropColumns
       });

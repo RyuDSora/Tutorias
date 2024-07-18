@@ -2,10 +2,14 @@ import { useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import {urilogin} from './components/Urls'
+
 
 
 // eslint-disable-next-line react/prop-types
 export default function LoginComponent({ setIsLoggedIn }) {
+  
+//  const [urilogin, seturilogin] = useState('http://localhost:3000/users/login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
@@ -16,7 +20,7 @@ export default function LoginComponent({ setIsLoggedIn }) {
     event.preventDefault();
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/login`, {
+      const response = await fetch(urilogin, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -13,6 +13,7 @@ import Footer from './Footer';
 import UnAuthorized from './UnAuthorized';
 import CancelPage from './CancelPage';
 import SuccessPage from './SuccessPage';
+import Table from './components/table.jsx'
 
 
 function App() {
@@ -46,6 +47,7 @@ function App() {
           <Route path="/account" element={<AccountComponent />} />      
           <Route path="/cancel" element={<CancelPage />} />
           <Route path="/success" element={<SuccessPage />} />
+          <Route path="/tables" element={<Table />} />
 
 
 

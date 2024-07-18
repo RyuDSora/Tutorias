@@ -1,37 +1,43 @@
 // Importar las dependencias necesarias
-import express from "express";
-import cors from "cors";
-const PORT = 8000;
-const app = express();
+import express from 'express';
+import bodyParser from 'body-parser';
+import cors from 'cors';
+import userRoute from './routes/userRoute.js';
+import tableRoute from './routes/tableRoute.js';
+import sqlRoute from './routes/sqlRoute.js';
 
+const app = express();
+const port = 3000;
+
+// Configura CORS para permitir todas las solicitudes
 app.use(cors());
-app.use(express.json());
-
-
-app.get('/', (req, res) => {
-  res.status(200).json('Bienvenido, tu aplicación se ha ejecutado correctamente');
-});
-
-app.listen(PORT, () => {
-  console.log(`El servidor está corriendo en http://localhost:${PORT}`);
-});
-
-/*
-const bodyParser = require('body-parser');
-const bcrypt = require('bcrypt');
-const db = require('./utils/database');
-const jwt = require('jsonwebtoken');
-const stripe = require('stripe')('sk_test_51P0kZtL1xMfPwf6dWCmv8wAoaHc4o01CBOAMWhBz1rm4vk4NDLoJN0Zpf6wGRgRB1LPREQ61OEdA9LoiUkZhf3MR00VJ4sno7M');
-
-
-// Crear una instancia de Express
-const app = express();
 
 // Middleware para analizar solicitudes JSON
 app.use(bodyParser.json());
 
 // Middleware para analizar solicitudes codificadas en URL
 app.use(bodyParser.urlencoded({ extended: true }));
+
+// Usar las rutas
+app.use('/users', userRoute);
+app.use('/tables', tableRoute);
+app.use('/sql', sqlRoute); 
+
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});
+
+
+
+/*
+
+const bcrypt = require('bcrypt');
+const db = require('./utils/database');
+const jwt = require('jsonwebtoken');
+const stripe = require('stripe')('sk_test_51P0kZtL1xMfPwf6dWCmv8wAoaHc4o01CBOAMWhBz1rm4vk4NDLoJN0Zpf6wGRgRB1LPREQ61OEdA9LoiUkZhf3MR00VJ4sno7M');
+
+
+
 
 app.use(cors({
   origin: '*', // Use the environment variable

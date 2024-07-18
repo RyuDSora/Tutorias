@@ -10,23 +10,23 @@
     width: 100%;
 }
 .bg_principal{
-    background-color: #336a41;
+    background-color: #336a41 !important;
 }
 .border_principal{
     border-color: #336a41 !important;
     border: 2px solid;
 }
 .Secundario {
-    color: #5c90bd;
+    color: #5c90bd !important;
 }
 .bg_secundario{
-    background-color: #5c90bd;
+    background-color: #5c90bd !important;
 }
 .Terciario {
-    color: #bec724;
+    color: #bec724 !important;
 }
 .bg_terciario{
-    background-color: #bec724;
+    background-color: #bec724 !important;
 }
 .Blanco {
     color: #ffffff;

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import {URUsql} from './Urls.jsx'
 
 function SQLQueryForm() {
   const [sqlQuery, setSqlQuery] = useState('');
@@ -9,7 +10,7 @@ function SQLQueryForm() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await axios.post('http://localhost:3000/sql/execute', { sqlQuery });
+      const response = await axios.post(URUsql, { sqlQuery });
       setQueryResult(response.data);
     } catch (error) {
       setError('Error executing SQL query');

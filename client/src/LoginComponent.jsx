@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import { Navigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Cookies from 'js-cookie';
+
 import {urilogin} from './components/Urls'
 
 
@@ -13,6 +14,8 @@ export default function LoginComponent({ setIsLoggedIn }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
+
+  const [rememberMe, setRememberMe] = useState(false);
   const [isLoggedInLocally, setIsLoggedInLocally] = useState(false);
 
 
@@ -31,9 +34,21 @@ export default function LoginComponent({ setIsLoggedIn }) {
       if (!response.ok) {
         throw new Error('Correo electrónico o contraseña incorrectos');
       }
-
       const data = await response.json();
+      console.log(data.user);
+      if (rememberMe) {
+        Cookies.set('UserId',data.user.id,{expires:30});
+        Cookies.set('UserRol',data.user.role,{expires:30});
+        Cookies.set('User',data.user.name + ' ' + data.user.last,{expires:30});
+        Cookies.set('session',true,{expires:30});
+      } else {
+        Cookies.set('UserId',data.user.id);
+        Cookies.set('UserRol',data.user.role);
+        Cookies.set('User',data.user.name + ' ' + data.user.last);
+        Cookies.set('session',true);
+      }
       localStorage.setItem('token', data.token);
+      console.log(data.token);
       setIsLoggedInLocally(true);
       setIsLoggedIn(true);
     } catch (error) {
@@ -45,7 +60,7 @@ export default function LoginComponent({ setIsLoggedIn }) {
   };
 
   if (isLoggedInLocally) {
-    return <Navigate to="/dashboard" />;
+    window.location.href = '/dashboard';
   }
 
 
@@ -108,6 +123,8 @@ export default function LoginComponent({ setIsLoggedIn }) {
                     name="remember-me"
                     type="checkbox"
                     className="h-4 w-4 rounded border_principal "
+                    checked={rememberMe}
+                    onChange={(e) => setRememberMe(e.target.checked)}
                   />
                   <label htmlFor="remember-me" className="ml-2 block text-sm leading-6 Principal">
                     Recuerdame

@@ -40,7 +40,7 @@ function App() {
           <Route path="/about-us" element={<AboutUs />} />          
           <Route path="/help-center" element={<HelpCenter />} />
           <Route path="/login" element={<LoginComponent setIsLoggedIn={setIsLoggedIn} />} />
-          <Route path="/signup" element={<SignUpComponent />} />
+          <Route path="/signup" element={<SignUpComponent setIsLoggedIn={setIsLoggedIn}/>} />
           <Route path="/reset-password" element={<PasswordReset />} />
           <Route path="/unauthorized" element={<UnAuthorized />} />
           <Route path="/dashboard" element={<DashboardComponent />} />

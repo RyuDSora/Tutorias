@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import {uriregister} from './components/Urls'
+import { uriregister } from './components/Urls'; // Asegúrate de ajustar la ruta según tu estructura de archivos
+import Cookies from 'js-cookie';
 
-export default function SignUpComponent() {
-  //const [urilogin, seturilogin] = useState('http://localhost:3000/users/register');
+export default function SignUpComponent({ setIsLoggedIn }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [cpassword, setcPassword] = useState('');
@@ -33,11 +33,27 @@ export default function SignUpComponent() {
       });
 
       if (!response.ok) {
-        throw new Error('Error al registrar usuario');
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Error al registrar usuario');
       }
 
+      const userData = await response.json();
+      console.log('Registered user data:', userData);
       setSuccess(true);
       toast.success('Usuario registrado con éxito');
+      
+      // Configura las cookies
+      Cookies.set('UserId', userData.id);
+      Cookies.set('UserRol', userData.role);
+      Cookies.set('User', `${userData.name} ${userData.last}`);
+      Cookies.set('session', true);
+      localStorage.setItem('token', 'undefined');
+      // Llama a setIsLoggedIn para actualizar el estado
+      setIsLoggedIn(true);
+
+      // Redirige al dashboard
+      window.location.href = '/dashboard';
+
     } catch (error) {
       setError(error.message);
       console.error(error);
@@ -155,8 +171,6 @@ export default function SignUpComponent() {
                   </div>
               </div>
               </div>
-
-
 
               <div>
                 <button

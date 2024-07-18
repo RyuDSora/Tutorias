@@ -27,6 +27,9 @@ app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
 
+app.get('/', (req, res) => {
+  res.status(200).json('Bienvenido, tu aplicación se ha ejecutado correctamente');
+});
 
 
 /*

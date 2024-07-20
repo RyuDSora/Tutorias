@@ -125,28 +125,118 @@ export const register = async (req, res) => {
     client.release();
   }
 };
-
-// Actualizar un usuario existente
-export const updateUsuario = async (req, res) => {
+//actualizar el password
+export const updatePassword = async (req, res) => {
   const { id } = req.params;
-  const { name, email } = req.body;
+  const { password } = req.body;
+
+  const client = await pool.connect();
+  try {
+    const hashedPassword = bcrypt.hashSync(password, 10);
+    const updateQuery = `
+      UPDATE users
+      SET password = $1
+      WHERE id = $2
+      RETURNING *;
+    `;
+    
+    const result = await client.query(updateQuery, [hashedPassword, id]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).send('User not found.');
+    }
+
+    res.json(result.rows[0]);
+  } catch (error) {
+    console.error('Error updating password:', error);
+    res.status(500).send('Error updating password.');
+  } finally {
+    client.release();
+  }
+};
+//actualizar el email
+export const updateEmail = async (req, res) => {
+  const { id } = req.params;
+  const { email } = req.body;
+
   const client = await pool.connect();
   try {
     const updateQuery = `
       UPDATE users
-      SET name = $1, email = $2
-      WHERE id = $3
+      SET email = $1
+      WHERE id = $2
       RETURNING *;
     `;
-    const result = await client.query(updateQuery, [name, email, id]);
+    
+    const result = await client.query(updateQuery, [email, id]);
+
     if (result.rows.length === 0) {
-      res.status(404).send('User not found.');
-    } else {
-      res.json(result.rows[0]);
+      return res.status(404).send('User not found.');
     }
+
+    res.json(result.rows[0]);
   } catch (error) {
-    console.error('Error updating user:', error);
-    res.status(500).send('Error updating user.');
+    console.error('Error updating email:', error);
+    res.status(500).send('Error updating email.');
+  } finally {
+    client.release();
+  }
+};
+//actualizar el role
+export const updateRole = async (req, res) => {
+  const { id } = req.params;
+  const { role } = req.body;
+
+  const client = await pool.connect();
+  try {
+    const updateQuery = `
+      UPDATE users
+      SET role = $1
+      WHERE id = $2
+      RETURNING *;
+    `;
+    
+    const result = await client.query(updateQuery, [role, id]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).send('User not found.');
+    }
+
+    res.json(result.rows[0]);
+  } catch (error) {
+    console.error('Error updating role:', error);
+    res.status(500).send('Error updating role.');
+  } finally {
+    client.release();
+  }
+};
+//actualizar el usuario
+export const updateUsuario = async (req, res) => {
+  const { id } = req.params;
+  const { name, last, birth } = req.body;
+
+  const client = await pool.connect();
+  try {
+    const updateQuery = `
+      UPDATE users
+      SET 
+        name = $1,
+        last = $2,
+        birth = $3
+      WHERE id = $4
+      RETURNING *;
+    `;
+    
+    const result = await client.query(updateQuery, [name, last, birth, id]);
+
+    if (result.rows.length === 0) {
+      return res.status(404).send('User not found.');
+    }
+
+    res.json(result.rows[0]);
+  } catch (error) {
+    console.error('Error updating user details:', error);
+    res.status(500).send('Error updating user details.');
   } finally {
     client.release();
   }

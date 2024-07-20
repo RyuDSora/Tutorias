@@ -5,6 +5,11 @@ import cors from 'cors';
 import userRoute from './routes/userRoute.js';
 import tableRoute from './routes/tableRoute.js';
 import sqlRoute from './routes/sqlRoute.js';
+import teacherRoute from './routes/teacherRoute.js';
+import subjectRoute from './routes/subjectRoute.js';
+import classRoute from './routes/classRoute.js';
+import paymentRoute from './routes/paymentRoute.js';
+import ratingRoute from './routes/ratingRoute.js';
 
 const app = express();
 const port = 3000;
@@ -22,6 +27,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/users', userRoute);
 app.use('/tables', tableRoute);
 app.use('/sql', sqlRoute); 
+app.use('/teachers', teacherRoute);
+app.use('/subjects', subjectRoute);
+app.use('/classes', classRoute);
+app.use('/payments', paymentRoute);
+app.use('/ratings', ratingRoute);
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
@@ -30,6 +40,7 @@ app.listen(port, () => {
 app.get('/', (req, res) => {
   res.status(200).json('Bienvenido, tu aplicación se ha ejecutado correctamente');
 });
+
 
 
 /*

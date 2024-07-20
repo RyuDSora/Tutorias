@@ -16,6 +16,8 @@ import SuccessPage from './SuccessPage';
 import Table from './components/table.jsx'
 import Tutores from './Tutores.jsx';
 import Cursos from './Cursos.jsx';
+import Cookies from 'js-cookie';
+
 
 
 function App() {
@@ -28,15 +30,11 @@ function App() {
     }
   }, []);
 
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    setIsLoggedIn(false);
-  };
 
   return (
     <Router>
       <div>
-        <Navbar isLoggedIn={isLoggedIn} handleLogout={handleLogout} />
+        <Navbar isLoggedIn={isLoggedIn}/>
         <Routes>
           <Route path="/" element={<Navigate to="/dashboard" />} />
           <Route path="/about-us" element={<AboutUs />} />          

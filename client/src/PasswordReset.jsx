@@ -1,32 +1,58 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from 'axios';
+import { ToastContainer, toast } from 'react-toastify';
 import { IconEye, IconEyeOff } from "@tabler/icons-react";
+import 'react-toastify/dist/ReactToastify.css'; // Importa los estilos de react-toastify
+import { URIUser } from "./components/Urls";
+
+import Cookies from 'js-cookie';
 
 const PasswordReset = () => {
   const [newPassword, setNewPassword] = useState("");
+  const [user, setUser] = useState({});
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
+  
   const [error, setError] = useState("");
-  const [successMessage, setSuccessMessage] = useState(""); // Nuevo estado para el mensaje de éxito
+  const [successMessage, setSuccessMessage] = useState("");
 
+  useEffect(() => {
+    if (Cookies.get('session')) {
+      const fetchUser = async () => {
+        try {
+          const response = await axios.get(`${URIUser}${Cookies.get('UserId')}`);
+          setUser(response.data);
+          //setFormData(response.data); // Set formData with initial user data
+        } catch (error) {
+          console.log(error);
+        }
+      };
+      fetchUser();
+    }
+  }, []);
+  // Función para manejar el cambio de contraseña
   const handleChangePassword = async () => {
     try {
-      const token = localStorage.getItem('token'); // Obtener el token almacenado en el localStorage
-      await axios.post(
-        `${import.meta.env.VITE_API_URL}/change-password`, { newPassword: newPassword },
+      const token = localStorage.getItem('token');
+      await axios.patch(
+        `${URIUser}${user.id}/password`, // Usar URIUser para la URL
+        { password : newPassword },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       // Éxito al cambiar la contraseña
+      toast.success('Contraseña cambiada exitosamente');
       setSuccessMessage('Contraseña cambiada exitosamente');
-      setError(""); // Limpiar el mensaje de error
+      setError("");
     } catch (error) {
       // Manejar errores
-      setError(error.response.data); // Establecer el mensaje de error desde la respuesta del servidor
-      setSuccessMessage(""); // Limpiar el mensaje de éxito
+      toast.error( 'Error al cambiar la contraseña');
+      setError('Error al cambiar la contraseña');
+      setSuccessMessage("");
     }
   };
 
+  // Manejadores de cambio de campos
   const handleNewPasswordChange = (event) => {
     setNewPassword(event.target.value);
   };
@@ -35,6 +61,7 @@ const PasswordReset = () => {
     setConfirmPassword(event.target.value);
   };
 
+  // Funciones para alternar la visibilidad de las contraseñas
   const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
   };
@@ -43,10 +70,15 @@ const PasswordReset = () => {
     setConfirmPasswordVisible(!confirmPasswordVisible);
   };
 
+  // Validar y enviar el formulario
   const validateAndSubmit = (event) => {
     event.preventDefault();
     if (newPassword !== confirmPassword) {
       setError("Las contraseñas no coinciden");
+      toast.error("Las contraseñas no coinciden");
+    } else if (newPassword.length < 8) {
+      setError("La contraseña debe tener al menos 8 caracteres");
+      toast.error("La contraseña debe tener al menos 8 caracteres");
     } else {
       setError("");
       handleChangePassword();
@@ -54,105 +86,59 @@ const PasswordReset = () => {
   };
 
   return (
-    <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-        <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-          Restablecer Contraseña
-        </h2>
-      </div>
-
-      <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-        <form
-          className="space-y-6"
-          action="#"
-          method="POST"
-          onSubmit={validateAndSubmit}
-        >
-          {error && <p className="text-red-500">{error}</p>}
-          {successMessage && <p className="text-green-500">{successMessage}</p>}
-
-
-          <div>
-            <label
-              htmlFor="newPassword"
-              className="block text-sm font-medium leading-6 text-gray-900"
-            >
-              Nueva Contraseña
-            </label>
-            <div className="relative mt-2">
-              <input
-                id="newPassword"
-                name="newPassword"
-                type={passwordVisible ? "text" : "password"} // Cambia el tipo según el estado de passwordVisible
-                autoComplete="off"
-                required
-                className="p-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-400 sm:text-sm sm:leading-6"
-                value={newPassword}
-                onChange={handleNewPasswordChange}
-              />
-              <div className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5">
-                {passwordVisible ? (
-                  <IconEyeOff
-                    color="gray"
-                    size={24}
-                    onClick={togglePasswordVisibility}
-                  />
-                ) : (
-                  <IconEye
-                    color="gray"
-                    size={24}
-                    onClick={togglePasswordVisibility}
-                  />
-                )}
+    <div className="container my-5 Principal f_principal" >
+      <ToastContainer />
+      <div className="row justify-content-center border_principal rounded-4 w-50 mx-auto">
+        <div className="col-md-8">
+          <div className="text-center my-3">
+            <span className="h2 py-2">
+              Restablecer Contraseña
+            </span>
+          </div>
+          <form onSubmit={validateAndSubmit} className="form-group my-5">
+            <div className="mb-3">
+              <label htmlFor="newPassword" className="form-label">Nueva Contraseña</label>
+              <div className="input-group">
+                <input
+                  id="newPassword"
+                  name="newPassword"
+                  type={passwordVisible ? "text" : "password"}
+                  autoComplete="off"
+                  required
+                  className="form-control border_principal"
+                  value={newPassword}
+                  onChange={handleNewPasswordChange}
+                />
+                <span className="input-group-text border_principal" onClick={togglePasswordVisibility}>
+                  {passwordVisible ? <IconEyeOff color="gray" size={24} /> : <IconEye color="gray" size={24} />}
+                </span>
               </div>
             </div>
-          </div>
 
-          <div>
-            <label
-              htmlFor="confirmPassword"
-              className="block text-sm font-medium leading-6 text-gray-900"
-            >
-              Confirmar Nueva Contraseña
-            </label>
-            <div className="relative mt-2">
-              <input
-                id="confirmPassword"
-                name="confirmPassword"
-                type={confirmPasswordVisible ? "text" : "password"} // Cambia el tipo según el estado de passwordVisible
-                autoComplete="off"
-                required
-                className="p-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-400 sm:text-sm sm:leading-6"
-                value={confirmPassword}
-                onChange={handleConfirmPasswordChange}
-              />
-              <div className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5">
-                {confirmPasswordVisible ? (
-                  <IconEyeOff
-                    color="gray"
-                    size={24}
-                    onClick={toggleConfirmPasswordVisibility}
-                  />
-                ) : (
-                  <IconEye
-                    color="gray"
-                    size={24}
-                    onClick={toggleConfirmPasswordVisibility}
-                  />
-                )}
+            <div className="mb-3">
+              <label htmlFor="confirmPassword" className="form-label">Confirmar Nueva Contraseña</label>
+              <div className="input-group">
+                <input
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  type={confirmPasswordVisible ? "text" : "password"}
+                  autoComplete="off"
+                  required
+                  className="form-control border_principal"
+                  value={confirmPassword}
+                  onChange={handleConfirmPasswordChange}
+                />
+                <span className="input-group-text border_principal" onClick={toggleConfirmPasswordVisibility}>
+                  {confirmPasswordVisible ? <IconEyeOff color="gray" size={24} /> : <IconEye color="gray" size={24} />}
+                </span>
               </div>
             </div>
-          </div>
 
-          <div>
-            <button
-              type="submit"
-              className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-            >
+            <button type="submit" className="btn bg_secundario Blanco w-100">
               Restablecer Contraseña
             </button>
-          </div>
-        </form>
+          </form>
+        </div>
       </div>
     </div>
   );

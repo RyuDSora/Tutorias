@@ -100,17 +100,17 @@ function AccountComponent() {
   return (
     <>
       <ToastContainer />
-      <div className="container mt-5">
+      <div className="container my-5 ">
         <div className="row">
           <div className="col-md-3">
-            <div className="card">
-              <div className="card-header">
+            <div className="card Principal f_principal border_principal">
+              <div className="card-header Principal f_principal">
                 <h4>Opciones de Cuenta</h4>
               </div>
               <div className="card-body">
                 <button
                   onClick={handleChangePassword}
-                  className="btn btn-secondary w-100 mb-2"
+                  className="btn bg_secundario Blanco w-100 mb-2"
                 >
                   <CogIcon className="h-5 w-5 d-inline-block me-2" />
                   Cambiar contraseña
@@ -126,20 +126,23 @@ function AccountComponent() {
             </div>
           </div>
           <div className="col-md-9">
-            <div className="card">
-              <div className="card-header">
-                <h4>Perfil de Usuario</h4>
+            <div className="card Principal f_principal border_principal ">
+              <div className="card-header ">
+                <div className="my-2 py-2">
+                  <span className="h3">Perfil de Usuario</span>
+                </div>
               </div>
               <div className="card-body">
                 <form>
                   <div className="mb-3">
-                    <label className="form-label">ID:   {formData.id || ''}</label>            
+                    <label className="form-label">ID:   {formData.id || ''}</label>
+                    <br />            
                   </div>
                   <div className="mb-3">
-                    <label className="form-label">Nombre</label>
+                    <label className="form-label float-start">Nombre</label>
                     <input
                       type="text"
-                      className="form-control"
+                      className="form-control "
                       name="name"
                       value={formData.name || ''}
                       onChange={handleChange}
@@ -147,7 +150,7 @@ function AccountComponent() {
                     />
                   </div>
                   <div className="mb-3">
-                    <label className="form-label">Apellido</label>
+                    <label className="form-label float-start">Apellido</label>
                     <input
                       type="text"
                       className="form-control"
@@ -158,7 +161,7 @@ function AccountComponent() {
                     />
                   </div>
                   <div className="mb-3">
-                    <label className="form-label">Correo Electrónico</label>
+                    <label className="form-label float-start" >Correo Electrónico</label>
                     <input
                       type="email"
                       className="form-control"
@@ -168,7 +171,7 @@ function AccountComponent() {
                     />
                   </div>
                   <div className="mb-3">
-                    <label className="form-label">Contraseña</label>
+                    <label className="form-label float-start">Contraseña</label>
                     <input
                       type="password"
                       className="form-control"
@@ -178,7 +181,7 @@ function AccountComponent() {
                     />
                   </div>
                   <div className="mb-3">
-                    <label className="form-label">Rol</label>
+                    <label className="form-label float-start">Rol</label>
                     <input
                       type="text"
                       className="form-control"
@@ -188,7 +191,7 @@ function AccountComponent() {
                     />
                   </div>
                   <div className="mb-3">
-                    <label className="form-label">Fecha de Nacimiento</label>
+                    <label className="form-label float-start">Fecha de Nacimiento</label>
                     <input
                       type="date"
                       className="form-control"
@@ -202,14 +205,14 @@ function AccountComponent() {
                     <>
                       <button
                         type="button"
-                        className="btn btn-primary"
+                        className="btn bg_principal Blanco "
                         onClick={handleSave}
                       >
                         Guardar
                       </button>
                       <button
                         type="button"
-                        className="btn btn-secondary ms-2"
+                        className="btn bg_secundario Blanco ms-2"
                         onClick={handleCancel}
                       >
                         Cancelar
@@ -218,7 +221,7 @@ function AccountComponent() {
                   ) : (
                     <button
                       type="button"
-                      className="btn btn-warning"
+                      className="btn bg_terciario"
                       onClick={handleEdit}
                     >
                       Editar

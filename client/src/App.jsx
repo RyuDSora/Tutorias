@@ -14,6 +14,8 @@ import UnAuthorized from './UnAuthorized';
 import CancelPage from './CancelPage';
 import SuccessPage from './SuccessPage';
 import Table from './components/table.jsx'
+import Tutores from './Tutores.jsx';
+import Cursos from './Cursos.jsx';
 
 
 function App() {
@@ -48,7 +50,8 @@ function App() {
           <Route path="/cancel" element={<CancelPage />} />
           <Route path="/success" element={<SuccessPage />} />
           <Route path="/tables" element={<Table />} />
-
+          <Route path="/tutores" element={<Tutores />} />
+          <Route path="/cursos" element={<Cursos />} />
 
 
           <Route element={<ProtectedRoute allowedRoles={['admin', 'empleado']} />}>

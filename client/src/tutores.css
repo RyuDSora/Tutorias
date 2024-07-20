@@ -1,0 +1,57 @@
+/* Tutores.css */
+.title {
+    text-align: center;
+    font-family: 'Clear Sans Light', sans-serif;
+    color: #336A41;
+    margin-bottom: 40px;
+    margin-top: 40px;
+    font-size: 48px;
+    font-weight: bold;
+  }
+  
+  .gridContainer {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    padding: 24px;
+  }
+  
+  .card {
+    border: none;
+    border-radius: 16px;
+    overflow: hidden;
+    padding: 0;
+    text-align: center;
+    background-color: #fff;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    font-family: 'Clear Sans Light', sans-serif;
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  
+  .card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+  }
+  
+  .image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+  }
+  
+  .textContainer {
+    padding: 20px;
+  }
+  
+  .name {
+    margin: 10px 0 5px;
+    font-size: 24px;
+    color: #333;
+  }
+  
+  .description {
+    margin: 0;
+    font-size: 16px;
+    color: #666;
+  }
+  

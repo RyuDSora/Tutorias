@@ -1,23 +1,42 @@
-.carousel-image-container img {
-    max-height: 350px; /* Ajusta la altura máxima según tu necesidad */
-    object-fit: contain; /* Asegura que las imágenes no se recorten */
-  }
-  
-  .Principal {
-    margin-top: 0; /* Ajusta el margen superior para que el título no esté muy separado del menú */
-  }
-  
-  .feedback-section {
-    background-color: #f9f9f9;
-    padding: 20px;
-    border-radius: 8px;
-  }
-  
-  .feedback-section h3 {
-    color: #336A41;
-  }
-  
-  .feedback-section p {
-    color: #336A41;
-  }
-  
+.feedback-section {
+  text-align: center;
+}
+
+.feedback-container {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+}
+
+.feedback-card {
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 8px;
+  width: 300px;
+  text-align: center;
+  margin: 0 10px;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.feedback-card img {
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+}
+
+.feedback-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+}
+
+.course-image {
+  width: 100%;
+  height: auto;
+  max-width: 300px;
+  margin: 0 auto;
+  border-radius: 8px;
+}
+
+.carousel-image {
+  max-height: 400px;
+  object-fit: contain;
+}

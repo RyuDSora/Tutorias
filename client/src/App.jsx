@@ -18,7 +18,6 @@ import Tutores from './Tutores.jsx';
 import Cursos from './Cursos.jsx';
 import Cookies from 'js-cookie';
 import DashboardTutor from './DashboardTutor.jsx';
-import Cookies from 'js-cookie';
 
 
 

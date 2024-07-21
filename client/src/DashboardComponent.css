@@ -1,0 +1,23 @@
+.carousel-image-container img {
+    max-height: 350px; /* Ajusta la altura máxima según tu necesidad */
+    object-fit: contain; /* Asegura que las imágenes no se recorten */
+  }
+  
+  .Principal {
+    margin-top: 0; /* Ajusta el margen superior para que el título no esté muy separado del menú */
+  }
+  
+  .feedback-section {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+  }
+  
+  .feedback-section h3 {
+    color: #336A41;
+  }
+  
+  .feedback-section p {
+    color: #336A41;
+  }
+  

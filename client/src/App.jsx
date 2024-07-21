@@ -17,6 +17,9 @@ import Table from './components/table.jsx'
 import Tutores from './Tutores.jsx';
 import Cursos from './Cursos.jsx';
 import Cookies from 'js-cookie';
+import DashboardTutor from './DashboardTutor.jsx';
+import Cookies from 'js-cookie';
+
 
 
 
@@ -50,7 +53,7 @@ function App() {
           <Route path="/tables" element={<Table />} />
           <Route path="/tutores" element={<Tutores />} />
           <Route path="/cursos" element={<Cursos />} />
-
+          <Route path="/dashboardtutor" element={<DashboardTutor />} />
 
           <Route element={<ProtectedRoute allowedRoles={['admin', 'empleado']} />}>
           </Route>

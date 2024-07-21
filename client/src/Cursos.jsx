@@ -1,4 +1,5 @@
 import React from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import './Cursos.css';
 
 // Lista de cursos con datos de ejemplo
@@ -13,11 +14,13 @@ const courses = [
 // Componente para mostrar la tarjeta de un curso
 const CourseCard = ({ course }) => {
   return (
-    <div className="card">
-      <img src={course.image} alt={course.name} className="image" />
-      <div className="textContainer">
-        <h3 className="name">{course.name}</h3>
-        <p className="description">{course.description}</p>
+    <div className="col-lg-3 col-md-6 col-sm-12 mb-4">
+      <div className="card h-100">
+        <img src={course.image} alt={course.name} className="card-img-top" />
+        <div className="card-body">
+          <h5 className="card-title">{course.name}</h5>
+          <p className="card-text">{course.description}</p>
+        </div>
       </div>
     </div>
   );
@@ -26,9 +29,9 @@ const CourseCard = ({ course }) => {
 // Componente principal para mostrar la cuadrícula de cursos
 const Cursos = () => {
   return (
-    <div>
-      <h1 className="title">Nuestros Cursos</h1>
-      <div className="gridContainer">
+    <div className="container mt-5">
+      <h1 className="title text-center mb-5">Nuestros Cursos</h1>
+      <div className="row">
         {courses.map((course) => (
           <CourseCard key={course.id} course={course} />
         ))}

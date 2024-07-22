@@ -3,13 +3,13 @@ import { Nav } from 'react-bootstrap';
 
 const Sidebar = () => {
   return (
-    <Nav className="col-md-3 d-none d-md-block bg-light sidebar">
+    <Nav className="d-none d-md-block sidebar my-2 py-2 w-75 mx-auto">
       <div className="sidebar-sticky">
         <Nav.Item>
           <Nav.Link href="#">Dashboard</Nav.Link>
         </Nav.Item>
         <Nav.Item>
-          <Nav.Link href="#">Cursos</Nav.Link>
+          <Nav.Link href="/cursos">Cursos</Nav.Link>
         </Nav.Item>
         <Nav.Item>
           <Nav.Link href="#">Estudiantes</Nav.Link>

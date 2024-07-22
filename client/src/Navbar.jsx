@@ -68,7 +68,7 @@ function Navbar({ isLoggedIn }) {
                       </>
                     ) : (
                       <>
-                        <Dropdown.Item onClick={() => navigate(`/cursos`)} className="mx-3">Mis Cursos</Dropdown.Item>
+                        <Dropdown.Item onClick={() => navigate(`/dashboardtutor`)} className="mx-3">Mis Cursos</Dropdown.Item>
                         <Dropdown.Item onClick={() => navigate(`/ss`)} className="mx-3">Mis Solicitudes</Dropdown.Item>
                         <Dropdown.Item onClick={() => navigate(`/xd`)} className="mx-3">Mis XD</Dropdown.Item>
                       </>

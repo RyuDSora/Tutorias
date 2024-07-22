@@ -6,24 +6,29 @@ import Articles from './Articles';
 
 const DashboardTutor = () => {
   return (
-    <div className="container-fluid">
+    <div className="container m-2">
       <div className="row">
-        <Sidebar />
-        <main className="col-md-9 ml-sm-auto col-lg-10 px-4">
-         
-          <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-            <h1 className="h2">Your wrap up</h1>
-          </div>
-          <div className="row">
-            <div className="col-md-6">
-              <TopSellingCourses />
+        <div className='col-3 border-end'>
+          <Sidebar />
+        </div>
+        <div className='col-9 ml-sm-auto px-4 '>
+          <main className="my-3">
+            <div className='my-2'><span className='h3'>Tu Resumen</span></div>
+            <div></div>
+            <div className='row'>
+              <div className='col-8'>
+                <div><TopSellingCourses /></div>  
+              </div>
+              <div className='col-4'>
+                <div><NextLessons /></div>
+              </div>
             </div>
-            <div className="col-md-6">
-              <NextLessons />
+            <div className='my-2'><span className='h3'>Artìculos</span></div>
+            <div className='row'>
+              <div className='col'><Articles /></div>
             </div>
-          </div>
-          <Articles />
         </main>
+        </div>
       </div>
     </div>
   );

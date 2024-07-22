@@ -16,6 +16,10 @@
     border-color: #336a41 !important;
     border: 2px solid;
 }
+.border_secundario{
+    border-color: #5c90bd !important;
+    border: 1px solid;
+}
 .Secundario {
     color: #5c90bd !important;
 }

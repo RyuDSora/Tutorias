@@ -1,0 +1,11 @@
+/* Ajustes de estilo para el calendario y las sesiones en el modal */
+.react-calendar {
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.react-calendar__tile {
+  max-width: 100%;
+  text-align: center;
+}

@@ -13,12 +13,23 @@ function Navbar({ isLoggedIn }) {
   const [isEventOpen, setIsEventOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [Admin, setAdmin] = useState(false);
+  const [Tutor, setTutor] = useState(false);
+  const [User, setUser] = useState(false);
   const [UserL, setUserL] = useState('');
 
   useEffect(() => {
     const session = Cookies.get('session');
     if (session) {
-      setUserL(Cookies.get('User') || '');  
+      setUserL(Cookies.get('User') || '');
+      if(Cookies.get('UserRol')==='administrador'){
+        setAdmin(true);
+      }
+      if(Cookies.get('UserRol')==='tutor'){
+        setTutor(true);
+      }
+      if(Cookies.get('UserRol')==='estudiante'){
+        setUser(true);
+      }      
     }
   }, []);
   
@@ -62,17 +73,15 @@ function Navbar({ isLoggedIn }) {
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
                   <div style={{ marginLeft: '-10px' }}>
-                    {Admin ? (
-                      <>
-                        {/* Opciones específicas para admin */}
-                      </>
-                    ) : (
-                      <>
-                        <Dropdown.Item onClick={() => navigate(`/dashboardtutor`)} className="mx-3">Mis Cursos</Dropdown.Item>
-                        <Dropdown.Item onClick={() => navigate(`/ss`)} className="mx-3">Mis Solicitudes</Dropdown.Item>
-                        <Dropdown.Item onClick={() => navigate(`/xd`)} className="mx-3">Mis XD</Dropdown.Item>
-                      </>
-                    )}
+                    {Admin ? (<>
+                                {/* Opciones específicas para admin */}
+                              </>) : (<>
+                    {Tutor ? (<>
+                                <Dropdown.Item onClick={() => navigate(`/dashboardtutor/dash`)} className="mx-3">Mi Panel</Dropdown.Item>
+                              </>):(<>
+                    {User ? (<>
+                                {/* Opciones específicas para estudiantes */}
+                              </>):(<></>) }</>)}</>)}
                     <Dropdown.Item onClick={handleLogout} className="mx-3">Cerrar Sesión</Dropdown.Item>
                   </div>
                 </Dropdown.Menu>

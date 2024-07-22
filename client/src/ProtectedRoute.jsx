@@ -1,21 +1,28 @@
 /* eslint-disable react/prop-types */
 import { Navigate, Outlet } from 'react-router-dom';
-import { jwtDecode } from "jwt-decode";
+import React from 'react';
+import Cookies from 'js-cookie';
 
 const ProtectedRoute = ({ allowedRoles }) => {
-  const token = localStorage.getItem('token');
+  // Obtener el rol del usuario desde la cookie
+  const session = Cookies.get('session');
+  const userRole = session ? Cookies.get('userRol') || '' : ''; // Obtener el rol del usuario desde la cookie 'userRol'
+  
+  // Verificar si el rol del usuario está en los roles permitidos
 
-  if (!token) {
+  const hasAccess = allowedRoles.includes(userRole);
+
+  // Si no hay sesión, redirigir al login
+  if (!session) {
     return <Navigate to="/login" replace />;
   }
 
-  const decodedToken = jwtDecode(token);
-  const userRole = decodedToken.role;
-
-  if (!allowedRoles.includes(userRole)) {
-    return <Navigate to="/unauthorized" replace />;
+  // Si el rol del usuario no está en los roles permitidos, redirigir al inicio
+  if (!hasAccess) {
+    return <Navigate to="/" replace />;
   }
 
+  // Si el rol está permitido, renderizar el contenido de la ruta
   return <Outlet />;
 };
 

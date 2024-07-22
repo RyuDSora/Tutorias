@@ -13,14 +13,15 @@ import Footer from './Footer';
 import UnAuthorized from './UnAuthorized';
 import CancelPage from './CancelPage';
 import SuccessPage from './SuccessPage';
-import Table from './components/table.jsx'
+import Table from './components/table.jsx';
 import Tutores from './Tutores.jsx';
 import Cursos from './Cursos.jsx';
-import Cookies from 'js-cookie';
 import DashboardTutor from './DashboardTutor.jsx';
-
-
-
+import MyCourses from './DashboardTutor/MyCourses'; // Componente de subruta
+import MyStudents from './DashboardTutor/MyStudents'; // Componente de subruta
+import Chats from './DashboardTutor/Chats'; // Componente de subruta
+import Articles from './DashboardTutor/Articles2'; // Componente de subruta
+import Dash from "./DashboardTutor/Dash.jsx";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -32,31 +33,42 @@ function App() {
     }
   }, []);
 
-
   return (
     <Router>
       <div>
-        <Navbar isLoggedIn={isLoggedIn}/>
+        <Navbar isLoggedIn={isLoggedIn} />
         <Routes>
           <Route path="/" element={<Navigate to="/dashboard" />} />
-          <Route path="/about-us" element={<AboutUs />} />          
+          <Route path="/about-us" element={<AboutUs />} />
           <Route path="/help-center" element={<HelpCenter />} />
           <Route path="/login" element={<LoginComponent setIsLoggedIn={setIsLoggedIn} />} />
-          <Route path="/signup" element={<SignUpComponent setIsLoggedIn={setIsLoggedIn}/>} />
+          <Route path="/signup" element={<SignUpComponent setIsLoggedIn={setIsLoggedIn} />} />
           <Route path="/reset-password" element={<PasswordReset />} />
           <Route path="/unauthorized" element={<UnAuthorized />} />
           <Route path="/dashboard" element={<DashboardComponent />} />
-          <Route path="/account" element={<AccountComponent />} />      
           <Route path="/cancel" element={<CancelPage />} />
           <Route path="/success" element={<SuccessPage />} />
           <Route path="/tables" element={<Table />} />
-          <Route path="/tutores" element={<Tutores />} />
           <Route path="/cursos" element={<Cursos />} />
-          <Route path="/dashboardtutor" element={<DashboardTutor />} />
+          <Route path="/tutores" element={<Tutores />} />
 
-          <Route element={<ProtectedRoute allowedRoles={['admin', 'empleado']} />}>
+          {/* Rutas protegidas */}
+          <Route element={<ProtectedRoute allowedRoles={'administrador'} />}>
+            {/* Rutas específicas para administradores */}
           </Route>
-          <Route element={<ProtectedRoute allowedRoles={['user']} />}>
+
+          <Route element={<ProtectedRoute allowedRoles={'estudiante'} />}>
+            <Route path="/account" element={<AccountComponent />} />
+          </Route>
+
+          <Route element={<ProtectedRoute allowedRoles={'tutor'} />}>
+            <Route path="/dashboardtutor" element={<DashboardTutor />}>
+              <Route path="dash" element={<Dash />} />
+              <Route path="my-courses" element={<MyCourses />} />
+              <Route path="my-students" element={<MyStudents />} />
+              <Route path="chats" element={<Chats />} />
+              <Route path="articles" element={<Articles />} />
+            </Route>
             <Route path="/account" element={<AccountComponent />} />
           </Route>
         </Routes>

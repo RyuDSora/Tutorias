@@ -15,7 +15,7 @@ ChartJS.register(
   Legend
 );
 
-const generateRandomData = (numCourses) => {
+const generateRandomData = () => {
   const courses = [];
   const enrollments = [];
   const prices = [];
@@ -32,23 +32,31 @@ const generateRandomData = (numCourses) => {
   courses.push(`Matematicas`);
   courses.push(`Fisica`);
   courses.push(`Ingles`);
-  for (let i = 1; i <= numCourses; i++) {
-    
-    enrollments.push(Math.floor(Math.random() * 200) + 1); // Generate random enrollments between 1 and 200
-    prices.push((Math.random() * 100).toFixed(2)); // Generate random prices between 0 and 100
-    backgroundColors.push(colors[i % colors.length]); // Cycle through the colors array
+  courses.push(`Ingles II`);
+
+  enrollments.push(35)
+  enrollments.push(45)
+  enrollments.push(15)
+  enrollments.push(5)
+
+  prices.push(15.20);
+  prices.push(20.00);
+  prices.push(11.99);
+  prices.push(6.99);
+  for (let i = 1; i <= 4; i++) {
+    backgroundColors.push(colors[i % colors.length]); 
   }
 
   return { courses, enrollments, prices, backgroundColors };
 };
 
-const { courses, enrollments, prices, backgroundColors } = generateRandomData(3); // Generate data for 3 courses
+const { courses, enrollments, prices, backgroundColors } = generateRandomData(); // Generate data for 3 courses
 
 const data = {
   labels: courses,
   datasets: [
     {
-      label: 'Number of Enrollments',
+      label: 'Número de suscriptores',
       data: enrollments,
       backgroundColor: backgroundColors,
       borderColor: 'rgba(255, 255, 255, 1)',
@@ -65,7 +73,7 @@ const options = {
     },
     tooltip: {
       callbacks: {
-        label: (context) => `${context.label}: ${context.raw} enrollments`
+        label: (context) => `${context.label}: ${context.raw} suscriptores`
       }
     },
     title: {
@@ -82,7 +90,7 @@ const TopSellingCourses = () => {
 
   return (
     <Card>
-      <Card.Body>
+      <Card.Body >
         <Card.Title>Cursos más vendidos</Card.Title>
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <div style={{ flex: '1' }}>

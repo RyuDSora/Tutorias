@@ -5,9 +5,11 @@ import NextLessons from '../NextLessons'
 const MyStudents = () => {
   return (
     <>
-    <div className='my-2'><span className='h3'>Tu Resumen</span></div>
-            <div></div>
-            <div className='row'>
+    <div className='my-2'>
+      <span className='h3 Principal f_principal'>Tu Resumen</span>
+    </div>
+    <div></div>
+    <div className='row'>
               <div className='col-8'>
                 <div><TopSellingCourses /></div>  
               </div>
@@ -15,7 +17,7 @@ const MyStudents = () => {
                 <div><NextLessons /></div>
               </div>
             </div>
-            <div className='my-2'><span className='h3'>Artìculos</span></div>
+            <div className='my-2'><span className='h3 Principal f_principal'>Artìculos</span></div>
             <div className='row'>
               <div className='col'><Articles /></div>
             </div>

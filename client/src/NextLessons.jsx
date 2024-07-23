@@ -4,7 +4,8 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import { format, isSameDay, parseISO } from 'date-fns';
 import { es } from 'date-fns/locale';
-import './NextLessons.css'; // Asegúrate de crear este archivo para estilos adicionales
+import './NextLessons.css'; 
+import { FaCalendar } from 'react-icons/fa';
 
 const NextLessons = () => {
   const [showModal, setShowModal] = useState(false);
@@ -121,25 +122,33 @@ const NextLessons = () => {
 
   return (
     <>
-      <Card className="mt-4">
+      <Card className="mt-4 Principal">
         <Card.Body>
           <Card.Title className="d-flex justify-content-between">
-            <span>Próximas Lecciones</span>
+            <span className='h5'>Próximas Lecciones</span>
             <a onClick={toggleModal} className="text-primary" style={{ cursor: 'pointer' }}>
-              <span className='small'>Ver calendario</span>
+              <span className='h6' title='Ver Calendario'><FaCalendar className="icon Secundario" style={{ width: 20, height: 20 }} /></span>
             </a>
           </Card.Title>
           <ListGroup variant="flush">
             {upcomingLessons.map((lesson, index) => (
               <ListGroupItem key={index} className="d-flex justify-content-between align-items-start">
-                <div className="ms-2 me-auto">
-                  <div className="fw-bold">{format(parseISO(lesson.date), 'd MMMM', { locale: es })}</div>
-                  <div>{lesson.title}</div>
-                  <small>{lesson.description}</small>
+                <div className='row'>
+                  <div className='col-4 Principal'><div className="fw-bold">{format(parseISO(lesson.date), 'd MMMM', { locale: es })}</div></div>
+                  <div className='col-8'>
+                    <div className='row'>
+                      <div className='Principal'>{lesson.title}</div>
+                      <small className='Secundario'>{lesson.description}</small>
+                    </div>
+                    <div className='row my-1'>
+                      <Badge pill className='w-50 mx-auto bg_secundario Blanco'>
+                        {lesson.time}
+                      </Badge>
+                    </div>
+                  </div>
                 </div>
-                <Badge bg="primary" pill>
-                  {lesson.time}
-                </Badge>
+                
+                
               </ListGroupItem>
             ))}
           </ListGroup>

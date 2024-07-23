@@ -4,9 +4,9 @@ import { Outlet } from 'react-router-dom'; // Importar Outlet para las subrutas
 
 const DashboardTutor = () => {
   return (
-    <div className="container-fluid m-2">
+    <div className="container-fluid">
       <div className="row">
-        <div className='col-2 border-end'>
+        <div className='col-2 border-end pe-0'>
           <Sidebar />
         </div>
         <div className='col-9 px-4'>

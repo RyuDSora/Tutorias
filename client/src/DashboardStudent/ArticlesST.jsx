@@ -22,7 +22,7 @@ const ArticlesST = () => {
 
   return (
     <Container>
-      <h1>Articles</h1>
+      <h1>Libros</h1>
       {loading ? (
         <Spinner animation="border" />
       ) : error ? (

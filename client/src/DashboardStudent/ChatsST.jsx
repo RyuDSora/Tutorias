@@ -5,9 +5,9 @@ const ChatsST = () => {
   const [messages, setMessages] = useState({});
   const [input, setInput] = useState('');
   const [connectedStudents, setConnectedStudents] = useState([
-    { id: 1, name: 'Alice', online: true },
-    { id: 2, name: 'Bob', online: false },
-    { id: 3, name: 'Charlie', online: true },
+    { id: 1, name: 'Tutor Alice', online: true },
+    { id: 2, name: 'Tutor Bob', online: false },
+    { id: 3, name: 'Tutor Charlie', online: true },
   ]);
   const [selectedStudent, setSelectedStudent] = useState(null);
 
@@ -31,7 +31,7 @@ const ChatsST = () => {
     <Container>
       <Row>
         <Col md={4}>
-          <h3>Students</h3>
+          <h3>Tutores</h3>
           <ListGroup>
             {connectedStudents.map(student => (
               <ListGroup.Item
@@ -45,7 +45,7 @@ const ChatsST = () => {
           </ListGroup>
         </Col>
         <Col md={8}>
-          <h1>Chat with {selectedStudent ? selectedStudent.name : 'Select a student'}</h1>
+          <h1>Chat con {selectedStudent ? selectedStudent.name : 'Eliga a un tutor'}</h1>
           {selectedStudent ? (
             <>
               <div
@@ -86,7 +86,7 @@ const ChatsST = () => {
             </>
           ) : (
             <Alert variant="info">
-              Please select a student to start chatting.
+              Por favor selecione a un estudiante para empezar a chatear
             </Alert>
           )}
         </Col>

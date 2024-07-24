@@ -78,7 +78,7 @@ const Mytutor = () => {
 
   return (
     <>
-      <div><span className='h3 Principal f_principal'>Tus Estudiantes</span></div>
+      <div><span className='h3 Principal f_principal'>Tus Tutores</span></div>
       {courses.map(course => (
         <div key={course.id}>
           <CourseTitle onClick={() => toggleCourse(course.id)} className='Principal'>

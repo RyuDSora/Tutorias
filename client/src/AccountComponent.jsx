@@ -4,31 +4,52 @@ import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import Cookies from 'js-cookie';
 import { useEffect, useState } from "react";
-import { URIUser } from "./components/Urls";
+import { URIUser, uritutor } from "./components/Urls";
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
+
+import { format } from 'date-fns';
 
 function AccountComponent() {
   const navigate = useNavigate();
   const [user, setUser] = useState({});
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({});
+  const [tutor,setTutor] = useState(false);
 
   useEffect(() => {
-    if (Cookies.get('session')) {
-      const fetchUser = async () => {
+    const fetchUser = async () => {
+      if (Cookies.get('session')) {
         try {
           const response = await axios.get(`${URIUser}${Cookies.get('UserId')}`);
-          setUser(response.data);
-          setFormData(response.data); // Set formData with initial user data
+          const data = response.data;
+          console.log(data.birth);
+          const formattedDate = format(new Date(data.birth), 'yyyy-MM-dd'); 
+          data.birth = formattedDate;
+          if(data.role==='tutor'){
+            setTutor(true);
+            const fetchTutor = async () =>{
+              try {
+                const response = await axios.get(`${uritutor}${data.id}`);
+                console.log(response.data);
+              } catch (error) {
+                console.log(error);
+              }
+            }
+            fetchTutor();
+          }
+          console.log(tutor);
+          setUser(data);
+          setFormData(data); 
         } catch (error) {
-          console.log(error);
+          console.error(error); 
         }
-      };
-      fetchUser();
-    }
-  }, []);
+      }
+    };
+
+    fetchUser();
+  }, [Cookies.get('session')])
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -190,6 +211,7 @@ function AccountComponent() {
                       disabled
                     />
                   </div>
+                  
                   <div className="mb-3">
                     <label className="form-label float-start">Fecha de Nacimiento</label>
                     <input

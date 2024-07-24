@@ -75,6 +75,7 @@ function Navbar({ isLoggedIn }) {
                   <div style={{ marginLeft: '-10px' }}>
                     {Admin ? (<>
                                 {/* Opciones específicas para admin */}
+                                <Dropdown.Item onClick={() => navigate(`/tables`)} className="mx-3">tablas</Dropdown.Item>
                               </>) : (<>
                     {Tutor ? (<>
                                 <Dropdown.Item onClick={() => navigate(`/dashboardtutor/dash`)} className="mx-3">Mi Panel</Dropdown.Item>

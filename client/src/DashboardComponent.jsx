@@ -77,7 +77,7 @@ export default function DashboardComponent() {
         console.error('Error al obtener la lista de productos:', error);
       }
     };
-    fetchProducts();
+    //fetchProducts();
   }, [currentPage]);
 
   return (

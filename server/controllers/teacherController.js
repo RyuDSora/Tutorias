@@ -19,7 +19,7 @@ export const getTeacher = async (req, res) => {
   const { id } = req.params;
   const client = await pool.connect();
   try {
-    const result = await client.query('SELECT * FROM teachers WHERE id = $1', [id]);
+    const result = await client.query('SELECT * FROM teachers WHERE user_id = $1', [id]);
     if (result.rows.length === 0) {
       res.status(404).send('Teacher not found.');
     } else {

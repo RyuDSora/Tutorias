@@ -1,10 +1,27 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, Button, Modal } from 'react-bootstrap';
+import { UriCursos } from '../components/Urls'; 
+import Cookies from 'js-cookie';
+import axios from 'axios';
 
 const MyCourses = () => {
   const [show, setShow] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState(null);
 
+  useEffect (()=>{
+    const fetchSubject = async () => {
+      if (Cookies.get('session')) {
+        try {
+          const response = await axios.get(UriCursos);
+          console.log(response.data);
+        } catch (error) {
+          console.error(error); 
+        }
+      }
+    };
+
+    fetchSubject();
+  }, [Cookies.get('session')]);
   const handleClose = () => setShow(false);
   const handleShow = (course) => {
     setSelectedCourse(course);

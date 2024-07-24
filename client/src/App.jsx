@@ -22,6 +22,12 @@ import MyStudents from './DashboardTutor/MyStudents'; // Componente de subruta
 import Chats from './DashboardTutor/Chats'; // Componente de subruta
 import Articles from './DashboardTutor/Articles2'; // Componente de subruta
 import Dash from "./DashboardTutor/Dash.jsx";
+import DashboardStudent from './DashboardStudent.jsx';
+import MyCoursesST from './DashboardStudent/MyCoursesST'; // Componente de subruta
+import MyTutor from './DashboardStudent/MyTutor'; // Componente de subruta
+import ChatsST from './DashboardStudent/ChatsST'; // Componente de subruta
+import ArticlesST from './DashboardStudent/ArticlesST'; // Componente de subruta
+import DashST from "./DashboardStudent/DashST.jsx";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -58,6 +64,13 @@ function App() {
           </Route>
 
           <Route element={<ProtectedRoute allowedRoles={'estudiante'} />}>
+            <Route path="/dashboardstudent" element={<DashboardStudent />}>
+                <Route path="dashst" element={<DashST />} />
+                <Route path="my-courses" element={<MyCoursesST />} />
+                <Route path="my-tutor" element={<MyTutor />} />
+                <Route path="chatsST" element={<ChatsST />} />
+                <Route path="articlesST" element={<ArticlesST />} />
+              </Route>
             <Route path="/account" element={<AccountComponent />} />
           </Route>
 

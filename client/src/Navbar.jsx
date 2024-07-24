@@ -80,8 +80,8 @@ function Navbar({ isLoggedIn }) {
                                 <Dropdown.Item onClick={() => navigate(`/dashboardtutor/dash`)} className="mx-3">Mi Panel</Dropdown.Item>
                               </>):(<>
                     {User ? (<>
-                                {/* Opciones específicas para estudiantes */}
-                              </>):(<></>) }</>)}</>)}
+                                <Dropdown.Item onClick={() => navigate(`/dashboardStudent/dashst`)} className="mx-3">Mi Panel</Dropdown.Item>
+                            </>):(<></>) }</>)}</>)}
                     <Dropdown.Item onClick={handleLogout} className="mx-3">Cerrar Sesión</Dropdown.Item>
                   </div>
                 </Dropdown.Menu>

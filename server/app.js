@@ -10,6 +10,7 @@ import subjectRoute from './routes/subjectRoute.js';
 import classRoute from './routes/classRoute.js';
 import paymentRoute from './routes/paymentRoute.js';
 import ratingRoute from './routes/ratingRoute.js';
+import tutorsubjectRoute from './routes/tutorsubjectRoute.js'
 
 const app = express();
 const port = 3000;
@@ -32,6 +33,7 @@ app.use('/subjects', subjectRoute);
 app.use('/classes', classRoute);
 app.use('/payments', paymentRoute);
 app.use('/ratings', ratingRoute);
+app.use('/tutorsubject',tutorsubjectRoute);
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

@@ -4,7 +4,7 @@ import { getAllTutorSubjects,
          updateTutorSubjects, 
          deleteTutorSubjects, 
          createTutorSubjects } 
-from "../controllers/tutorsubjectController"; 
+from "../controllers/tutorsubjectController.js"; 
 
 const router = express.Router();
 

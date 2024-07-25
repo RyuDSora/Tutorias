@@ -10,8 +10,6 @@ function Table() {
           <header className="App-header">
             <h1>Table Manager</h1>
           </header>
-          
-          <TableForm />
           <TableList />
           <SQLQueryForm/>
         </div>

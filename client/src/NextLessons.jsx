@@ -13,7 +13,7 @@ const NextLessons = () => {
 
   const lessons = [
     {
-      date: '2024-07-30',
+      date: '2024-07-22',
       title: 'Matemática Básica',
       description: 'Aprende a sumar, restar, multiplicar y dividir',
       time: '8:00 AM'

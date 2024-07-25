@@ -3,12 +3,20 @@ import './tutores.css';
 import { uritutor, URIUser } from './components/Urls';
 import axios from 'axios';
 import img from '../public/images/tutor1.jpg'
+import img2 from '../public/images/tutor2.jpg'
 
 // Componente para mostrar la tarjeta de un tutor
 const TutorCard = ({ tutor, user }) => {
+  const [female,setFemale] = useState(false);
+  useEffect(()=>{
+    if (user.gender==='Female') {
+      setFemale(true)
+    }
+  },[])
   return (
     <div className="card">
-      <img src={img} alt={tutor.name} className="image" />
+      {female ? (<img src={img2} alt={tutor.name} className="image" />):(<img src={img} alt={tutor.name} className="image" />)}
+      
       <div className="textContainer">
         <h3 className="name">{user.name+" "+user.last }</h3>
         <p className="description">{tutor.bio}</p>
@@ -20,8 +28,6 @@ const TutorCard = ({ tutor, user }) => {
 
 // Componente principal para mostrar la cuadrícula de tutores
 const Tutores = () => {
-  const [tutors, setTutors] = useState([]);
-  const [users, setUsers] = useState([]);
   const [tutorDetails, setTutorDetails] = useState([]);
 
   useEffect(() => {
@@ -45,12 +51,7 @@ const Tutores = () => {
           const user = users.find(u => u.id === tutor.user_id);
           return { ...tutor, user };
         });
-
         setTutorDetails(tutorsWithDetails);
-        setUsers(users);
-
-        console.log('Tutors with details:', tutorsWithDetails);
-        
       } catch (error) {
         console.error('Error fetching tutors:', error);
       }

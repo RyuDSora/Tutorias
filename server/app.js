@@ -1,3 +1,4 @@
+// Importar las dependencias necesarias
 import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
@@ -9,18 +10,12 @@ import subjectRoute from './routes/subjectRoute.js';
 import classRoute from './routes/classRoute.js';
 import paymentRoute from './routes/paymentRoute.js';
 import ratingRoute from './routes/ratingRoute.js';
-import tutorsubjectRoute from './routes/tutorsubjectRoute.js';
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = 3000;
 
-// Configura CORS para permitir solicitudes desde tu dominio específico
-const corsOptions = {
-  origin: 'https://tu-torias.vercel.app',
-  optionsSuccessStatus: 200 // para navegadores más antiguos
-};
-
-app.use(cors(corsOptions));
+// Configura CORS para permitir todas las solicitudes
+app.use(cors());
 
 // Middleware para analizar solicitudes JSON
 app.use(bodyParser.json());
@@ -31,21 +26,21 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // Usar las rutas
 app.use('/users', userRoute);
 app.use('/tables', tableRoute);
-app.use('/sql', sqlRoute);
+app.use('/sql', sqlRoute); 
 app.use('/teachers', teacherRoute);
 app.use('/subjects', subjectRoute);
 app.use('/classes', classRoute);
 app.use('/payments', paymentRoute);
 app.use('/ratings', ratingRoute);
-app.use('/tutorsubject', tutorsubjectRoute);
+
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});
 
 app.get('/', (req, res) => {
   res.status(200).json('Bienvenido, tu aplicación se ha ejecutado correctamente');
 });
 
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
 
 
 /*

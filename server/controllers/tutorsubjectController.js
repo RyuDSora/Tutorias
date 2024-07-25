@@ -23,7 +23,7 @@ export const getTutorSubjects = async (req, res) => {
       if (result.rows.length === 0) {
         res.status(404).send('tutor_subjects not found.');
       } else {
-        res.json(result.rows[0]);
+        res.json(result.rows);
       }
     } catch (error) {
       console.error('Error fetching tutor_subjects:', error);

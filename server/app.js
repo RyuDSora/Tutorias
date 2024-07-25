@@ -1,4 +1,3 @@
-// Importar las dependencias necesarias
 import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
@@ -15,8 +14,13 @@ import tutorsubjectRoute from './routes/tutorsubjectRoute.js';
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Configura CORS para permitir todas las solicitudes
-app.use(cors());
+// Configura CORS para permitir solicitudes desde tu dominio específico
+const corsOptions = {
+  origin: 'https://tu-torias.vercel.app',
+  optionsSuccessStatus: 200 // para navegadores más antiguos
+};
+
+app.use(cors(corsOptions));
 
 // Middleware para analizar solicitudes JSON
 app.use(bodyParser.json());

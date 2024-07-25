@@ -33,7 +33,7 @@ app.use('/subjects', subjectRoute);
 app.use('/classes', classRoute);
 app.use('/payments', paymentRoute);
 app.use('/ratings', ratingRoute);
-app.use('/tutorsubject',tutorsubjectRoute);
+app.use('/ts',tutorsubjectRoute);
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

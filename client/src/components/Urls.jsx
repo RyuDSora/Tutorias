@@ -32,4 +32,4 @@ export const UriCursos = url + '/subjects';
 export const uritutor = url + '/teachers';
 
 //tutorsubject
-export const uritutorsubject = url + '/tutorsubject'
+export const uritutorsubject = url + '/ts';

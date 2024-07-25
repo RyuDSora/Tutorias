@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { uriregister } from './components/Urls'; // Asegúrate de ajustar la ruta según tu estructura de archivos
+import { uriregister, uritutor } from './components/Urls'; 
 import Cookies from 'js-cookie';
+
 
 export default function SignUpComponent({ setIsLoggedIn }) {
   const [email, setEmail] = useState('');
@@ -11,7 +12,7 @@ export default function SignUpComponent({ setIsLoggedIn }) {
   const [name, setName] = useState('');
   const [surname, setSurname] = useState('');
   const [birthDate, setBirthDate] = useState('');
-  const [role, setRole] = useState('estudiante'); // Valor por defecto
+  const [role, setRole] = useState('estudiante'); 
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
 
@@ -50,6 +51,21 @@ export default function SignUpComponent({ setIsLoggedIn }) {
       localStorage.setItem('token', 'undefined');
       // Llama a setIsLoggedIn para actualizar el estado
       setIsLoggedIn(true);
+       // Check if the user is a tutor and create a tutor record if so
+       if (role === 'tutor') {
+        const tutorResponse = await fetch(uritutor, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ user_id: userData.id }),
+        });
+
+        if (!tutorResponse.ok) {
+          const errorData = await tutorResponse.json();
+          throw new Error(errorData.message || 'Error al registrar tutor');
+        }
+      }
 
       // Redirige al dashboard
       window.location.href = '/dashboard';

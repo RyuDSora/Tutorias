@@ -213,7 +213,7 @@ export const updateRole = async (req, res) => {
 //actualizar el usuario
 export const updateUsuario = async (req, res) => {
   const { id } = req.params;
-  const { name, last, birth } = req.body;
+  const { name, last, birth, gender } = req.body;
 
   const client = await pool.connect();
   try {
@@ -222,12 +222,13 @@ export const updateUsuario = async (req, res) => {
       SET 
         name = $1,
         last = $2,
-        birth = $3
-      WHERE id = $4
+        birth = $3,
+        gender = $4
+      WHERE id = $5
       RETURNING *;
     `;
     
-    const result = await client.query(updateQuery, [name, last, birth, id]);
+    const result = await client.query(updateQuery, [name, last, birth, gender, id]);
 
     if (result.rows.length === 0) {
       return res.status(404).send('User not found.');
@@ -241,6 +242,7 @@ export const updateUsuario = async (req, res) => {
     client.release();
   }
 };
+
 
 // Eliminar un usuario
 export const deleteUsuario = async (req, res) => {

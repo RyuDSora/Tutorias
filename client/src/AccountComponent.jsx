@@ -1,3 +1,4 @@
+// ... otras importaciones
 import { useNavigate } from "react-router-dom";
 import { CogIcon, UserMinusIcon } from '@heroicons/react/24/outline';
 import axios from 'axios';
@@ -8,15 +9,17 @@ import { URIUser, uritutor } from "./components/Urls";
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-
 import { format } from 'date-fns';
 
 function AccountComponent() {
   const navigate = useNavigate();
   const [user, setUser] = useState({});
+  const [tutorData, setTutorData] = useState({});
   const [isEditing, setIsEditing] = useState(false);
+  const [isEditingTutor, setIsEditingTutor] = useState(false);
   const [formData, setFormData] = useState({});
-  const [tutor,setTutor] = useState(false);
+  const [formDataTutor, setFormDataTutor] = useState({});
+  const [isTutor, setIsTutor] = useState(false);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -24,45 +27,54 @@ function AccountComponent() {
         try {
           const response = await axios.get(`${URIUser}${Cookies.get('UserId')}`);
           const data = response.data;
-          console.log(data.birth);
           const formattedDate = format(new Date(data.birth), 'yyyy-MM-dd'); 
           data.birth = formattedDate;
-          if(data.role==='tutor'){
-            setTutor(true);
-            const fetchTutor = async () =>{
+          if (data.role === 'tutor') {
+            setIsTutor(true);
+            const fetchTutor = async () => {
               try {
-                const response = await axios.get(`${uritutor}${data.id}`);
-                console.log(response.data);
+                const response = await axios.get(`${uritutor}/${data.id}`);
+                setTutorData(response.data);
+                setFormDataTutor(response.data);
               } catch (error) {
                 console.log(error);
               }
-            }
+            };
             fetchTutor();
           }
-          console.log(tutor);
           setUser(data);
-          setFormData(data); 
+          setFormData(data);
         } catch (error) {
-          console.error(error); 
+          console.error(error);
         }
       }
     };
 
     fetchUser();
-  }, [Cookies.get('session')])
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prevData) => {
-      const updatedData = { ...prevData, [name]: value };
-      console.log('FormData updated:', updatedData);
-      return updatedData;
-    });
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
-  
+
+  const handleChangeTutor = (e) => {
+    const { name, value } = e.target;
+    setFormDataTutor((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
 
   const handleEdit = () => {
     setIsEditing(true);
+  };
+
+  const handleEditTutor = () => {
+    setIsEditingTutor(true);
   };
 
   const handleSave = async () => {
@@ -70,24 +82,37 @@ function AccountComponent() {
       await axios.put(`${URIUser}${user.id}`, formData);
       toast.success('Perfil actualizado exitosamente');
       setIsEditing(false);
-      setUser(formData); // Update user data
+      setUser(formData);
     } catch (error) {
       console.error('Error actualizando perfil:', error);
       toast.error('Error actualizando perfil');
     }
   };
 
+  const handleSaveTutor = async () => {
+    try {
+      await axios.put(`${uritutor}/${tutorData.id}`, formDataTutor);
+      toast.success('Perfil de tutor actualizado exitosamente');
+      setIsEditingTutor(false);
+      setTutorData(formDataTutor);
+    } catch (error) {
+      console.error('Error actualizando perfil de tutor:', error);
+      toast.error('Error actualizando perfil de tutor');
+    }
+  };
+
   const handleCancel = () => {
     setIsEditing(false);
-    setFormData(user); // Reset form data to original user data
+    setFormData(user);
+  };
+
+  const handleCancelTutor = () => {
+    setIsEditingTutor(false);
+    setFormDataTutor(tutorData);
   };
 
   const handleChangePassword = () => {
     navigate("/reset-password");
-  };
-
-  const handleViewPurchaseHistory = () => {
-    navigate('/order-history');
   };
 
   const handleDeleteUser = async () => {
@@ -108,20 +133,20 @@ function AccountComponent() {
       buttons: [
         {
           label: 'Sí',
-          onClick: handleDeleteUser
+          onClick: handleDeleteUser,
         },
         {
           label: 'No',
-          onClick: () => {}
-        }
-      ]
+          onClick: () => {},
+        },
+      ],
     });
   };
 
   return (
     <>
       <ToastContainer />
-      <div className="container my-5 ">
+      <div className="container my-5">
         <div className="row">
           <div className="col-md-3">
             <div className="card Principal f_principal border_principal">
@@ -147,8 +172,8 @@ function AccountComponent() {
             </div>
           </div>
           <div className="col-md-9">
-            <div className="card Principal f_principal border_principal ">
-              <div className="card-header ">
+            <div className="card Principal f_principal border_principal mb-3">
+              <div className="card-header">
                 <div className="my-2 py-2">
                   <span className="h3">Perfil de Usuario</span>
                 </div>
@@ -156,14 +181,14 @@ function AccountComponent() {
               <div className="card-body">
                 <form>
                   <div className="mb-3">
-                    <label className="form-label">ID:   {formData.id || ''}</label>
-                    <br />            
+                    <label className="form-label">ID: {formData.id || ''}</label>
+                    <br />
                   </div>
                   <div className="mb-3">
                     <label className="form-label float-start">Nombre</label>
                     <input
                       type="text"
-                      className="form-control "
+                      className="form-control"
                       name="name"
                       value={formData.name || ''}
                       onChange={handleChange}
@@ -182,7 +207,7 @@ function AccountComponent() {
                     />
                   </div>
                   <div className="mb-3">
-                    <label className="form-label float-start" >Correo Electrónico</label>
+                    <label className="form-label float-start">Correo Electrónico</label>
                     <input
                       type="email"
                       className="form-control"
@@ -211,7 +236,6 @@ function AccountComponent() {
                       disabled
                     />
                   </div>
-                  
                   <div className="mb-3">
                     <label className="form-label float-start">Fecha de Nacimiento</label>
                     <input
@@ -223,11 +247,27 @@ function AccountComponent() {
                       disabled={!isEditing}
                     />
                   </div>
+                  <div className="mb-3">
+                    <label className="form-label float-start">Género</label>
+                    <select
+                      className="form-control"
+                      name="gender"
+                      value={formData.gender || ''}
+                      onChange={handleChange}
+                      disabled={!isEditing}
+                    >
+                      <option value="">Selecciona el género</option>
+                      <option value="Male">Masculino</option>
+                      <option value="Female">Femenino</option>
+                      <option value="Other">Otro</option>
+                      <option value="Not Specified">No especificado</option>
+                    </select>
+                  </div>
                   {isEditing ? (
                     <>
                       <button
                         type="button"
-                        className="btn bg_principal Blanco "
+                        className="btn bg_principal Blanco"
                         onClick={handleSave}
                       >
                         Guardar
@@ -252,6 +292,80 @@ function AccountComponent() {
                 </form>
               </div>
             </div>
+            {isTutor && (
+              <div className="card Principal f_principal border_principal">
+                <div className="card-header">
+                  <div className="my-2 py-2">
+                    <span className="h3">Perfil de Tutor</span>
+                  </div>
+                </div>
+                <div className="card-body">
+                  <form>
+                    <div className="mb-3">
+                      <label className="form-label">ID: {formDataTutor.id || ''}</label>
+                      <br />
+                    </div>
+                    <div className="mb-3">
+                      <label className="form-label float-start">Bio</label>
+                      <textarea
+                        className="form-control"
+                        name="bio"
+                        value={formDataTutor.bio || ''}
+                        onChange={handleChangeTutor}
+                        disabled={!isEditingTutor}
+                      />
+                    </div>
+                    <div className="mb-3">
+                      <label className="form-label float-start">Experiencia</label>
+                      <textarea
+                        className="form-control"
+                        name="experience"
+                        value={formDataTutor.experience || ''}
+                        onChange={handleChangeTutor}
+                        disabled={!isEditingTutor}
+                      />
+                    </div>
+                    <div className="mb-3">
+                      <label className="form-label float-start">Disponibilidad</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        name="availability"
+                        value={formDataTutor.availability || ''}
+                        onChange={handleChangeTutor}
+                        disabled={!isEditingTutor}
+                      />
+                    </div>
+                    {isEditingTutor ? (
+                      <>
+                        <button
+                          type="button"
+                          className="btn bg_principal Blanco"
+                          onClick={handleSaveTutor}
+                        >
+                          Guardar
+                        </button>
+                        <button
+                          type="button"
+                          className="btn bg_secundario Blanco ms-2"
+                          onClick={handleCancelTutor}
+                        >
+                          Cancelar
+                        </button>
+                      </>
+                    ) : (
+                      <button
+                        type="button"
+                        className="btn bg_terciario"
+                        onClick={handleEditTutor}
+                      >
+                        Editar
+                      </button>
+                    )}
+                  </form>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>

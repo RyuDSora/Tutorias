@@ -1,27 +1,18 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './tutores.css';
-
-// Lista de tutores con datos de ejemplo
-const tutors = [
-  { id: 1, name: 'Juan Pérez', description: 'Especialista en física con más de 5 años de experiencia enseñando en Honduras.', image: '/images/tutor1.jpg' },
-  { id: 2, name: 'María López', description: 'Profesora de matemáticas apasionada por hacer que los números sean fáciles de entender.', image: '/images/tutor2.jpg' },
-  { id: 3, name: 'Carlos García', description: 'Físico con un enfoque en la enseñanza práctica y experimentos en clase.', image: '/images/tutor1.jpg' },
-  { id: 4, name: 'Ana Martínez', description: 'Experta en matemáticas aplicadas con experiencia en tutorías personalizadas.', image: '/images/tutor2.jpg' },
-  { id: 5, name: 'Luis Rodríguez', description: 'Docente de física con un enfoque en la comprensión de conceptos teóricos y prácticos.', image: '/images/tutor1.jpg' },
-  { id: 6, name: 'Sofía Hernández', description: 'Maestra de matemáticas con más de 10 años de experiencia en la educación secundaria.', image: '/images/tutor2.jpg' },
-  { id: 7, name: 'Miguel Fernández', description: 'Tutor de física con experiencia en preparación para exámenes y olimpiadas científicas.', image: '/images/tutor1.jpg' },
-  { id: 8, name: 'Laura Gómez', description: 'Especialista en matemáticas básicas y avanzadas con métodos de enseñanza innovadores.', image: '/images/tutor2.jpg' },
-  // agrega más tutores según sea necesario
-];
+import { uritutor, URIUser } from './components/Urls';
+import axios from 'axios';
+import img from '../public/images/tutor1.jpg'
 
 // Componente para mostrar la tarjeta de un tutor
-const TutorCard = ({ tutor }) => {
+const TutorCard = ({ tutor, user }) => {
   return (
     <div className="card">
-      <img src={tutor.image} alt={tutor.name} className="image" />
+      <img src={img} alt={tutor.name} className="image" />
       <div className="textContainer">
-        <h3 className="name">{tutor.name}</h3>
-        <p className="description">{tutor.description}</p>
+        <h3 className="name">{user.name+" "+user.last }</h3>
+        <p className="description">{tutor.bio}</p>
+        <p className="additionalInfo">{user.additionalInfo}</p>
       </div>
     </div>
   );
@@ -29,12 +20,51 @@ const TutorCard = ({ tutor }) => {
 
 // Componente principal para mostrar la cuadrícula de tutores
 const Tutores = () => {
+  const [tutors, setTutors] = useState([]);
+  const [users, setUsers] = useState([]);
+  const [tutorDetails, setTutorDetails] = useState([]);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        // Obtener los usuarios
+        const userResponse = await axios.get(URIUser);
+        const users = userResponse.data;
+        const tutorIds = users.filter(user => user.role === 'tutor').map(user => user.id);
+
+        // Obtener detalles de cada tutor
+        const tutorRequests = tutorIds.map(id =>
+          axios.get(`${uritutor}/${id}`) // Suponiendo que el ID del tutor está disponible
+        );
+
+        const tutorResponses = await Promise.all(tutorRequests);
+        const detailedTutors = tutorResponses.map(response => response.data);
+
+        // Combina los detalles de los tutores con los usuarios
+        const tutorsWithDetails = detailedTutors.map(tutor => {
+          const user = users.find(u => u.id === tutor.user_id);
+          return { ...tutor, user };
+        });
+
+        setTutorDetails(tutorsWithDetails);
+        setUsers(users);
+
+        console.log('Tutors with details:', tutorsWithDetails);
+        
+      } catch (error) {
+        console.error('Error fetching tutors:', error);
+      }
+    };
+
+    fetchUsers();
+  }, []);
+
   return (
     <div>
       <h1 className="title">Nuestros Tutores</h1>
       <div className="gridContainer">
-        {tutors.map((tutor) => (
-          <TutorCard key={tutor.id} tutor={tutor} />
+        {tutorDetails.map((tutor) => (
+          <TutorCard key={tutor.id} tutor={tutor} user={tutor.user} />
         ))}
       </div>
     </div>

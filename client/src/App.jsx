@@ -1,5 +1,9 @@
+//dependencias
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import Cookies from 'js-cookie';
+
+//componentes
 import DashboardComponent from './DashboardComponent';
 import AboutUs from './components/AboutUs';
 import HelpCenter from './components/HelpCenter';
@@ -30,13 +34,17 @@ import DashST from './DashboardStudent/DashST.jsx';
 import SubscriptionPlans from './SubscriptionPlans.jsx';
 import withAuth from './hoc/withAuth';  // Importa el HOC desde la carpeta 'hoc'
 
+
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    const storedLoggedIn = localStorage.getItem('token');
-    if (storedLoggedIn) {
-      setIsLoggedIn(true);
+    const session = Cookies.get('session');
+    if (session) {
+      const storedLoggedIn = localStorage.getItem('token');
+      if (storedLoggedIn) {
+        setIsLoggedIn(true);
+      }
     }
   }, []);
 

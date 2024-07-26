@@ -213,7 +213,7 @@ export const updateRole = async (req, res) => {
 //actualizar el usuario
 export const updateUsuario = async (req, res) => {
   const { id } = req.params;
-  const { name, last, birth, gender } = req.body;
+  const { name, last, birth, gender, imagen_perfil } = req.body;
 
   const client = await pool.connect();
   try {
@@ -223,12 +223,13 @@ export const updateUsuario = async (req, res) => {
         name = $1,
         last = $2,
         birth = $3,
-        gender = $4
-      WHERE id = $5
+        gender = $4,
+        imagen_perfil = $5
+      WHERE id = $6
       RETURNING *;
     `;
     
-    const result = await client.query(updateQuery, [name, last, birth, gender, id]);
+    const result = await client.query(updateQuery, [name, last, birth, gender,imagen_perfil ,id]);
 
     if (result.rows.length === 0) {
       return res.status(404).send('User not found.');

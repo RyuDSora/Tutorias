@@ -13,6 +13,7 @@ import { format } from 'date-fns';
 
 function AccountComponent() {
   const navigate = useNavigate();
+  const pre = '/images/'
   const [user, setUser] = useState({});
   const [tutorData, setTutorData] = useState({});
   const [isEditing, setIsEditing] = useState(false);
@@ -42,6 +43,7 @@ function AccountComponent() {
             };
             fetchTutor();
           }
+          console.log(data);
           setUser(data);
           setFormData(data);
         } catch (error) {
@@ -180,32 +182,77 @@ function AccountComponent() {
               </div>
               <div className="card-body">
                 <form>
+                  
                   <div className="mb-3">
                     <label className="form-label">ID: {formData.id || ''}</label>
                     <br />
                   </div>
-                  <div className="mb-3">
-                    <label className="form-label float-start">Nombre</label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      name="name"
-                      value={formData.name || ''}
-                      onChange={handleChange}
-                      disabled={!isEditing}
-                    />
+                  <div className="row">
+                    <div className="col-4">
+                      <img src={pre+formData.imagen_perfil} alt={formData.imagen_perfil} />
+                      <select
+                        className="form-control mt-3"
+                        name="imagen_perfil"
+                        value={formData.imagen_perfil || ''}
+                        onChange={handleChange}
+                        disabled={!isEditing}
+                      >
+                        <option value="perfil.jpg">Imagen de Perfil</option>
+                        <option value="tutor1.jpg">Perfil Masculino</option>
+                        <option value="tutor2.jpg">Perfil Femenino</option>
+                      </select>
+                    </div>
+                    <div className="col-8">
+                      <div className="mb-3">
+                        <label className="form-label float-start">Nombre</label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          name="name"
+                          value={formData.name || ''}
+                          onChange={handleChange}
+                          disabled={!isEditing}
+                        />
+                      </div>
+                      <div className="mb-3">
+                        <label className="form-label float-start">Apellido</label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          name="last"
+                          value={formData.last || ''}
+                          onChange={handleChange}
+                          disabled={!isEditing}
+                        />
+                      </div>
+                      <div className="mb-3">
+                        <label className="form-label float-start">Rol</label>
+                        <input
+                          type="text"
+                          className="form-control"
+                          name="role"
+                          value={formData.role || ''}
+                          disabled
+                        />
+                      </div>
+                      <div className="mb-3">
+                        <label className="form-label float-start">Género</label>
+                        <select
+                          className="form-control"
+                          name="gender"
+                          value={formData.gender || ''}
+                          onChange={handleChange}
+                          disabled={!isEditing}
+                        >
+                          <option value="">Selecciona el género</option>
+                          <option value="Male">Masculino</option>
+                          <option value="Female">Femenino</option>
+                        </select>
+                      </div>
+                    </div>
                   </div>
-                  <div className="mb-3">
-                    <label className="form-label float-start">Apellido</label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      name="last"
-                      value={formData.last || ''}
-                      onChange={handleChange}
-                      disabled={!isEditing}
-                    />
-                  </div>
+                  
+                  
                   <div className="mb-3">
                     <label className="form-label float-start">Correo Electrónico</label>
                     <input
@@ -226,16 +273,7 @@ function AccountComponent() {
                       disabled
                     />
                   </div>
-                  <div className="mb-3">
-                    <label className="form-label float-start">Rol</label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      name="role"
-                      value={formData.role || ''}
-                      disabled
-                    />
-                  </div>
+                  
                   <div className="mb-3">
                     <label className="form-label float-start">Fecha de Nacimiento</label>
                     <input
@@ -247,22 +285,7 @@ function AccountComponent() {
                       disabled={!isEditing}
                     />
                   </div>
-                  <div className="mb-3">
-                    <label className="form-label float-start">Género</label>
-                    <select
-                      className="form-control"
-                      name="gender"
-                      value={formData.gender || ''}
-                      onChange={handleChange}
-                      disabled={!isEditing}
-                    >
-                      <option value="">Selecciona el género</option>
-                      <option value="Male">Masculino</option>
-                      <option value="Female">Femenino</option>
-                      <option value="Other">Otro</option>
-                      <option value="Not Specified">No especificado</option>
-                    </select>
-                  </div>
+                  
                   {isEditing ? (
                     <>
                       <button

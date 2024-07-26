@@ -8,7 +8,7 @@ const withAuth = (WrappedComponent, allowedRoles) => {
     const userRole = session ? Cookies.get('UserRol') || '' : '';
 
     if (!session) {
-      return <Navigate to="/login" replace />;
+      return <Navigate to="/" replace />;
     }
 
     if (!allowedRoles.includes(userRole)) {

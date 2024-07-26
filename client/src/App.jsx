@@ -27,6 +27,7 @@ import MyTutor from './DashboardStudent/MyTutor';
 import ChatsST from './DashboardStudent/ChatsST';
 import ArticlesST from './DashboardStudent/ArticlesST';
 import DashST from './DashboardStudent/DashST.jsx';
+import SubscriptionPlans from './SubscriptionPlans.jsx';
 import withAuth from './hoc/withAuth';  // Importa el HOC desde la carpeta 'hoc'
 
 function App() {
@@ -56,6 +57,7 @@ function App() {
           <Route path="/success" element={<SuccessPage />} />
           <Route path="/cursos" element={<Cursos />} />
           <Route path="/tutores" element={<Tutores />} />
+          <Route path="/suscripciones" element={<SubscriptionPlans />} />
 
           {/* Rutas protegidas */}
           <Route path="/tables" element={withAuth(Table, ['administrador'])()} />

@@ -1,23 +1,47 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, ListGroup, Form, Button, Alert } from 'react-bootstrap';
+import { io } from 'socket.io-client';
+import { url } from '../components/Urls';
 
-const Chats = () => {
+const socket = io(url); 
+
+const Chats = ({ userId }) => {
   const [messages, setMessages] = useState({});
   const [input, setInput] = useState('');
-  const [connectedStudents, setConnectedStudents] = useState([
-    { id: 1, name: 'Alice', online: true },
-    { id: 2, name: 'Bob', online: false },
-    { id: 3, name: 'Charlie', online: true },
-  ]);
+  const [connectedStudents, setConnectedStudents] = useState([]);
   const [selectedStudent, setSelectedStudent] = useState(null);
+
+  useEffect(() => {
+    // Emitir el evento de conexión del usuario
+    socket.emit('user_connected', userId);
+
+    // Escuchar la lista de usuarios activos
+    socket.on('active_users', (users) => {
+      setConnectedStudents(users);
+    });
+
+    // Escuchar mensajes recibidos
+    socket.on('receive_message', (msg) => {
+      setMessages((prevMessages) => ({
+        ...prevMessages,
+        [msg.studentId]: [...(prevMessages[msg.studentId] || []), msg],
+      }));
+    });
+
+    // Desconectar el socket al desmontar el componente
+    return () => {
+      socket.disconnect();
+    };
+  }, [userId]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (input.trim() && selectedStudent) {
-      const studentId = selectedStudent.id;
-      setMessages(prevMessages => ({
+      const msg = { userId, text: input, studentId: selectedStudent.id };
+      socket.emit('send_message', msg); // Emitir el mensaje al servidor
+      setMessages((prevMessages) => ({
         ...prevMessages,
-        [studentId]: [...(prevMessages[studentId] || []), { text: input, id: (prevMessages[studentId] || []).length }]
+        [selectedStudent.id]: [...(prevMessages[selectedStudent.id] || []), { text: input, id: (prevMessages[selectedStudent.id] || []).length }],
       }));
       setInput('');
     }
@@ -31,7 +55,7 @@ const Chats = () => {
     <Container>
       <Row>
         <Col md={4}>
-          <h3>Students</h3>
+          <h3>Estudiantes</h3>
           <ListGroup>
             {connectedStudents.map(student => (
               <ListGroup.Item
@@ -45,7 +69,7 @@ const Chats = () => {
           </ListGroup>
         </Col>
         <Col md={8}>
-          <h1>Chat with {selectedStudent ? selectedStudent.name : 'Select a student'}</h1>
+          <h1>Chatear con {selectedStudent ? selectedStudent.name : 'Selecciona un estudiante'}</h1>
           {selectedStudent ? (
             <>
               <div
@@ -58,9 +82,9 @@ const Chats = () => {
                   marginBottom: '20px',
                 }}
               >
-                {messages[selectedStudent.id]?.map((message) => (
+                {messages[selectedStudent.id]?.map((message, index) => (
                   <div
-                    key={message.id}
+                    key={index}
                     style={{
                       marginBottom: '10px',
                       padding: '10px',
@@ -86,7 +110,7 @@ const Chats = () => {
             </>
           ) : (
             <Alert variant="info">
-              Please select a student to start chatting.
+              Selecciona un estudiante para empezar a chatear.
             </Alert>
           )}
         </Col>

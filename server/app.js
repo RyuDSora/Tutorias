@@ -1,7 +1,8 @@
-// Importar las dependencias necesarias
 import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
+import http from 'http';
+import { Server } from 'socket.io';
 import userRoute from './routes/userRoute.js';
 import tableRoute from './routes/tableRoute.js';
 import sqlRoute from './routes/sqlRoute.js';
@@ -10,7 +11,7 @@ import subjectRoute from './routes/subjectRoute.js';
 import classRoute from './routes/classRoute.js';
 import paymentRoute from './routes/paymentRoute.js';
 import ratingRoute from './routes/ratingRoute.js';
-import tutorsubjectRoute from './routes/tutorsubjectRoute.js'
+import tutorsubjectRoute from './routes/tutorsubjectRoute.js';
 
 const app = express();
 const port = 3000;
@@ -33,16 +34,39 @@ app.use('/subjects', subjectRoute);
 app.use('/classes', classRoute);
 app.use('/payments', paymentRoute);
 app.use('/ratings', ratingRoute);
-app.use('/ts',tutorsubjectRoute);
-
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
+app.use('/ts', tutorsubjectRoute);
 
 app.get('/', (req, res) => {
   res.status(200).json('Bienvenido, tu aplicación se ha ejecutado correctamente');
 });
 
+// Configuración de servidor HTTP y socket.io
+const server = http.createServer(app);
+const io = new Server(server);
+
+const connectedUsers = new Map();
+
+io.on('connection', (socket) => {
+  console.log('Nuevo cliente conectado');
+
+  socket.on('user_connected', (userId) => {
+    connectedUsers.set(userId, socket.id);
+    io.emit('active_users', Array.from(connectedUsers.keys()));
+  });
+
+  socket.on('disconnect', () => {
+    connectedUsers.forEach((value, key) => {
+      if (value === socket.id) {
+        connectedUsers.delete(key);
+      }
+    });
+    io.emit('active_users', Array.from(connectedUsers.keys()));
+  });
+});
+
+server.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});
 
 
 /*

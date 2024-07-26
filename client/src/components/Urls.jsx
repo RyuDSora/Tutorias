@@ -7,7 +7,7 @@ var originS = 'https://tutorias-five.vercel.app';//partes[0] + ":" + partes[1];
 //const PuertoBackend = ':8000'; //en caso de no usar puerto dejar esta constante vacia 
 
 //var originS = partes[0] + ":" + partes[1];
-const url = originS + PuertoBackend;
+export const url = originS + PuertoBackend;
 
 //urls para trabajar con tablas en general
 export const URIgetTablesColumns = url + '/tables/get-tables-columns';

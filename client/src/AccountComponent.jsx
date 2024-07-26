@@ -43,7 +43,6 @@ function AccountComponent() {
             };
             fetchTutor();
           }
-          console.log(data);
           setUser(data);
           setFormData(data);
         } catch (error) {
@@ -182,16 +181,15 @@ function AccountComponent() {
               </div>
               <div className="card-body">
                 <form>
-                  
                   <div className="mb-3">
                     <label className="form-label">ID: {formData.id || ''}</label>
                     <br />
                   </div>
                   <div className="row">
                     <div className="col-4">
-                      <img src={pre+formData.imagen_perfil} alt={formData.imagen_perfil} />
+                      <img src={pre+formData.imagen_perfil} alt={formData.imagen_perfil} className="mt-2 rounded-4"/>
                       <select
-                        className="form-control mt-3"
+                        className="form-control mt-2"
                         name="imagen_perfil"
                         value={formData.imagen_perfil || ''}
                         onChange={handleChange}

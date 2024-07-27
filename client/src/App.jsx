@@ -34,7 +34,10 @@ import DashST from './DashboardStudent/DashST.jsx';
 import SubscriptionPlans from './SubscriptionPlans.jsx';
 import withAuth from './hoc/withAuth';
 
-const socket = io('http://localhost:3000');
+const socket = io('https://tutorias-five.vercel.app', {
+  transports: ['websocket'],
+  withCredentials: true,
+});
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);

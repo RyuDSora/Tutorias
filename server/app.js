@@ -83,7 +83,9 @@ io.on('connection', (socket) => {
 
 server.listen(port, () => {});
 
-
+app.get('/test', (req, res) => {
+  res.status(200).send('Server is running');
+});
 
 /*
 

@@ -2,10 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Container, Row, Col, ListGroup, Form, Button, Alert } from 'react-bootstrap';
 import { io } from 'socket.io-client';
 import axios from 'axios';
-import { url, urichat,URIUser } from '../components/Urls';
-
-// Configura la conexión con socket.io
-const socket = io('https://tutorias-five.vercel.app');
+import { url, urichat, URIUser } from '../components/Urls';
 
 const Chats = ({ userId }) => {
   const UserId = parseInt(userId);
@@ -17,18 +14,37 @@ const Chats = ({ userId }) => {
   const [filteredUsers, setFilteredUsers] = useState([]);
   const messagesEndRef = useRef(null);
 
-  // Función para obtener el historial de chat entre dos usuarios
+  useEffect(() => {
+    const socket = io('https://tutorias-five.vercel.app');
+
+    socket.on('connect', () => {
+      console.log('Connected to server');
+      socket.emit('user_connected', UserId);
+    });
+
+    socket.on('connect_error', (err) => {
+      console.error('Connection error:', err);
+    });
+
+    socket.on('active_users', (users) => {
+      setConnectedStudents(users);
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, [UserId]);
+
   const fetchChatHistory = async (user1, user2) => {
     try {
       const response = await axios.get(`${urichat}/${user1}/${user2}`);
       return response.data;
     } catch (error) {
-      //console.log('Error fetching chat history:', error);
+      console.error('Error fetching chat history:', error);
       return [];
     }
   };
 
-  // Usuarios para chatear
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -36,53 +52,12 @@ const Chats = ({ userId }) => {
         const usuarios = response.data.filter(user => user.id !== UserId);
         setUsers(usuarios);
       } catch (error) {
-        //console.log('Error fetching users:', error);
+        console.error('Error fetching users:', error);
       }
     };
     fetchUsers();
   }, [UserId]);
 
-  // Usuarios activos y mensajes recibidos
-  useEffect(() => {
-    // Emitir el evento de conexión del usuario
-    socket.emit('user_connected', UserId);
-
-    if (UserId) {
-      socket.on('active_users', (users) => {
-        setConnectedStudents(users);
-      });
-    }
-  }, [UserId]);
-
-  // Obtener historial de mensajes cuando se selecciona un estudiante
-  useEffect(() => {
-    if (selectedStudent) {
-      fetchChatHistory(UserId, selectedStudent.id).then(chatHistory => {
-        setMessages((prevMessages) => ({
-          ...prevMessages,
-          [selectedStudent.id]: chatHistory
-        }));
-      });
-    }
-  }, [selectedStudent]);
-
-  // Verificar nuevos mensajes periódicamente
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (selectedStudent) {
-        fetchChatHistory(UserId, selectedStudent.id).then(chatHistory => {
-          setMessages((prevMessages) => ({
-            ...prevMessages,
-            [selectedStudent.id]: chatHistory
-          }));
-        });
-      }
-    }, 5000); // Verifica cada 5 segundos
-
-    return () => clearInterval(interval);
-  }, [selectedStudent]);
-
-  // Filtrar usuarios conectados o con historial
   useEffect(() => {
     const filterUsers = async () => {
       const usersWithHistory = [];
@@ -98,14 +73,38 @@ const Chats = ({ userId }) => {
     filterUsers();
   }, [users, connectedStudents]);
 
-  // Función para desplazar el contenedor de mensajes al final
+  useEffect(() => {
+    if (selectedStudent) {
+      fetchChatHistory(UserId, selectedStudent.id).then(chatHistory => {
+        setMessages((prevMessages) => ({
+          ...prevMessages,
+          [selectedStudent.id]: chatHistory
+        }));
+      });
+    }
+  }, [selectedStudent]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (selectedStudent) {
+        fetchChatHistory(UserId, selectedStudent.id).then(chatHistory => {
+          setMessages((prevMessages) => ({
+            ...prevMessages,
+            [selectedStudent.id]: chatHistory
+          }));
+        });
+      }
+    }, 5000); // Verifica cada 5 segundos
+
+    return () => clearInterval(interval);
+  }, [selectedStudent]);
+
   const scrollToBottom = () => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   };
 
-  // Llamar a scrollToBottom cuando los mensajes cambien
   useEffect(() => {
     scrollToBottom();
   }, [messages, selectedStudent]);
@@ -116,7 +115,7 @@ const Chats = ({ userId }) => {
       const msg = { emisor: UserId, mensaje: input, receptor: selectedStudent.id };
 
       try {
-        await axios.post('http://localhost:3000/api/messages', msg);
+        await axios.post(urichat, msg);
         setMessages((prevMessages) => {
           const studentId = selectedStudent.id;
           return {
@@ -172,7 +171,7 @@ const Chats = ({ userId }) => {
                   borderRadius: '5px',
                   padding: '10px',
                   height: '400px',
-                  overflowY: 'auto', // Cambiar a 'auto' para permitir el desplazamiento dentro del contenedor
+                  overflowY: 'auto',
                   marginBottom: '20px',
                 }}
               >

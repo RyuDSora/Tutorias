@@ -2,10 +2,10 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Container, Row, Col, ListGroup, Form, Button, Alert } from 'react-bootstrap';
 import { io } from 'socket.io-client';
 import axios from 'axios';
-import { url, urichat } from '../components/Urls';
+import { url, urichat,URIUser } from '../components/Urls';
 
 // Configura la conexión con socket.io
-const socket = io(url);
+const socket = io('https://tutorias-five.vercel.app');
 
 const Chats = ({ userId }) => {
   const UserId = parseInt(userId);
@@ -32,7 +32,7 @@ const Chats = ({ userId }) => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get(urichat);
+        const response = await axios.get(URIUser);
         const usuarios = response.data.filter(user => user.id !== UserId);
         setUsers(usuarios);
       } catch (error) {
@@ -116,7 +116,7 @@ const Chats = ({ userId }) => {
       const msg = { emisor: UserId, mensaje: input, receptor: selectedStudent.id };
 
       try {
-        await axios.post(urichat, msg);
+        await axios.post('http://localhost:3000/api/messages', msg);
         setMessages((prevMessages) => {
           const studentId = selectedStudent.id;
           return {

@@ -33,3 +33,6 @@ export const uritutor = url + '/teachers';
 
 //tutorsubject
 export const uritutorsubject = url + '/ts';
+
+//chats
+export const urichat = url + '/api/messages';

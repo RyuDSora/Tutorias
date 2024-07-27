@@ -1,7 +1,7 @@
-//dependencias
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
+import { io } from 'socket.io-client';
 
 //componentes
 import DashboardComponent from './DashboardComponent';
@@ -32,11 +32,13 @@ import ChatsST from './DashboardStudent/ChatsST';
 import ArticlesST from './DashboardStudent/ArticlesST';
 import DashST from './DashboardStudent/DashST.jsx';
 import SubscriptionPlans from './SubscriptionPlans.jsx';
-import withAuth from './hoc/withAuth';  // Importa el HOC desde la carpeta 'hoc'
+import withAuth from './hoc/withAuth';
 
+const socket = io('http://localhost:3000');
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userID, setUserID] = useState(0);
 
   useEffect(() => {
     const session = Cookies.get('session');
@@ -44,9 +46,23 @@ function App() {
       const storedLoggedIn = localStorage.getItem('token');
       if (storedLoggedIn) {
         setIsLoggedIn(true);
+        setUserID(parseInt(Cookies.get('UserId')));
       }
     }
   }, []);
+
+  useEffect(() => {
+    if (userID) {
+      // Emitir el evento de conexión del usuario
+      socket.emit('user_connected', userID);
+
+      // Desconectar el socket al desmontar el componente
+      return () => {
+        socket.emit('user_disconnected', userID);
+        socket.disconnect();
+      };
+    }
+  }, [userID]);
 
   return (
     <Router>
@@ -81,7 +97,7 @@ function App() {
             <Route path="dash" element={<Dash />} />
             <Route path="my-courses" element={<MyCourses />} />
             <Route path="my-students" element={<MyStudents />} />
-            <Route path="chats" element={<Chats />} />
+            <Route path="chats" element={<Chats userId={userID} />} />
             <Route path="articles" element={<Articles />} />
           </Route>
         </Routes>

@@ -1,50 +1,134 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Container, Row, Col, ListGroup, Form, Button, Alert } from 'react-bootstrap';
 import { io } from 'socket.io-client';
-import { url } from '../components/Urls';
+import axios from 'axios';
+import { url, urichat } from '../components/Urls';
 
-const socket = io(url); 
+// Configura la conexión con socket.io
+const socket = io(url);
 
 const Chats = ({ userId }) => {
+  const UserId = parseInt(userId);
   const [messages, setMessages] = useState({});
   const [input, setInput] = useState('');
   const [connectedStudents, setConnectedStudents] = useState([]);
   const [selectedStudent, setSelectedStudent] = useState(null);
+  const [users, setUsers] = useState([]);
+  const [filteredUsers, setFilteredUsers] = useState([]);
+  const messagesEndRef = useRef(null);
 
+  // Función para obtener el historial de chat entre dos usuarios
+  const fetchChatHistory = async (user1, user2) => {
+    try {
+      const response = await axios.get(`${urichat}/${user1}/${user2}`);
+      return response.data;
+    } catch (error) {
+      //console.log('Error fetching chat history:', error);
+      return [];
+    }
+  };
+
+  // Usuarios para chatear
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await axios.get(urichat);
+        const usuarios = response.data.filter(user => user.id !== UserId);
+        setUsers(usuarios);
+      } catch (error) {
+        //console.log('Error fetching users:', error);
+      }
+    };
+    fetchUsers();
+  }, [UserId]);
+
+  // Usuarios activos y mensajes recibidos
   useEffect(() => {
     // Emitir el evento de conexión del usuario
-    socket.emit('user_connected', userId);
+    socket.emit('user_connected', UserId);
 
-    // Escuchar la lista de usuarios activos
-    socket.on('active_users', (users) => {
-      setConnectedStudents(users);
-    });
+    if (UserId) {
+      socket.on('active_users', (users) => {
+        setConnectedStudents(users);
+      });
+    }
+  }, [UserId]);
 
-    // Escuchar mensajes recibidos
-    socket.on('receive_message', (msg) => {
-      setMessages((prevMessages) => ({
-        ...prevMessages,
-        [msg.studentId]: [...(prevMessages[msg.studentId] || []), msg],
-      }));
-    });
+  // Obtener historial de mensajes cuando se selecciona un estudiante
+  useEffect(() => {
+    if (selectedStudent) {
+      fetchChatHistory(UserId, selectedStudent.id).then(chatHistory => {
+        setMessages((prevMessages) => ({
+          ...prevMessages,
+          [selectedStudent.id]: chatHistory
+        }));
+      });
+    }
+  }, [selectedStudent]);
 
-    // Desconectar el socket al desmontar el componente
-    return () => {
-      socket.disconnect();
+  // Verificar nuevos mensajes periódicamente
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (selectedStudent) {
+        fetchChatHistory(UserId, selectedStudent.id).then(chatHistory => {
+          setMessages((prevMessages) => ({
+            ...prevMessages,
+            [selectedStudent.id]: chatHistory
+          }));
+        });
+      }
+    }, 5000); // Verifica cada 5 segundos
+
+    return () => clearInterval(interval);
+  }, [selectedStudent]);
+
+  // Filtrar usuarios conectados o con historial
+  useEffect(() => {
+    const filterUsers = async () => {
+      const usersWithHistory = [];
+      for (const user of users) {
+        const chatHistory = await fetchChatHistory(UserId, user.id);
+        if (chatHistory.length > 0 || connectedStudents.includes(user.id)) {
+          usersWithHistory.push(user);
+        }
+      }
+      setFilteredUsers(usersWithHistory);
     };
-  }, [userId]);
 
-  const handleSubmit = (e) => {
+    filterUsers();
+  }, [users, connectedStudents]);
+
+  // Función para desplazar el contenedor de mensajes al final
+  const scrollToBottom = () => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  // Llamar a scrollToBottom cuando los mensajes cambien
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages, selectedStudent]);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (input.trim() && selectedStudent) {
-      const msg = { userId, text: input, studentId: selectedStudent.id };
-      socket.emit('send_message', msg); // Emitir el mensaje al servidor
-      setMessages((prevMessages) => ({
-        ...prevMessages,
-        [selectedStudent.id]: [...(prevMessages[selectedStudent.id] || []), { text: input, id: (prevMessages[selectedStudent.id] || []).length }],
-      }));
-      setInput('');
-    }
+      const msg = { emisor: UserId, mensaje: input, receptor: selectedStudent.id };
+
+      try {
+        await axios.post(urichat, msg);
+        setMessages((prevMessages) => {
+          const studentId = selectedStudent.id;
+          return {
+            ...prevMessages,
+            [studentId]: [...(prevMessages[studentId] || []), msg],
+          };
+        });
+        setInput('');
+      } catch (error) {
+        console.error('Error al enviar el mensaje:', error);
+      }
+    } 
   };
 
   const handleStudentSelect = (student) => {
@@ -57,13 +141,23 @@ const Chats = ({ userId }) => {
         <Col md={4}>
           <h3>Estudiantes</h3>
           <ListGroup>
-            {connectedStudents.map(student => (
+            {filteredUsers.map(user => (
               <ListGroup.Item
-                key={student.id}
-                onClick={() => handleStudentSelect(student)}
-                style={{ cursor: 'pointer', backgroundColor: student.online ? '#d4edda' : '#f8d7da' }}
+                key={user.id}
+                onClick={() => handleStudentSelect(user)}
+                style={{ cursor: 'pointer', position: 'relative' }}
               >
-                {student.name} {student.online ? <span className="text-success">(Online)</span> : <span className="text-danger">(Offline)</span>}
+                <span
+                  style={{
+                    width: '10px',
+                    height: '10px',
+                    borderRadius: '50%',
+                    backgroundColor: connectedStudents.includes(user.id) ? 'green' : 'red',
+                    display: 'inline-block',
+                    marginRight: '10px',
+                  }}
+                />
+                {user.name + ' ' + user.last}
               </ListGroup.Item>
             ))}
           </ListGroup>
@@ -78,23 +172,29 @@ const Chats = ({ userId }) => {
                   borderRadius: '5px',
                   padding: '10px',
                   height: '400px',
-                  overflowY: 'scroll',
+                  overflowY: 'auto', // Cambiar a 'auto' para permitir el desplazamiento dentro del contenedor
                   marginBottom: '20px',
                 }}
               >
                 {messages[selectedStudent.id]?.map((message, index) => (
                   <div
                     key={index}
-                    style={{
-                      marginBottom: '10px',
-                      padding: '10px',
-                      borderRadius: '5px',
-                      backgroundColor: '#f1f1f1',
-                    }}
+                    className={`d-flex mb-2 ${message.emisor === UserId ? 'justify-content-end' : 'justify-content-start'}`}
                   >
-                    {message.text}
+                    <div
+                      style={{
+                        maxWidth: '60%',
+                        padding: '10px',
+                        borderRadius: '15px',
+                        border: '1px solid black',
+                        wordBreak: 'break-word',
+                      }}
+                    >
+                      {message.mensaje}
+                    </div>
                   </div>
                 ))}
+                <div ref={messagesEndRef} />
               </div>
               <Form onSubmit={handleSubmit}>
                 <Form.Group>

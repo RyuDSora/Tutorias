@@ -45,7 +45,7 @@ function Navbar({ isLoggedIn }) {
     <>
       <nav className="bg_blanco f_regular mx-auto flex justify-between max-w-7xl items-center gap-x-6 lg:px-8" aria-label="Global">
         <Link to="/dashboard" className="flex items-center gap-x-4">
-          <img className="h-16 w-auto" src="./logos/logo.jpg" alt="logo" />
+          <img className="h-16 w-auto" src="/logos/logo.jpg" alt="logo" />
         </Link>
         <div className="flex gap-x-6 items-center">
           <Link to="/tutores" className='Principal f_principal'>
@@ -81,7 +81,13 @@ function Navbar({ isLoggedIn }) {
                     ) : (
                       <>
                         {Tutor ? (
-                          <Dropdown.Item onClick={() => navigate(`/dashboardtutor/dash`)} className="mx-3">Mi Panel</Dropdown.Item>
+                          <>
+                            <Dropdown.Item onClick={() => navigate(`/dashboardtutor/dash`)} className="mx-3">Mi Panel</Dropdown.Item>
+                            <Dropdown.Item onClick={() => navigate(`/dashboardtutor/my-courses`)} className="mx-3">Mis Cursos</Dropdown.Item>
+                            <Dropdown.Item onClick={() => navigate(`/dashboardtutor/my-students`)} className="mx-3">Mis Estudiantes</Dropdown.Item>
+                            <Dropdown.Item onClick={() => navigate(`/dashboardtutor/chats`)} className="mx-3">Chats</Dropdown.Item>
+                            <Dropdown.Item onClick={() => navigate(`/dashboardtutor/articles`)} className="mx-3">Mis Artículos</Dropdown.Item>
+                          </>
                         ) : (
                           <>
                             {User ? (

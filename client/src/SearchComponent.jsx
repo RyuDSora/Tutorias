@@ -16,7 +16,7 @@ function SearchComponent({ isOpen, closeSearch, onSearch }) {
     const handleKeyDown = (event) => {
       if (event.key === 'Escape') {
         closeSearch();
-      } else if (event.key === 'Enter') {
+      } else if (event.key === 'E') {
         handleSearch();
       }
     };
@@ -54,7 +54,7 @@ function SearchComponent({ isOpen, closeSearch, onSearch }) {
               value={searchTerm}
               onChange={handleInputChange}
               onKeyDown={(e) => {
-                if (e.key === 'Enter') {
+                if (e.key === 'E') {
                   handleSearch();
                 }
               }}

@@ -12,17 +12,20 @@ import classRoute from './routes/classRoute.js';
 import paymentRoute from './routes/paymentRoute.js';
 import ratingRoute from './routes/ratingRoute.js';
 import tutorsubjectRoute from './routes/tutorsubjectRoute.js';
+import chatRoutes from './routes/chatRoutes.js'; // Importar el router de chat
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000; // Usar variable de entorno para el puerto
 
-// Configura CORS para permitir todas las solicitudes
-app.use(cors());
+// Configura CORS
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST'],
+  allowedHeaders: ['Content-Type'],
+}));
 
 // Middleware para analizar solicitudes JSON
 app.use(bodyParser.json());
-
-// Middleware para analizar solicitudes codificadas en URL
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Usar las rutas
@@ -35,6 +38,7 @@ app.use('/classes', classRoute);
 app.use('/payments', paymentRoute);
 app.use('/ratings', ratingRoute);
 app.use('/ts', tutorsubjectRoute);
+app.use('/api', chatRoutes); // Usar las rutas de chat
 
 app.get('/', (req, res) => {
   res.status(200).json('Bienvenido, tu aplicación se ha ejecutado correctamente');
@@ -42,16 +46,27 @@ app.get('/', (req, res) => {
 
 // Configuración de servidor HTTP y socket.io
 const server = http.createServer(app);
-const io = new Server(server);
+const io = new Server(server, {
+  cors: {
+    origin: '*',
+    methods: ['GET', 'POST'],
+    credentials: true,
+  },
+});
 
 const connectedUsers = new Map();
 
 io.on('connection', (socket) => {
-  console.log('Nuevo cliente conectado');
-
   socket.on('user_connected', (userId) => {
     connectedUsers.set(userId, socket.id);
     io.emit('active_users', Array.from(connectedUsers.keys()));
+  });
+
+  socket.on('send_message', (msg) => {
+    const recipientSocketId = connectedUsers.get(msg.receptor);
+    if (recipientSocketId) {
+      io.to(recipientSocketId).emit('receive_message', msg);
+    } 
   });
 
   socket.on('disconnect', () => {
@@ -65,8 +80,9 @@ io.on('connection', (socket) => {
 });
 
 server.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+  //console.log(`Server is running on port ${port}`);
 });
+
 
 
 /*

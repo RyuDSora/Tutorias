@@ -1,0 +1,82 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+@font-face {
+    font-family: 'ClearSansLight';
+    src: url('/fonts/font_1.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'ClearSansRegular';
+    src: url('/fonts/font_1.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'ClearSansNormal';
+    src: url('/fonts/font_3.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+    font-family: 'ClearSansLight' !important;
+}
+.f_principal {
+    font-family: 'ClearSansLight';
+}
+.f_regular {
+    font-family: 'ClearSansRegular';
+}
+.f_normal {
+    font-family: 'ClearSansNormal';
+}
+
+.Principal {
+    color: #336a41;
+}
+.rect {
+    height: 50px;
+    width: 100%;
+}
+.bg_principal {
+    background-color: #336a41 !important;
+}
+.border_principal {
+    border-color: #336a41 !important;
+    border: 2px solid;
+}
+.border_secundario {
+    border-color: #5c90bd !important;
+    border: 1px solid;
+}
+.Secundario {
+    color: #5c90bd !important;
+}
+.bg_secundario {
+    background-color: #5c90bd !important;
+}
+.Terciario {
+    color: #bec724 !important;
+}
+.bg_terciario {
+    background-color: #bec724 !important;
+}
+.Blanco {
+    color: #ffffff;
+}
+.bg_blanco {
+    background-color: #ffffff;
+}
+.Negro {
+    color: #000000;
+}
+.bg_negro {
+    background-color: #000000;
+}
+.txt_lg {
+    font-size: 30px;
+}

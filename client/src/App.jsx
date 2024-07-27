@@ -39,6 +39,14 @@ const socket = io('https://tutorias-five.vercel.app', {
   withCredentials: true,
 });
 
+socket.on('connect', () => {
+  console.log('Connected to socket server:', socket.id);
+});
+
+socket.on('disconnect', () => {
+  console.log('Disconnected from socket server');
+});
+
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userID, setUserID] = useState(0);

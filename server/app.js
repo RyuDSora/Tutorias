@@ -19,9 +19,9 @@ const port = process.env.PORT || 3000; // Usar variable de entorno para el puert
 
 // Configura CORS
 app.use(cors({
-  origin: '*',
+  origin: ['https://tu-torias.vercel.app', 'http://localhost:5173'],
   methods: ['GET', 'POST'],
-  allowedHeaders: ['Content-Type'],
+  credentials: true,
 }));
 
 // Middleware para analizar solicitudes JSON
@@ -59,26 +59,19 @@ const io = new Server(server, {
 const connectedUsers = new Map();
 
 io.on('connection', (socket) => {
-  console.log('A user connected:', socket.id);
-
   socket.on('user_connected', (userId) => {
-    console.log('User connected with ID:', userId);
     connectedUsers.set(userId, socket.id);
     io.emit('active_users', Array.from(connectedUsers.keys()));
   });
 
   socket.on('send_message', (msg) => {
-    console.log('Message received:', msg);
     const recipientSocketId = connectedUsers.get(msg.receptor);
     if (recipientSocketId) {
       io.to(recipientSocketId).emit('receive_message', msg);
-    } else {
-      console.log('Recipient not connected:', msg.receptor);
     }
   });
 
   socket.on('disconnect', () => {
-    console.log('A user disconnected:', socket.id);
     connectedUsers.forEach((value, key) => {
       if (value === socket.id) {
         connectedUsers.delete(key);

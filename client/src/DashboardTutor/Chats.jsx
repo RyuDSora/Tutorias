@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Container, Row, Col, ListGroup, Form, Button, Alert } from 'react-bootstrap';
-import { io } from 'socket.io-client';
+//import { io } from 'socket.io-client';
 import axios from 'axios';
 import { url, urichat, URIUser } from '../components/Urls';
 
@@ -14,7 +14,7 @@ const Chats = ({ userId }) => {
   const [filteredUsers, setFilteredUsers] = useState([]);
   const messagesEndRef = useRef(null);
 
-  useEffect(() => {
+ /* useEffect(() => {
     const socket = io('https://tutorias-five.vercel.app');
 
     socket.on('connect', () => {
@@ -33,7 +33,7 @@ const Chats = ({ userId }) => {
     return () => {
       socket.disconnect();
     };
-  }, [UserId]);
+  }, [UserId]);*/
 
   const fetchChatHistory = async (user1, user2) => {
     try {
@@ -63,16 +63,15 @@ const Chats = ({ userId }) => {
       const usersWithHistory = [];
       for (const user of users) {
         const chatHistory = await fetchChatHistory(UserId, user.id);
-        if (chatHistory.length > 0 || connectedStudents.includes(user.id)) {
+        //if (chatHistory.length > 0 /*|| connectedStudents.includes(user.id)*/) {
           usersWithHistory.push(user);
-        }
+        //}
       }
       setFilteredUsers(usersWithHistory);
     };
 
     filterUsers();
   }, [users, connectedStudents]);
-
   useEffect(() => {
     if (selectedStudent) {
       fetchChatHistory(UserId, selectedStudent.id).then(chatHistory => {
@@ -99,15 +98,9 @@ const Chats = ({ userId }) => {
     return () => clearInterval(interval);
   }, [selectedStudent]);
 
-  const scrollToBottom = () => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
 
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages, selectedStudent]);
+
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -135,10 +128,12 @@ const Chats = ({ userId }) => {
   };
 
   return (
-    <Container>
+    <>
+      <div className='mb-3'><span className='h3 Principal f_principal'>Tus Chats</span></div>
       <Row>
         <Col md={4}>
-          <h3>Estudiantes</h3>
+          
+          <h3 className='mb-2'>Usuarios</h3>
           <ListGroup>
             {filteredUsers.map(user => (
               <ListGroup.Item
@@ -162,7 +157,7 @@ const Chats = ({ userId }) => {
           </ListGroup>
         </Col>
         <Col md={8}>
-          <h1>Chatear con {selectedStudent ? selectedStudent.name : 'Selecciona un estudiante'}</h1>
+          <h1 className='mb-2'>Chatear con {selectedStudent ? selectedStudent.name : 'Selecciona un estudiante'}</h1>
           {selectedStudent ? (
             <>
               <div
@@ -214,7 +209,7 @@ const Chats = ({ userId }) => {
           )}
         </Col>
       </Row>
-    </Container>
+    </>
   );
 };
 

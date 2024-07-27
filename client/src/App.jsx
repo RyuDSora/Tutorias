@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
-import { io } from 'socket.io-client';
+//import { io } from 'socket.io-client';
 
 //componentes
 import DashboardComponent from './DashboardComponent';
@@ -9,7 +9,7 @@ import AboutUs from './components/AboutUs';
 import HelpCenter from './components/HelpCenter';
 import LoginComponent from './LoginComponent';
 import SignUpComponent from './SignUpComponent';
-import Navbar from './Navbar';
+import Navbar from './Navbar.jsx';
 import AccountComponent from './AccountComponent';
 import PasswordReset from './PasswordReset';
 import Footer from './Footer';
@@ -33,7 +33,7 @@ import ArticlesST from './DashboardStudent/ArticlesST';
 import DashST from './DashboardStudent/DashST.jsx';
 import SubscriptionPlans from './SubscriptionPlans.jsx';
 import withAuth from './hoc/withAuth';
-
+/*
 const socket = io('https://tutorias-five.vercel.app', {
   transports: ['websocket'],
   withCredentials: true,
@@ -45,7 +45,7 @@ socket.on('connect', () => {
 
 socket.on('disconnect', () => {
   console.log('Disconnected from socket server');
-});
+});*/
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -62,7 +62,7 @@ function App() {
     }
   }, []);
 
-  useEffect(() => {
+ /*useEffect(() => {
     if (userID) {
       // Emitir el evento de conexión del usuario
       socket.emit('user_connected', userID);
@@ -74,7 +74,7 @@ function App() {
       };
     }
   }, [userID]);
-
+*/
   return (
     <Router>
       <div>

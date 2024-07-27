@@ -80,3 +80,19 @@ body {
 .txt_lg {
     font-size: 30px;
 }
+.fixed-element {
+    position: fixed;
+    padding: 10px;
+    text-align: center;
+    z-index: 1000; /* Asegúrate de que esté por encima de otros elementos */
+  }
+  
+  .sticky-element {
+    position: -webkit-sticky; /* Para soporte en Safari */
+    position: sticky;
+    top: 0;
+    background-color: #ffeb3b;
+    padding: 10px;
+    text-align: center;
+  }
+  

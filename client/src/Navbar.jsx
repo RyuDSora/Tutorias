@@ -43,7 +43,7 @@ function Navbar({ isLoggedIn }) {
 
   return (
     <>
-      <nav className="bg_blanco f_regular mx-auto flex justify-between max-w-7xl items-center gap-x-6 lg:px-8" aria-label="Global">
+      <nav className="bg_blanco f_regular mx-auto flex justify-between max-w-7xl items-center gap-x-6 lg:px-8 " aria-label="Global">
         <Link to="/dashboard" className="flex items-center gap-x-4">
           <img className="h-16 w-auto" src="/logos/logo.jpg" alt="logo" />
         </Link>

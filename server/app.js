@@ -46,13 +46,15 @@ app.get('/', (req, res) => {
 
 // Configuración de servidor HTTP y socket.io
 const server = http.createServer(app);
+
 const io = new Server(server, {
   cors: {
-    origin: '*',
+    origin: ['https://tu-torias.vercel.app', 'http://localhost:5173'],
     methods: ['GET', 'POST'],
     credentials: true,
   },
 });
+
 
 const connectedUsers = new Map();
 

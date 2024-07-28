@@ -20,6 +20,6 @@ const sensitiveRouteLimiter = rateLimit({
 router.post('/messages',sensitiveRouteLimiter, saveMessage);
 
 // Ruta para obtener el historial de mensajes entre dos usuarios
-router.get('/messages/:user1/:user2', getChatHistory);
+router.get('/messages/:user1/:user2',generalLimiter, getChatHistory);
 
 export default router;

@@ -30,8 +30,8 @@ const generalLimiter = rateLimit({
 });
 
 // Rutas del Usuario
-router.get('/', getAllUsuarios);
-router.get('/:id', getUsuario);
+router.get('/',generalLimiter, getAllUsuarios);
+router.get('/:id', generalLimiter,getUsuario);
 router.post('/', sensitiveRouteLimiter, createUsuario);
 router.post('/login', sensitiveRouteLimiter, login);
 router.post('/register', sensitiveRouteLimiter, register);

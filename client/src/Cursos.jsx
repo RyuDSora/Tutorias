@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './Cursos.css';
 import { UriCursos } from './components/Urls';
 import axios from 'axios';
 

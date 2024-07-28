@@ -4,7 +4,6 @@ import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
-import './DashboardComponent.css';
 
 export default function DashboardComponent() {
   const [products, setProducts] = useState([]);

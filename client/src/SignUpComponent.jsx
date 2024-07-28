@@ -48,6 +48,7 @@ export default function SignUpComponent({ setIsLoggedIn }) {
       Cookies.set('UserRol', userData.role);
       Cookies.set('User', `${userData.name} ${userData.last}`);
       Cookies.set('session', true);
+      Cookies.set('Imagen','perfil.jpg');
       localStorage.setItem('token', 'undefined');
       // Llama a setIsLoggedIn para actualizar el estado
       setIsLoggedIn(true);
@@ -195,14 +196,8 @@ export default function SignUpComponent({ setIsLoggedIn }) {
                 >
                   Aceptar
                 </button>
-
-                <br />
-                <br />
-                <hr />
-                <br />
-                <div>loguea con google</div>
-                <div>loguea con facebook</div>
               </div>
+              <div><span className='Principal'>¿Ya tienes cuenta? <a href="/login" className="font-semibold Secundario text-sm"><span>Inicia Sesión</span></a></span></div>
             </form>
           </div>
         </div>

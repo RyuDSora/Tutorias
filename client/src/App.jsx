@@ -1,7 +1,9 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
+
 //import { io } from 'socket.io-client';
+
 
 //componentes
 import DashboardComponent from './DashboardComponent';
@@ -22,13 +24,12 @@ import Cursos from './Cursos.jsx';
 import DashboardTutor from './DashboardTutor.jsx';
 import MyCourses from './DashboardTutor/MyCourses';
 import MyStudents from './DashboardTutor/MyStudents';
-import Chats from './DashboardTutor/Chats';
+import Chats from './components/Chats.jsx';
 import Articles from './DashboardTutor/Articles2';
 import Dash from './DashboardTutor/Dash.jsx';
 import DashboardStudent from './DashboardStudent.jsx';
 import MyCoursesST from './DashboardStudent/MyCoursesST';
 import MyTutor from './DashboardStudent/MyTutor';
-import ChatsST from './DashboardStudent/ChatsST';
 import ArticlesST from './DashboardStudent/ArticlesST';
 import DashST from './DashboardStudent/DashST.jsx';
 import SubscriptionPlans from './SubscriptionPlans.jsx';
@@ -101,7 +102,7 @@ function App() {
             <Route path="dashst" element={<DashST />} />
             <Route path="my-coursesST" element={<MyCoursesST />} />
             <Route path="my-tutor" element={<MyTutor />} />
-            <Route path="chatsST" element={<ChatsST />} />
+            <Route path="chatsST" element={<Chats userId={userID} />} />
             <Route path="articlesST" element={<ArticlesST />} />
           </Route>
           <Route path="/dashboardtutor" element={withAuth(DashboardTutor, ['tutor'])()}>

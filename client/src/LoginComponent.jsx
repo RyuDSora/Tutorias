@@ -37,11 +37,13 @@ export default function LoginComponent({ setIsLoggedIn }) {
       const data = await response.json();
       console.log(data.user);
       if (rememberMe) {
+        Cookies.set('Imagen',data.user.imagen_perfil,{expires:30})
         Cookies.set('UserId',data.user.id,{expires:30});
         Cookies.set('UserRol',data.user.role,{expires:30});
         Cookies.set('User',data.user.name + ' ' + data.user.last,{expires:30});
         Cookies.set('session',true,{expires:30});
       } else {
+        Cookies.set('Imagen',data.user.imagen_perfil)
         Cookies.set('UserId',data.user.id);
         Cookies.set('UserRol',data.user.role);
         Cookies.set('User',data.user.name + ' ' + data.user.last);
@@ -91,7 +93,7 @@ export default function LoginComponent({ setIsLoggedIn }) {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  className="block w-full rounded-md  py-1.5  shadow-sm  placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
                 {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
               </div>
@@ -101,7 +103,7 @@ export default function LoginComponent({ setIsLoggedIn }) {
               <label htmlFor="password" className="Principal block text-sm font-medium leading-6 text-gray-900">
                Contraseña
                </label>
-                <div className="mt-2 border_principal rounded-md">
+                <div className="mt-2 border border_principal rounded-md">
                  <input
                 id="password"
                 name="password"
@@ -110,7 +112,7 @@ export default function LoginComponent({ setIsLoggedIn }) {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                className="block w-full rounded-md  py-1.5  shadow-sm placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
               {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
               </div>
@@ -146,6 +148,7 @@ export default function LoginComponent({ setIsLoggedIn }) {
                   Iniciar sesión
                 </button>
               </div>
+              <div><span className='Principal'>¿No tienes cuenta? <a href="/Signup" className="font-semibold Secundario text-sm"><span>Regístrate</span></a></span></div>
             </form>
           </div>
         </div>

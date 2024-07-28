@@ -191,6 +191,14 @@ const MyCourses = () => {
               </ListGroup.Item>
             ))}
           </ListGroup>
+          <div className='mt-2'>
+            <div>
+              <span className='h6 Principal'>mandar solicitud de nueva materia</span>
+              <div className='d-flex justify-content-end'>
+                <button className='btn bg_principal Blanco'>Nueva</button>
+              </div>
+            </div>
+          </div>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" className='bg_secundario' onClick={handleClose2}>

@@ -4,7 +4,6 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import { format, isSameDay, parseISO } from 'date-fns';
 import { es } from 'date-fns/locale';
-import './NextLessons.css'; 
 import { FaCalendar } from 'react-icons/fa';
 
 const NextLessons = () => {

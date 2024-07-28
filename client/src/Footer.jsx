@@ -4,11 +4,11 @@ import { useNavigate } from 'react-router-dom';
 const LINKS = [
   {
     title: "Tutores",
-    items: ["1", "2", "3"],
+    items: [],
   },
   {
     title: "Cursos",
-    items: ["Matemáticas","Física","Ingles"],
+    items: [],
   },
   {
     title: "Recursos",

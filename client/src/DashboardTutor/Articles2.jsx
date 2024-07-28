@@ -22,7 +22,7 @@ const Articles = () => {
 
   return (
     <Container>
-      <h1>Articles</h1>
+      <div><span className='h3 Principal f_principal'>Tus Artículos</span></div>
       {loading ? (
         <Spinner animation="border" />
       ) : error ? (

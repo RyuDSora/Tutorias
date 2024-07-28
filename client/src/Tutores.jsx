@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import './tutores.css';
 import { uritutor, URIUser } from './components/Urls';
 import axios from 'axios';
 import img from '../public/images/tutor1.jpg'

@@ -4,21 +4,25 @@ import PropTypes from 'prop-types';
 import { Dropdown } from "react-bootstrap";
 import Cookies from 'js-cookie';
 import { HiUserCircle } from 'react-icons/hi';
-import SearchComponent from './SearchComponent'; // Asegúrate de que la ruta sea correcta
+//import SearchComponent from './SearchComponent'; // Asegúrate de que la ruta sea correcta
 
 function Navbar({ isLoggedIn }) {
+  const pre = '/images/'
   const navigate = useNavigate();
   const [isEventOpen, setIsEventOpen] = useState(false);
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  //const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [Admin, setAdmin] = useState(false);
   const [Tutor, setTutor] = useState(false);
   const [User, setUser] = useState(false);
   const [UserL, setUserL] = useState('');
+  const [UserI,setUserI]= useState('');
 
+  //verificacion de sesion activa para verificar el role del usuario logueado
   useEffect(() => {
     const session = Cookies.get('session');
     if (session) {
       setUserL(Cookies.get('User') || '');
+      setUserI(Cookies.get('Imagen'))
       if (Cookies.get('UserRol') === 'administrador') {
         setAdmin(true);
       }
@@ -31,10 +35,11 @@ function Navbar({ isLoggedIn }) {
     }
   }, []);
 
-  const toggleSearch = () => {
+ /* const toggleSearch = () => {
     setIsSearchOpen(prev => !prev);
-  };
+  };*/
 
+  //funcion para cerrar sesion
   const handleLogout = () => {
     localStorage.removeItem('token');
     Object.keys(Cookies.get()).forEach(cookie => Cookies.remove(cookie));
@@ -59,45 +64,52 @@ function Navbar({ isLoggedIn }) {
           </Link>
           {isLoggedIn ? (
             <div className="flex gap-x-6 items-center">
-              <button
+              {/*<button
                 onClick={toggleSearch}
                 className="Principal f_principal lg:block"
               >
                 Buscar
-              </button>
-              <Link to="/account" className="Principal f_principal">
-                <HiUserCircle className="inline-block mr-1 h-7 w-7" /> {UserL}
-              </Link>
+              </button>*/}
               <Dropdown>
-                <Dropdown.Toggle id="dropdown-basic" className="btn-light">
+                <Dropdown.Toggle id="dropdown-basic" className="btn-light Principal">
+                  {UserI!=='' ? (<img src={pre+UserI} alt={UserI} className='inline-block mr-1 h-7 w-7'/>):(<HiUserCircle className="inline-block mr-1 h-7 w-7" />)}
+                  <span className='mx-2'>{UserL}</span>
                 </Dropdown.Toggle>
-                <Dropdown.Menu>
+                <Dropdown.Menu className='w-100'>
                   <div style={{ marginLeft: '-10px' }}>
+                    <Dropdown.Item onClick={() => navigate(`/account`)} className="ms-3 pe-0" style={{width:'90%'}}>Mi Perfil</Dropdown.Item>
                     {Admin ? (
                       <>
                         {/* Opciones específicas para admin */}
-                        <Dropdown.Item onClick={() => navigate(`/tables`)} className="mx-3">Tablas</Dropdown.Item>
+                        <Dropdown.Item onClick={() => navigate(`/tables`)} className="mx-3 pe-0" style={{width:'90%'}}>Tablas</Dropdown.Item>
                       </>
                     ) : (
                       <>
                         {Tutor ? (
                           <>
-                            <Dropdown.Item onClick={() => navigate(`/dashboardtutor/dash`)} className="mx-3">Mi Panel</Dropdown.Item>
-                            <Dropdown.Item onClick={() => navigate(`/dashboardtutor/my-courses`)} className="mx-3">Mis Cursos</Dropdown.Item>
-                            <Dropdown.Item onClick={() => navigate(`/dashboardtutor/my-students`)} className="mx-3">Mis Estudiantes</Dropdown.Item>
-                            <Dropdown.Item onClick={() => navigate(`/dashboardtutor/chats`)} className="mx-3">Chats</Dropdown.Item>
-                            <Dropdown.Item onClick={() => navigate(`/dashboardtutor/articles`)} className="mx-3">Mis Artículos</Dropdown.Item>
+                            <Dropdown.Item onClick={() => navigate(`/dashboardtutor/dash`)} className="mx-3 pe-0" style={{width:'90%'}}>Mi Panel</Dropdown.Item>
+                            <Dropdown.Item onClick={() => navigate(`/dashboardtutor/my-courses`)} className="mx-3 pe-0" style={{width:'90%'}}>Mis Cursos</Dropdown.Item>
+                            <Dropdown.Item onClick={() => navigate(`/dashboardtutor/my-students`)} className="mx-3 pe-0" style={{width:'90%'}}>Mis Estudiantes</Dropdown.Item>
+                            <Dropdown.Item onClick={() => navigate(`/dashboardtutor/chats`)} className="mx-3 pe-0" style={{width:'90%'}}>Chats</Dropdown.Item>
+                            <Dropdown.Item onClick={() => navigate(`/dashboardtutor/articles`)} className="mx-3 pe-0" style={{width:'90%'}}>Mis Artículos</Dropdown.Item>
                           </>
                         ) : (
                           <>
                             {User ? (
-                              <Dropdown.Item onClick={() => navigate(`/dashboardStudent/dashst`)} className="mx-3">Mi Panel</Dropdown.Item>
+                              <>
+                                <Dropdown.Item onClick={() => navigate(`/dashboardStudent/dashst`)} className="mx-3 pe-0" style={{width:'90%'}}>Mi Panel</Dropdown.Item>
+                                <Dropdown.Item onClick={() => navigate(`/dashboardStudent/my-coursesST`)} className="mx-3 pe-0" style={{width:'90%'}}>Mis Cursos</Dropdown.Item>
+                                <Dropdown.Item onClick={() => navigate(`/dashboardStudent/my-tutor`)} className="mx-3 pe-0" style={{width:'90%'}}>Mis Tutores</Dropdown.Item>
+                                <Dropdown.Item onClick={() => navigate(`/dashboardStudent/chatsST`)} className="mx-3 pe-0" style={{width:'90%'}}>Chats</Dropdown.Item>
+                                <Dropdown.Item onClick={() => navigate(`/dashboardStudent/articlesST`)} className="mx-3 pe-0" style={{width:'90%'}}>Mis Libros</Dropdown.Item>
+                              </>
+                              
                             ) : (<></>)}
                           </>
                         )}
                       </>
                     )}
-                    <Dropdown.Item onClick={handleLogout} className="mx-3">Cerrar Sesión</Dropdown.Item>
+                    <Dropdown.Item onClick={handleLogout} className="mx-3 pe-0" style={{width:'90%'}}>Cerrar Sesión</Dropdown.Item>
                   </div>
                 </Dropdown.Menu>
               </Dropdown>
@@ -115,7 +127,7 @@ function Navbar({ isLoggedIn }) {
         </div>
       </nav>
       <div className='bg_principal rect'></div>
-      <SearchComponent isOpen={isSearchOpen} closeSearch={() => setIsSearchOpen(false)} />
+      {/*<SearchComponent isOpen={isSearchOpen} closeSearch={() => setIsSearchOpen(false)} />*/}
     </>
   );
 }

@@ -20,7 +20,7 @@ const port = process.env.PORT || 3000; // Usar variable de entorno para el puert
 // Configura CORS
 app.use(cors({
   origin: ['https://tu-torias.vercel.app', 'http://localhost:5173'],
-  methods: ['GET', 'POST'],
+  methods: ['GET', 'POST', 'PUT','PATCH','DELETE'],
   credentials: true,
 }));
 

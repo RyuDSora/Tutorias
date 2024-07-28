@@ -1,7 +1,5 @@
-import TableForm from './TableForm';
 import TableList from './TableList';
 import SQLQueryForm from './SQLQueryForm';
-import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 function Table() {

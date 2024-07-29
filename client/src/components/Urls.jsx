@@ -10,14 +10,7 @@ var originS = 'https://tutorias-five.vercel.app';//partes[0] + ":" + partes[1];
 export const url = originS + PuertoBackend;
 
 //urls para trabajar con tablas en general
-export const URIgetTablesColumns = url + '/tables/get-tables-columns';
-export const URIaddTables    = url  + '/tables/create-table/';  //crear una tabla en especifico
-export const URIcheckTables  = url  + '/tables/check-table/';   //verificar si una tabla ya esxiste
 export const URIgetTables    = url  + '/tables/get-tables/';    //ver todas las tablas
-export const URIdropTables   = url  + '/tables/drop-table/';    //eliminar una tabla
-export const URIUpdateTables = url  + '/tables/update-table/';  //actualizar una tabla
-
-
 export const URUsql          = url  + '/sql/execute';     
 
 //user

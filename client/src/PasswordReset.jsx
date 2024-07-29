@@ -19,17 +19,18 @@ const PasswordReset = () => {
   const [successMessage, setSuccessMessage] = useState("");
 
   useEffect(() => {
-    if (decryptValue(Cookies.get('$3s1.4'),encryptionKey)) {
-      const fetchUser = async () => {
-        try {
-          const response = await axios.get(`${URIUser}${decryptValue(Cookies.get('#gt156'),encryptionKey)}`);
-          setUser(response.data);
-          //setFormData(response.data); // Set formData with initial user data
-        } catch (error) {
-          console.log(error);
-        }
-      };
-      fetchUser();
+    if(Cookies.get('$3s1.4')){
+      if (decryptValue(Cookies.get('$3s1.4'),encryptionKey)) {
+        const fetchUser = async () => {
+          try {
+            const response = await axios.get(`${URIUser}${decryptValue(Cookies.get('#gt156'),encryptionKey)}`);
+            setUser(response.data);
+          } catch (error) {
+            console.log(error);
+          }
+        };
+        fetchUser();
+      }
     }
   }, []);
   // Función para manejar el cambio de contraseña

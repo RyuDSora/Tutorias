@@ -56,14 +56,16 @@ function App() {
   const [userID, setUserID] = useState(0);
 
   useEffect(() => {
-    const session = decryptValue(Cookies.get('$3s1.4'),encryptionKey)
-    if (session) {
-      const storedLoggedIn = localStorage.getItem('token');
-      if (storedLoggedIn) {
-        setIsLoggedIn(true);
-        const id = decryptValue(Cookies.get('#gt156'),encryptionKey);
-        setUserID(parseInt(id));
-      }
+    if(Cookies.get('$3s1.4')){
+      const session = decryptValue(Cookies.get('$3s1.4'),encryptionKey)
+      if (session) {
+        const storedLoggedIn = localStorage.getItem('token');
+        if (storedLoggedIn) {
+          setIsLoggedIn(true);
+          const id = decryptValue(Cookies.get('#gt156'),encryptionKey);
+          setUserID(parseInt(id));
+        }
+      }  
     }
   }, []);
 

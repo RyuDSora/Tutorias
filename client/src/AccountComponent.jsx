@@ -25,29 +25,31 @@ function AccountComponent() {
 
   useEffect(() => {
     const fetchUser = async () => {
-      if (decryptValue(Cookies.get('$3s1.4'),encryptionKey)) {
-        try {
-          const response = await axios.get(`${URIUser}${decryptValue(Cookies.get('#gt156'),encryptionKey)}`);
-          const data = response.data;
-          const formattedDate = format(new Date(data.birth), 'yyyy-MM-dd'); 
-          data.birth = formattedDate;
-          if (data.role === 'tutor') {
-            setIsTutor(true);
-            const fetchTutor = async () => {
-              try {
-                const response = await axios.get(`${uritutor}/${data.id}`);
-                setTutorData(response.data);
-                setFormDataTutor(response.data);
-              } catch (error) {
-                console.log(error);
-              }
-            };
-            fetchTutor();
+      if(Cookies.get('$3s1.4')){
+        if (decryptValue(Cookies.get('$3s1.4'),encryptionKey)) {
+          try {
+            const response = await axios.get(`${URIUser}${decryptValue(Cookies.get('#gt156'),encryptionKey)}`);
+            const data = response.data;
+            const formattedDate = format(new Date(data.birth), 'yyyy-MM-dd'); 
+            data.birth = formattedDate;
+            if (data.role === 'tutor') {
+              setIsTutor(true);
+              const fetchTutor = async () => {
+                try {
+                  const response = await axios.get(`${uritutor}/${data.id}`);
+                  setTutorData(response.data);
+                  setFormDataTutor(response.data);
+                } catch (error) {
+                  console.log(error);
+                }
+              };
+              fetchTutor();
+            }
+            setUser(data);
+            setFormData(data);
+          } catch (error) {
+            console.error(error);
           }
-          setUser(data);
-          setFormData(data);
-        } catch (error) {
-          console.error(error);
         }
       }
     };

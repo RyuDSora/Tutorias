@@ -16,19 +16,21 @@ function NavBarT({ isLoggedIn }) {
 
   //verificacion de sesion activa para verificar el role del usuario logueado
   useEffect(() => {
-    const session = decryptValue(Cookies.get('$3s1.4'),encryptionKey)
-    if (session) {
-      const role = decryptValue(Cookies.get('&0l3'),encryptionKey)
-      setUserL(decryptValue(Cookies.get('@u53r'),encryptionKey) || '');
-      setUserI(decryptValue(Cookies.get('1m@&34'),encryptionKey))
-      if (role === 'administrador') {
-        setAdmin(true);
-      }
-      if (role === 'tutor') {
-        setTutor(true);
-      }
-      if (role === 'estudiante') {
-        setUser(true);
+    if(Cookies.get('$3s1.4')){
+      const session = decryptValue(Cookies.get('$3s1.4'),encryptionKey)
+      if (session) {
+        const role = decryptValue(Cookies.get('&0l3'),encryptionKey)
+        setUserL(decryptValue(Cookies.get('@u53r'),encryptionKey) || '');
+        setUserI(decryptValue(Cookies.get('1m@&34'),encryptionKey))
+        if (role === 'administrador') {
+          setAdmin(true);
+        }
+        if (role === 'tutor') {
+          setTutor(true);
+        }
+        if (role === 'estudiante') {
+          setUser(true);
+        }
       }
     }
   }, []);

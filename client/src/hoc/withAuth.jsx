@@ -5,19 +5,21 @@ import { encryptionKey, decryptValue } from '../components/hashes';
 
 const withAuth = (WrappedComponent, allowedRoles) => {
   return (props) => {
-    const session = decryptValue(Cookies.get('$3s1.4'),encryptionKey);
-    const role = decryptValue(Cookies.get('&0l3'),encryptionKey)
-    const userRole = session ? role || '' : '';
+    if(Cookies.get('$3s1.4')){
+      const session = decryptValue(Cookies.get('$3s1.4'),encryptionKey);
+      const role = decryptValue(Cookies.get('&0l3'),encryptionKey)
+      const userRole = session ? role || '' : '';
+      
+      if (!session) {
+        return <Navigate to="/" replace />;
+      }
 
-    if (!session) {
-      return <Navigate to="/" replace />;
+      if (!allowedRoles.includes(userRole)) {
+        return <Navigate to="/" replace />;
+      }
+
+      return <WrappedComponent {...props} />;
     }
-
-    if (!allowedRoles.includes(userRole)) {
-      return <Navigate to="/" replace />;
-    }
-
-    return <WrappedComponent {...props} />;
   };
 };
 

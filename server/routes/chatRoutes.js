@@ -12,7 +12,7 @@ const sensitiveRouteLimiter = rateLimit({
   
   // Configura el limitador de velocidad general (si decides usarlo)
   const generalLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutos
+    windowMs: 0.5 * 60 * 1000, // 30 s
     max: 100, // máximo 100 solicitudes por ventana de tiempo
     message: 'Too many requests from this IP, please try again after 15 minutes' // mensaje de error personalizado
   });

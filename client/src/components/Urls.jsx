@@ -1,13 +1,6 @@
+export const url = 'http://localhost:3000';               //para hacer pruebas en local
+//export const url = 'https://tutorias-five.vercel.app';  //servidor de vercel
 
-const PuertoBackend = ''; 
-//var origin = window.location.origin;
-//var partes = origin.split(":");
-var originS = 'https://tutorias-five.vercel.app';//partes[0] + ":" + partes[1];
-
-//const PuertoBackend = ':8000'; //en caso de no usar puerto dejar esta constante vacia 
-
-//var originS = partes[0] + ":" + partes[1];
-export const url = originS + PuertoBackend;
 
 //urls para trabajar con tablas en general
 export const URIgetTables    = url  + '/tables/get-tables/';    //ver todas las tablas

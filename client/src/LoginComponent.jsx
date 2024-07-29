@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { encryptionKey, encryptValue } from './components/hashes';
+import { encryptionKey, encryptValue ,decryptValue} from './components/hashes';
 import Cookies from 'js-cookie';
 
 import {urilogin} from './components/Urls'
@@ -22,6 +22,10 @@ export default function LoginComponent({ setIsLoggedIn }) {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+      var username   = '';
+      var useid      = '';
+      var userrole   = '';
+      var userimagen = '';
 
     try {
       const response = await fetch(urilogin, {
@@ -36,12 +40,10 @@ export default function LoginComponent({ setIsLoggedIn }) {
         throw new Error('Correo electrónico o contraseña incorrectos');
       }
       const data = await response.json();
-      const username   = encryptValue(data.user.name + ' ' + data.user.last,encryptionKey);
-      const useid      = encryptValue(data.user.id,encryptionKey)
-      const userrole   = encryptValue(data.user.role,encryptionKey)
-      const userimagen = encryptValue(data.user.imagen_perfil,encryptionKey)
-
-
+      username   = encryptValue(data.user.name + ' ' + data.user.last,encryptionKey);
+      useid      = encryptValue(data.user.id,encryptionKey)
+      userrole   = encryptValue(data.user.role,encryptionKey)
+      userimagen = encryptValue(data.user.imagen_perfil,encryptionKey)
 
       if (rememberMe) {
         Cookies.set('1m@&34',userimagen,{expires:30}) //imagen
@@ -57,7 +59,6 @@ export default function LoginComponent({ setIsLoggedIn }) {
         Cookies.set('$3s1.4',encryptValue(true,encryptionKey));//sesion
       }
       localStorage.setItem('token', data.token);
-      console.log(data.token);
       setIsLoggedInLocally(true);
       setIsLoggedIn(true);
     } catch (error) {
@@ -67,9 +68,23 @@ export default function LoginComponent({ setIsLoggedIn }) {
 
     }
   };
-
+  
   if (isLoggedInLocally) {
-    window.location.href = '/dashboard';
+    if(Cookies.get('$3s1.4')){
+      const session = decryptValue(Cookies.get('$3s1.4'),encryptionKey)
+      if (session) {
+        const role = decryptValue(Cookies.get('&0l3'),encryptionKey)
+        if (role === 'administrador') {
+          window.location.href = '/dashboardadmin/sql';
+        }
+        if (role === 'tutor') {
+          window.location.href = '/dashboardtutor/dash';
+        }
+        if (role === 'estudiante') {
+          window.location.href = '/dashboardStudent/dashst';
+        }
+      }
+    }
   }
 
 

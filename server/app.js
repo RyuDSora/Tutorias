@@ -12,15 +12,15 @@ import classRoute from './routes/classRoute.js';
 import paymentRoute from './routes/paymentRoute.js';
 import ratingRoute from './routes/ratingRoute.js';
 import tutorsubjectRoute from './routes/tutorsubjectRoute.js';
-import chatRoutes from './routes/chatRoutes.js'; // Importar el router de chat
+import chatRoutes from './routes/chatRoutes.js';
 
 const app = express();
-const port = process.env.PORT || 3000; // Usar variable de entorno para el puerto
+const port = process.env.PORT || 3000;
 
 // Configura CORS
 app.use(cors({
   origin: ['https://tu-torias.vercel.app', 'http://localhost:5173'],
-  methods: ['GET', 'POST', 'PUT','PATCH','DELETE'],
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
   credentials: true,
 }));
 
@@ -38,7 +38,7 @@ app.use('/classes', classRoute);
 app.use('/payments', paymentRoute);
 app.use('/ratings', ratingRoute);
 app.use('/ts', tutorsubjectRoute);
-app.use('/api', chatRoutes); // Usar las rutas de chat
+app.use('/api', chatRoutes);
 
 app.get('/', (req, res) => {
   res.status(200).json('Bienvenido, tu aplicación se ha ejecutado correctamente');
@@ -54,7 +54,6 @@ const io = new Server(server, {
     credentials: true,
   },
 });
-
 
 const connectedUsers = new Map();
 
@@ -81,11 +80,14 @@ io.on('connection', (socket) => {
   });
 });
 
-server.listen(port, () => {});
+server.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});
 
 app.get('/test', (req, res) => {
   res.status(200).send('Server is running');
 });
+
 
 /*
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Row, Col, ListGroup, Spinner, Alert } from 'react-bootstrap';
+//import { Container, Row, Col, ListGroup, Spinner, Alert } from 'react-bootstrap';
 import axios from 'axios';
 
 const ArticlesST = () => {
@@ -20,8 +20,8 @@ const ArticlesST = () => {
       });
   }, []);
 
-  return (
-    <Container>
+  return (<>
+    {/*<Container>
       <h1>Libros</h1>
       {loading ? (
         <Spinner animation="border" />
@@ -42,7 +42,8 @@ const ArticlesST = () => {
           </Col>
         </Row>
       )}
-    </Container>
+    </Container>*/}
+    hola</>
   );
 };
 

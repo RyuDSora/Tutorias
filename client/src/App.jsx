@@ -11,14 +11,13 @@ import AboutUs from './components/AboutUs';
 import HelpCenter from './components/HelpCenter';
 import LoginComponent from './LoginComponent';
 import SignUpComponent from './SignUpComponent';
-import Navbar from './Navbar.jsx';
+import NavBarT from './NavBarT.jsx';
 import AccountComponent from './AccountComponent';
 import PasswordReset from './PasswordReset';
 import Footer from './Footer';
 import UnAuthorized from './UnAuthorized';
 import CancelPage from './CancelPage';
 import SuccessPage from './SuccessPage';
-import Table from './components/table.jsx';
 import Tutores from './Tutores.jsx';
 import Cursos from './Cursos.jsx';
 import DashboardTutor from './DashboardTutor.jsx';
@@ -32,6 +31,9 @@ import MyCoursesST from './DashboardStudent/MyCoursesST';
 import MyTutor from './DashboardStudent/MyTutor';
 import ArticlesST from './DashboardStudent/ArticlesST';
 import DashST from './DashboardStudent/DashST.jsx';
+import DashboardAdmin from './DashboardAdmin.jsx';
+import SQLQueryForm from './components/SQLQueryForm';
+import TableList from './components/TableList';
 import SubscriptionPlans from './SubscriptionPlans.jsx';
 import withAuth from './hoc/withAuth';
 /*
@@ -79,7 +81,7 @@ function App() {
   return (
     <Router>
       <div>
-        <Navbar isLoggedIn={isLoggedIn} />
+        <NavBarT isLoggedIn={isLoggedIn} />
         <Routes>
           <Route path="/" element={<Navigate to="/dashboard" />} />
           <Route path="/about-us" element={<AboutUs />} />
@@ -96,8 +98,13 @@ function App() {
           <Route path="/suscripciones" element={<SubscriptionPlans />} />
 
           {/* Rutas protegidas */}
-          <Route path="/tables" element={withAuth(Table, ['administrador'])()} />
           <Route path="/account" element={withAuth(AccountComponent, ['administrador', 'estudiante', 'tutor'])()} />
+          <Route path="/dashboardadmin" element={withAuth(DashboardAdmin, ['administrador'])()} >
+            <Route path='sql' element={<SQLQueryForm />} />
+            <Route path='tables' element={<TableList />} />
+            <Route path="chats" element={<Chats userId={userID} />} />
+            <Route/>
+          </Route>
           <Route path="/dashboardstudent" element={withAuth(DashboardStudent, ['estudiante'])()}>
             <Route path="dashst" element={<DashST />} />
             <Route path="my-coursesST" element={<MyCoursesST />} />

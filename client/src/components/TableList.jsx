@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import {URIgetTables,URIdropTables,URIUpdateTables,URIcheckTables} from './Urls'
+import { Card, Modal, Table, Button, Row, Col } from 'react-bootstrap';
+import { URIgetTables } from './Urls';
+import { FaTimes } from 'react-icons/fa';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 function TableList() {
   const [tables, setTables] = useState({});
-  const [updateTableName, setUpdateTableName] = useState('');
-  const [addColumns, setAddColumns] = useState([{ name: '', type: '', length: '' }]);
-  const [dropColumns, setDropColumns] = useState(['']);
+  const [show, setShow] = useState(false);
+  const [selectedTable, setSelectedTable] = useState(null);
 
   useEffect(() => {
     fetchTables();
@@ -21,102 +23,74 @@ function TableList() {
     }
   };
 
-  const handleDeleteTable = async (tableName) => {
-    try {
-      await axios.delete(URIdropTables+tableName);
-      fetchTables();
-      alert(`Table ${tableName} deleted successfully`);
-    } catch (error) {
-      console.error('Error deleting table:', error);
-      alert('Error deleting table');
-    }
+  const handleShow = (tableName) => {
+    setSelectedTable(tableName);
+    setShow(true);
   };
 
-  const handleAddColumn = () => {
-    setAddColumns([...addColumns, { name: '', type: '', length: '' }]);
-  };
-
-  const handleDropColumnChange = (index, event) => {
-    const values = [...dropColumns];
-    values[index] = event.target.value;
-    setDropColumns(values);
-  };
-
-  const handleAddDropColumn = () => {
-    setDropColumns([...dropColumns, '']);
-  };
-
-  const handleAddColumnChange = (index, event) => {
-    const values = [...addColumns];
-    values[index][event.target.name] = event.target.value;
-    setAddColumns(values);
-  };
-
-  const handleUpdateSubmit = async (event) => {
-    event.preventDefault();
-    try {
-      await axios.put(URIUpdateTables+updateTableName, {
-        addColumns,
-        dropColumns
-      });
-      alert('Table updated successfully');
-      fetchTables();
-    } catch (error) {
-      console.error('Error updating table:', error);
-      alert('Error updating table');
-    }
-  };
-
-  const dataTypes = ['VARCHAR', 'INT', 'SERIAL', 'BOOLEAN', 'DATE', 'TIMESTAMP', 'TEXT', 'FLOAT', 'DOUBLE'];
+  const handleClose = () => setShow(false);
 
   return (
-    <div className="container my-4">
-      <div className="card mb-4">
-        <div className="card-header">
-          <h2>Existing Tables</h2>
-        </div>
-        <div className="card-body">
-          {Object.keys(tables).length === 0 ? (
-            <p>No tables found.</p>
-          ) : (
-            <ul className="list-group">
-              {Object.keys(tables).map((tableName, index) => (
-                <li key={index} className="list-group-item">
-                  <div className="d-flex justify-content-between align-items-center">
-                    <h5 className="mb-1">{tableName}</h5>
-                    <button
-                      className="btn btn-danger"
-                      onClick={() => handleDeleteTable(tableName)}
-                    >
-                      Delete
-                    </button>
-                  </div>
-                  <table className="table table-striped mt-3">
-                    <thead>
-                      <tr>
-                        <th>Column Name</th>
-                        <th>Data Type</th>
-                        <th>Nullable</th>
-                        <th>Primary Key</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {tables[tableName].columns.map((column, index) => (
-                        <tr key={index}>
-                          <td>{column.column_name}</td>
-                          <td>{column.data_type}</td>
-                          <td>{column.is_nullable}</td>
-                          <td>{column.is_primary_key ? 'Yes' : 'No'}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
+    <div className="">
+      <div className='m-4'><span className='h3 Principal f_principal'>Tablas existentes</span></div>
+      <div className="mb-4">
+        {Object.keys(tables).length === 0 ? (
+          <p>No tables found.</p>
+        ) : (
+          <Row>
+            {Object.keys(tables).map((tableName, index) => (
+              <Col key={index} xs={12} sm={6} md={4} lg={3} className="mb-4">
+                <Card 
+                  className="h-100"
+                  onClick={() => handleShow(tableName)} 
+                  style={{ cursor: 'pointer' }}
+                >
+                  <Card.Body>
+                    <Card.Title className='Principal'>{tableName}</Card.Title>
+                  </Card.Body>
+                </Card>
+              </Col>
+            ))}
+          </Row>
+        )}
       </div>
+      <Modal show={show} onHide={handleClose} size="lg" fullscreen>
+        <Modal.Header>
+          <Modal.Title>{selectedTable}</Modal.Title>
+          <Button variant="close" onClick={handleClose}>
+            <span aria-hidden="true"><FaTimes/></span>
+          </Button>
+        </Modal.Header>
+        <Modal.Body>
+          {selectedTable && (
+            <Table striped bordered hover>
+              <thead>
+                <tr>
+                  <th>Column Name</th>
+                  <th>Data Type</th>
+                  <th>Nullable</th>
+                  <th>Primary Key</th>
+                </tr>
+              </thead>
+              <tbody>
+                {tables[selectedTable].columns.map((column, index) => (
+                  <tr key={index}>
+                    <td>{column.column_name}</td>
+                    <td>{column.data_type}</td>
+                    <td>{column.is_nullable}</td>
+                    <td>{column.is_primary_key ? 'Yes' : 'No'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose} className='bg_negro'>
+            Cerrar
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 }

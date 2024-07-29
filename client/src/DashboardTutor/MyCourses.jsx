@@ -3,6 +3,7 @@ import { Card, Button, Modal, ListGroup } from 'react-bootstrap';
 import { UriCursos, uritutorsubject, uritutor } from '../components/Urls';
 import { confirmAlert } from 'react-confirm-alert';
 import Cookies from 'js-cookie';
+import { decryptValue,encryptionKey } from '../components/hashes';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 
@@ -39,7 +40,7 @@ const MyCourses = () => {
     const fetchSubject = async () => {
         try {
           //recupera el id del usuario de las cookies
-          const userId = Cookies.get('UserId');
+          const userId = decryptValue(Cookies.get('#gt156'),encryptionKey);
           //recupera los datos del tutor de la base de datos
           const responsetutor = await axios.get(`${uritutor}/${userId}`);
           //recupera el idtutor del response

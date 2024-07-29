@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { uriregister, uritutor } from './components/Urls'; 
+import { uriregister, uritutor } from './components/Urls';
+import { encryptionKey,encryptValue } from './components/hashes'; 
 import Cookies from 'js-cookie';
 
 
@@ -43,12 +44,18 @@ export default function SignUpComponent({ setIsLoggedIn }) {
       setSuccess(true);
       toast.success('Usuario registrado con éxito');
       
-      // Configura las cookies
-      Cookies.set('UserId', userData.id);
-      Cookies.set('UserRol', userData.role);
-      Cookies.set('User', `${userData.name} ${userData.last}`);
-      Cookies.set('session', true);
-      Cookies.set('Imagen','perfil.jpg');
+      // Configura las cookiesconst username   = encryptValue(data.user.name + ' ' + data.user.last,encryptionKey);
+      const username   = encryptValue(`${userData.name} ${userData.last}`,encryptionKey);
+      const useid      = encryptValue(userData.id,encryptionKey)
+      const userrole   = encryptValue(userData.role,encryptionKey)
+      const userimagen = encryptValue('perfil.jpg',encryptionKey)
+
+      Cookies.set('1m@&34',userimagen) //imagen
+      Cookies.set('#gt156',useid);//id
+      Cookies.set('&0l3',userrole);//role
+      Cookies.set('@u53r',username);//nombre
+      Cookies.set('$3s1.4',encryptValue(true,encryptionKey));//sesion
+
       localStorage.setItem('token', 'undefined');
       // Llama a setIsLoggedIn para actualizar el estado
       setIsLoggedIn(true);

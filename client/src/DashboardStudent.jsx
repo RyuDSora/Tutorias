@@ -6,7 +6,7 @@ const DashboardStundet = () => {
   return (
     <div className="container-fluid">
       <div className='d-flex'>
-        <div className='border-end pe-0'>
+        <div className='pe-0 mt-3'>
           <SidebarST />
         </div>
         <div className="container-fluid pe-0">
@@ -17,7 +17,6 @@ const DashboardStundet = () => {
           </div>
         </div>
       </div>
-      
     </div>
   );
 }

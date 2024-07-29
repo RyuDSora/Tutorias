@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
+import { decryptValue,encryptionKey } from './components/hashes.jsx';
 
 //import { io } from 'socket.io-client';
 
@@ -55,12 +56,13 @@ function App() {
   const [userID, setUserID] = useState(0);
 
   useEffect(() => {
-    const session = Cookies.get('session');
+    const session = decryptValue(Cookies.get('$3s1.4'),encryptionKey)
     if (session) {
       const storedLoggedIn = localStorage.getItem('token');
       if (storedLoggedIn) {
         setIsLoggedIn(true);
-        setUserID(parseInt(Cookies.get('UserId')));
+        const id = decryptValue(Cookies.get('#gt156'),encryptionKey);
+        setUserID(parseInt(id));
       }
     }
   }, []);

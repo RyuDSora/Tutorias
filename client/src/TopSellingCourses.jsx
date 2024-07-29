@@ -1,5 +1,5 @@
-import React from 'react';
-import { Card, Table } from 'react-bootstrap';
+import React, { useState } from 'react';
+import { Card, Table, Button, Modal } from 'react-bootstrap';
 import { Doughnut } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -29,20 +29,20 @@ const generateRandomData = () => {
     'rgba(153, 102, 255, 0.6)',
     'rgba(255, 159, 64, 0.6)'
   ];
-  courses.push(`Matematicas`);
-  courses.push(`Fisica`);
-  courses.push(`Ingles`);
-  courses.push(`Ingles II`);
+  courses.push(`Matematicas Básica`);
+  courses.push(`Fisica Básica`);
+  courses.push(`Matematica Avanzada`);
+  courses.push(`Fisica Avanzada`);
 
   enrollments.push(35)
   enrollments.push(45)
   enrollments.push(15)
   enrollments.push(5)
 
-  prices.push(15.20);
-  prices.push(20.00);
-  prices.push(11.99);
-  prices.push(6.99);
+  prices.push(50);
+  prices.push(60);
+  prices.push(100);
+  prices.push(150);
   for (let i = 1; i <= 4; i++) {
     backgroundColors.push(colors[i % colors.length]); 
   }
@@ -50,15 +50,25 @@ const generateRandomData = () => {
   return { courses, enrollments, prices, backgroundColors };
 };
 
-const { courses, enrollments, prices, backgroundColors } = generateRandomData(); // Generate data for 3 courses
+const { courses, enrollments, prices, backgroundColors } = generateRandomData(); 
+
+const topCourses = courses
+  .map((course, index) => ({
+    course,
+    enrollment: enrollments[index],
+    price: prices[index],
+    backgroundColor: backgroundColors[index]
+  }))
+  .sort((a, b) => b.enrollment - a.enrollment)
+  .slice(0, 3);
 
 const data = {
-  labels: courses,
+  labels: topCourses.map(c => c.course),
   datasets: [
     {
       label: 'Número de suscriptores',
-      data: enrollments,
-      backgroundColor: backgroundColors,
+      data: topCourses.map(c => c.enrollment),
+      backgroundColor: topCourses.map(c => c.backgroundColor),
       borderColor: 'rgba(255, 255, 255, 1)',
       borderWidth: 1,
     },
@@ -77,52 +87,104 @@ const options = {
       }
     },
     title: {
-      display: true,
+      display: false,
       text: 'Cursos más vendidos',
     },
   },
-  cutout: '70%', // Adjust to create a donut effect
+  cutout: '0%',
 };
 
 const TopSellingCourses = () => {
+  const [show, setShow] = useState(false);
+  
   const totalEnrollments = enrollments.reduce((a, b) => a + b, 0);
-  const totalRevenue = enrollments.reduce((sum, enrollments, index) => sum + enrollments * prices[index], 0).toFixed(2);
+  const totalRevenue = enrollments.reduce((sum, enrollment, index) => sum + enrollment * prices[index], 0).toFixed(2);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
 
   return (
-    <Card>
-      <Card.Body >
-        <Card.Title>Cursos más vendidos</Card.Title>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <div style={{ flex: '1' }}>
-            <Doughnut data={data} options={options} />
-            <div style={{ position: 'absolute', left: '24%', top: '55%', transform: 'translate(-50%, -50%)' }}>
-              <strong>Total</strong><br />${totalRevenue}
+    <>
+      <Card className='mx-auto mb-3' style={{ width: '95%' }}>
+        <Card.Body>
+          <div className='row'>
+            <div className='col-lg-5 mb-3'>
+              <div className='mx-auto' style={{ width: '90%' }}>
+                <Doughnut data={data} options={options} />
+                <div className='mt-3'>
+                  <strong>Total</strong><br />Lps {totalRevenue}
+                </div>
+              </div>
+            </div>
+            <div className='col-lg-7 my-auto'>
+              <Card.Title className='mt-3 Principal'>Cursos más vendidos</Card.Title>
+              <div style={{overflowX: 'auto' }}>
+                <Table  bordered responsive className='border'>
+                  <thead >
+                    <tr className="text-center">
+                      <th>Curso</th>
+                      <th>Suscrip.</th>
+                      <th>Precio</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {topCourses.map((course, index) => (
+                      <tr key={index} className="text-center">
+                        <td style={{ color: course.backgroundColor }}>{course.course}</td>
+                        <td>{course.enrollment}</td>
+                        <td>Lps {course.price.toFixed(2)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </Table>
+              </div>
+              <div>
+                <Button variant="link" style={{ float: 'right' }} onClick={handleShow}>Ver todo ({courses.length})</Button>
+              </div>
             </div>
           </div>
-          <div style={{ flex: '1' }}>
-            <Table borderless>
-              <thead>
-                <tr>
-                  <th>Curso</th>
-                  <th>Inscripciones</th>
-                  <th>Precio</th>
+        </Card.Body>
+      </Card>
+
+      <Modal show={show} onHide={handleClose} size="lg">
+        <Modal.Header closeButton>
+          <Modal.Title>Todos los Cursos</Modal.Title>
+        </Modal.Header>
+        <Modal.Body style={{ overflowX: 'auto' }}>
+          <Table bordered responsive>
+            <thead>
+              <tr className="text-center">
+                <th>Curso</th>
+                <th>Suscrip.</th>
+                <th>Precio</th>
+                <th>Ingreso</th>
+              </tr>
+            </thead>
+            <tbody>
+              {courses.map((course, index) => (
+                <tr key={index} className="text-center">
+                  <td style={{ color: backgroundColors[index] }}>{course}</td>
+                  <td>{enrollments[index]}</td>
+                  <td>Lps {prices[index].toFixed(2)}</td>
+                  <td>Lps {(enrollments[index] * prices[index]).toFixed(2)}</td>
                 </tr>
-              </thead>
-              <tbody>
-                {courses.map((course, index) => (
-                  <tr key={index}>
-                    <td style={{ color: backgroundColors[index] }}>{course}</td>
-                    <td>{enrollments[index]}</td>
-                    <td>${prices[index]}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </Table>
-          </div>
-        </div>
-        <a href="#" style={{ float: 'right' }}>Ver todo ({courses.length})</a>
-      </Card.Body>
-    </Card>
+              ))}
+            </tbody>
+            <tfoot>
+              <tr className="text-center">
+                <td colSpan="3"><strong>Total Ingresos:</strong></td>
+                <td>Lps {totalRevenue}</td>
+              </tr>
+            </tfoot>
+          </Table>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose} className='bg_negro'>
+            Cerrar
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </>
   );
 }
 

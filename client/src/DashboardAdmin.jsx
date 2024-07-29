@@ -6,7 +6,7 @@ const DashboardAdmin = () => {
   return (
     <div className="container-fluid">
       <div className='d-flex'>
-        <div className='border-end pe-0'>
+        <div className='pe-0 mt-3'>
           <SidebarAdmin />
         </div>
         <div className="container-fluid pe-0">
@@ -17,7 +17,6 @@ const DashboardAdmin = () => {
           </div>
         </div>
       </div>
-      
     </div>
   );
 }

@@ -4,6 +4,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import { IconEye, IconEyeOff } from "@tabler/icons-react";
 import 'react-toastify/dist/ReactToastify.css'; // Importa los estilos de react-toastify
 import { URIUser } from "./components/Urls";
+import { decryptValue,encryptionKey } from "./components/hashes";
 
 import Cookies from 'js-cookie';
 
@@ -18,10 +19,10 @@ const PasswordReset = () => {
   const [successMessage, setSuccessMessage] = useState("");
 
   useEffect(() => {
-    if (Cookies.get('session')) {
+    if (decryptValue(Cookies.get('$3s1.4'),encryptionKey)) {
       const fetchUser = async () => {
         try {
-          const response = await axios.get(`${URIUser}${Cookies.get('UserId')}`);
+          const response = await axios.get(`${URIUser}${decryptValue(Cookies.get('#gt156'),encryptionKey)}`);
           setUser(response.data);
           //setFormData(response.data); // Set formData with initial user data
         } catch (error) {

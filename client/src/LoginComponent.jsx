@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { encryptionKey, encryptValue } from './components/hashes';
 import Cookies from 'js-cookie';
 
 import {urilogin} from './components/Urls'
@@ -35,19 +36,25 @@ export default function LoginComponent({ setIsLoggedIn }) {
         throw new Error('Correo electrónico o contraseña incorrectos');
       }
       const data = await response.json();
-      console.log(data.user);
+      const username   = encryptValue(data.user.name + ' ' + data.user.last,encryptionKey);
+      const useid      = encryptValue(data.user.id,encryptionKey)
+      const userrole   = encryptValue(data.user.role,encryptionKey)
+      const userimagen = encryptValue(data.user.imagen_perfil,encryptionKey)
+
+
+
       if (rememberMe) {
-        Cookies.set('Imagen',data.user.imagen_perfil,{expires:30})
-        Cookies.set('UserId',data.user.id,{expires:30});
-        Cookies.set('UserRol',data.user.role,{expires:30});
-        Cookies.set('User',data.user.name + ' ' + data.user.last,{expires:30});
-        Cookies.set('session',true,{expires:30});
+        Cookies.set('1m@&34',userimagen,{expires:30}) //imagen
+        Cookies.set('#gt156',useid,{expires:30});     //id
+        Cookies.set('&0l3',userrole,{expires:30});    //role
+        Cookies.set('@u53r',username,{expires:30});   //nombre
+        Cookies.set('$3s1.4',encryptValue(true,encryptionKey),{expires:30});      //sesion
       } else {
-        Cookies.set('Imagen',data.user.imagen_perfil)
-        Cookies.set('UserId',data.user.id);
-        Cookies.set('UserRol',data.user.role);
-        Cookies.set('User',data.user.name + ' ' + data.user.last);
-        Cookies.set('session',true);
+        Cookies.set('1m@&34',userimagen) //imagen
+        Cookies.set('#gt156',useid);     //id
+        Cookies.set('&0l3',userrole); //role
+        Cookies.set('@u53r',username);//nombre
+        Cookies.set('$3s1.4',encryptValue(true,encryptionKey));//sesion
       }
       localStorage.setItem('token', data.token);
       console.log(data.token);

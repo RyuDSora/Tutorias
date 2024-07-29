@@ -8,41 +8,25 @@ import img4 from "../public/images/tip4.jpg"
 
 const Articles = () => {
   return (
-    <Row>
-      <Col md={3}>
-        <Card>
-          <Card.Body>
-            <img src={img1} alt="" style={{height:150}}/>
-            <Card.Title className='small'>Cómo utilizar la gamificación en la creación de cursos online</Card.Title>
-          </Card.Body>
-        </Card>
-      </Col>
-      <Col md={3}>
-        <Card>
-          <Card.Body>
-          <img src={img2} alt="" style={{height:150}}/>
-            <Card.Title className='small'>Cómo estructurar tu propio curso online</Card.Title>
-          </Card.Body>
-        </Card>
-      </Col>
-      <Col md={3}>
-        <Card>
-          <Card.Body>
-          <img src={img3} alt="" style={{height:150}}/>
-            <Card.Title className='small'>¿Cómo hacer que tus lecciones sean más atractivas?</Card.Title>
-          </Card.Body>
-        </Card>
-      </Col>
-      <Col md={3}>
-        <Card>
-          <Card.Body>
-          <img src={img4} alt="" style={{height:150}}/>
-            <Card.Title className='small'>4 trucos para hacer tus cursos más PRO</Card.Title>
-          </Card.Body>
-        </Card>
-      </Col>
+    <Row style={{width:'100%'}}>
+      {columna(img1,"Cómo utilizar la gamificación en la creación de cursos online")}
+      {columna(img2,"Cómo estructurar tu propio curso online")}
+      {columna(img3,"¿Cómo hacer que tus lecciones sean más atractivas?")}
+      {columna(img4,"4 trucos para hacer tus cursos más PRO")}
     </Row>
   );
+}
+const columna = (img,frase) =>{
+  return(
+    <Col md={3}>
+      <Card>
+        <Card.Body>
+        <img src={img} alt="" style={{height:150}}/>
+          <Card.Title className='small'>{frase}</Card.Title>
+        </Card.Body>
+      </Card>
+    </Col>
+  )
 }
 
 export default Articles;

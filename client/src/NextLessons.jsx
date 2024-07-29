@@ -121,33 +121,35 @@ const NextLessons = () => {
 
   return (
     <>
-      <Card className="mt-4 Principal">
-        <Card.Body>
-          <Card.Title className="d-flex justify-content-between">
+      <Card className="Principal mx-auto" style={{width:'95%'}}>
+        <Card.Title className='mt-3 Principal mx-3'>
+          <div className='d-flex justify-content-between'>
             <span className='h5'>Próximas Lecciones</span>
             <a onClick={toggleModal} className="text-primary" style={{ cursor: 'pointer' }}>
               <span className='h6' title='Ver Calendario'><FaCalendar className="icon Secundario" style={{ width: 20, height: 20 }} /></span>
             </a>
-          </Card.Title>
+          </div>
+        </Card.Title>
+        <hr />
+        <Card.Body>
           <ListGroup variant="flush">
             {upcomingLessons.map((lesson, index) => (
-              <ListGroupItem key={index} className="d-flex justify-content-between align-items-start">
+              <ListGroupItem key={index}>
                 <div className='row'>
-                  <div className='col-4 Principal'><div className="fw-bold">{format(parseISO(lesson.date), 'd MMMM', { locale: es })}</div></div>
+                  <div className='col-4 Principal'>
+                    <div className="fw-bold my-auto">{format(parseISO(lesson.date), 'dd MMMM', { locale: es })}</div>
+                    <Badge pill className='bg_secundario Blanco'>
+                      {lesson.time}
+                    </Badge>
+                  </div>
                   <div className='col-8'>
                     <div className='row'>
                       <div className='Principal'>{lesson.title}</div>
                       <small className='Secundario'>{lesson.description}</small>
                     </div>
-                    <div className='row my-1'>
-                      <Badge pill className='w-50 mx-auto bg_secundario Blanco'>
-                        {lesson.time}
-                      </Badge>
-                    </div>
+                    
                   </div>
                 </div>
-                
-                
               </ListGroupItem>
             ))}
           </ListGroup>
@@ -178,7 +180,7 @@ const NextLessons = () => {
           </ListGroup>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={toggleModal}>
+          <Button variant="secondary" onClick={toggleModal} className='bg_negro'>
             Cerrar
           </Button>
         </Modal.Footer>

@@ -4,6 +4,7 @@ import { CogIcon, UserMinusIcon } from '@heroicons/react/24/outline';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import Cookies from 'js-cookie';
+import { encryptionKey, decryptValue } from './components/hashes';
 import { useEffect, useState } from "react";
 import { URIUser, uritutor } from "./components/Urls";
 import { confirmAlert } from 'react-confirm-alert';
@@ -24,9 +25,9 @@ function AccountComponent() {
 
   useEffect(() => {
     const fetchUser = async () => {
-      if (Cookies.get('session')) {
+      if (decryptValue(Cookies.get('$3s1.4'),encryptionKey)) {
         try {
-          const response = await axios.get(`${URIUser}${Cookies.get('UserId')}`);
+          const response = await axios.get(`${URIUser}${decryptValue(Cookies.get('#gt156'),encryptionKey)}`);
           const data = response.data;
           const formattedDate = format(new Date(data.birth), 'yyyy-MM-dd'); 
           data.birth = formattedDate;

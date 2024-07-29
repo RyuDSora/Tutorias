@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Navbar, Nav, Container, NavDropdown } from "react-bootstrap";
 import Cookies from 'js-cookie';
+import { encryptionKey, decryptValue } from './components/hashes';
 import { FaUser, FaTable, FaSignOutAlt, FaHome, FaBook, FaUsers, FaComments, FaFileAlt, FaTerminal } from "react-icons/fa";
 import { HiUserCircle } from 'react-icons/hi';
 
@@ -15,17 +16,18 @@ function NavBarT({ isLoggedIn }) {
 
   //verificacion de sesion activa para verificar el role del usuario logueado
   useEffect(() => {
-    const session = Cookies.get('session');
+    const session = decryptValue(Cookies.get('$3s1.4'),encryptionKey)
     if (session) {
-      setUserL(Cookies.get('User') || '');
-      setUserI(Cookies.get('Imagen'))
-      if (Cookies.get('UserRol') === 'administrador') {
+      const role = decryptValue(Cookies.get('&0l3'),encryptionKey)
+      setUserL(decryptValue(Cookies.get('@u53r'),encryptionKey) || '');
+      setUserI(decryptValue(Cookies.get('1m@&34'),encryptionKey))
+      if (role === 'administrador') {
         setAdmin(true);
       }
-      if (Cookies.get('UserRol') === 'tutor') {
+      if (role === 'tutor') {
         setTutor(true);
       }
-      if (Cookies.get('UserRol') === 'estudiante') {
+      if (role === 'estudiante') {
         setUser(true);
       }
     }

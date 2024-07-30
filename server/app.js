@@ -1,3 +1,5 @@
+import dotenv from 'dotenv';
+dotenv.config();
 import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
@@ -13,7 +15,9 @@ import paymentRoute from './routes/paymentRoute.js';
 import ratingRoute from './routes/ratingRoute.js';
 import tutorsubjectRoute from './routes/tutorsubjectRoute.js';
 import chatRoutes from './routes/chatRoutes.js';
+import Stripe from 'stripe';
 
+const stripe = Stripe('ssk_test_51PiHnr2KRPeDwuZFKI57BPy89WXx6DOF7ACt1FYvnlkSWvuNjdGhze76d5egkL4akI45utD81sJv76nlBxIHJqgT00WUxgjKhy');
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -42,6 +46,41 @@ app.use('/api', chatRoutes);
 
 app.get('/', (req, res) => {
   res.status(200).json('Bienvenido, tu aplicación se ha ejecutado correctamente');
+});
+
+// Ruta para crear suscripciones
+const plans = {
+  basic: 'prod_QZQxUPasqnWTnQ', 
+  standard: 'prod_QZQyJ63xRZmXzz',
+  advanced: 'prod_QZQzaImU9ydUXt',
+  premium: 'prod_QZQz9jbWS2m32i'
+};
+
+app.post('/create-subscription', async (req, res) => {
+  try {
+    const { email, paymentMethodId, plan } = req.body;
+
+    const customer = await stripe.customers.create({
+      payment_method: paymentMethodId,
+      email: email,
+      invoice_settings: {
+        default_payment_method: paymentMethodId
+      }
+    });
+
+    const subscription = await stripe.subscriptions.create({
+      customer: customer.id,
+      items: [{ price: plans[plan] }],
+      expand: ['latest_invoice.payment_intent']
+    });
+
+    res.send({
+      subscriptionId: subscription.id,
+      clientSecret: subscription.latest_invoice.payment_intent.client_secret
+    });
+  } catch (error) {
+    return res.status(400).send({ error: { message: error.message } });
+  }
 });
 
 // Configuración de servidor HTTP y socket.io

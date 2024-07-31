@@ -50,10 +50,10 @@ app.get('/', (req, res) => {
 
 // Ruta para crear suscripciones
 const plans = {
-  basic: 'prod_QZQxUPasqnWTnQ', 
-  standard: 'prod_QZQyJ63xRZmXzz',
-  advanced: 'prod_QZQzaImU9ydUXt',
-  premium: 'prod_QZQz9jbWS2m32i'
+  basic: 'price_1PiI5X2KRPeDwuZFwN9hhxto', 
+  standard: 'price_1PiI6M2KRPeDwuZFMUoB5DrU',
+  advanced: 'price_1PiI732KRPeDwuZFV3XclDU3',
+  premium: 'price_1PiI7c2KRPeDwuZFU22BMEdq'
 };
 
 app.post('/create-subscription', async (req, res) => {

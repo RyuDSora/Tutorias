@@ -17,7 +17,7 @@ const SubscriptionPlans = () => {
 
   const handleSelectPlan = async (plan) => {
     const stripe = await stripePromise;
-    const response = await axios.post('http://localhost:3000/create-subscription', {plan});
+    const response = await axios.post('http://localhost:3000/create-subscription', { plan });
     const sessionId = response.data.id;
     const { error } = await stripe.redirectToCheckout({ sessionId });
     if (error) {

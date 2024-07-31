@@ -3,8 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { loadStripe } from '@stripe/stripe-js';
 
+// Asegúrate de que estas variables estén definidas en tu archivo .env
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
-const API_URL = import.meta.env.VITE_API_URL;
+const API_URL = import.meta.env.VITE_API_URL; // Usa la URL correcta
 
 const plans = [
   { plan: 'basic', name: 'Plan Básico', price: '$20', features: ['Acceso a clases básicas'] },
@@ -18,7 +19,6 @@ const SubscriptionPlans = () => {
 
   const handleSelectPlan = async (plan) => {
     const stripe = await stripePromise;
-    console.log(`API URL: ${API_URL}/create-checkout-session`); // Verifica que la URL sea correcta
     try {
       const response = await axios.post(`${API_URL}/create-checkout-session`, { plan });
       const sessionId = response.data.id;

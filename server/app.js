@@ -21,10 +21,10 @@ const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 
 const app = express();
 const port = process.env.PORT || 3000;
-
+//, 'http://localhost:5173'
 // Configura CORS
 app.use(cors({
-  origin: ['https://tu-torias.vercel.app', 'http://localhost:5173'],
+  origin: ['https://tu-torias.vercel.app'],
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
   credentials: true,
 }));
@@ -81,10 +81,10 @@ app.post('/create-checkout-session', async (req, res) => {
 });
 // Configuración de servidor HTTP y socket.io
 const server = http.createServer(app);
-
+//, 'http://localhost:5173'
 const io = new Server(server, {
   cors: {
-    origin: ['https://tu-torias.vercel.app', 'http://localhost:5173'],
+    origin: ['https://tu-torias.vercel.app'],
     methods: ['GET', 'POST'],
     credentials: true,
   },

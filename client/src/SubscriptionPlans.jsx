@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { loadStripe } from '@stripe/stripe-js';
 
+// Accede a la variable de entorno en el momento de la compilación
 const stripePromise = loadStripe('pk_test_51PiHnr2KRPeDwuZFCAB1w7KMHZfqM4C1uQC1Ba9WQncYBSTcgHQGq1bgPgENk5dV0avTNamCENrWiygqkyJrE17F00ZTlNurK1');
 
 const plans = [
@@ -17,7 +18,7 @@ const SubscriptionPlans = () => {
 
   const handleSelectPlan = async (plan) => {
     const stripe = await stripePromise;
-    const response = await axios.post('http://localhost:3000/create-subscription', { plan });
+    const response = await axios.post(`${import.meta.env.VITE_API_URL}/create-checkout-session`, { plan });
     const sessionId = response.data.id;
     const { error } = await stripe.redirectToCheckout({ sessionId });
     if (error) {

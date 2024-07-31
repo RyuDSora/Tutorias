@@ -1,6 +1,5 @@
 import dotenv from 'dotenv';
-dotenv.config(); // Cargar las variables de entorno antes de usarlas
-
+dotenv.config();
 import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
@@ -57,10 +56,11 @@ const plans = {
   advanced: 'price_1PiI732KRPeDwuZFV3XclDU3',
   premium: 'price_1PiI7c2KRPeDwuZFU22BMEdq'
 };
-
-app.post('/create-subscription', async (req, res) => {
+app.post('/create-checkout-session', async (req, res) => {
+  console.log('Request received at /create-checkout-session'); // Log para verificar la solicitud
   try {
     const { plan } = req.body;
+    console.log('Plan:', plan); // Log para verificar el plan recibido
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: [
@@ -75,10 +75,10 @@ app.post('/create-subscription', async (req, res) => {
     });
     res.json({ id: session.id });
   } catch (error) {
+    console.error('Error creating checkout session:', error);
     res.status(400).send({ error: { message: error.message } });
   }
 });
-
 // Configuración de servidor HTTP y socket.io
 const server = http.createServer(app);
 

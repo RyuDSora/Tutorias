@@ -10,7 +10,7 @@ const PaymentForm = ({ plan }) => {
     event.preventDefault();
 
     try {
-      const response = await axios.post('http://localhost:3000/create-checkout-session', { plan });
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/create-subscription`, { plan });
       const sessionId = response.data.id;
 
       await stripe.redirectToCheckout({ sessionId });

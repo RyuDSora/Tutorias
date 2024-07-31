@@ -16,7 +16,7 @@ import tutorsubjectRoute from './routes/tutorsubjectRoute.js';
 import chatRoutes from './routes/chatRoutes.js';
 import Stripe from 'stripe';
 
-const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
+const stripe = Stripe('sk_test_51PiHnr2KRPeDwuZFCAB1w7KMHZfqM4C1uQC1Ba9WQncYBSTcgHQGq1bgPgENk5dV0avTNamCENrWiygqkyJrE17F00ZTlNurK1');
 dotenv.config();
 const app = express();
 const port = process.env.PORT || 3000;

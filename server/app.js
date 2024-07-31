@@ -1,5 +1,4 @@
 import dotenv from 'dotenv';
-dotenv.config();
 import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
@@ -17,7 +16,8 @@ import tutorsubjectRoute from './routes/tutorsubjectRoute.js';
 import chatRoutes from './routes/chatRoutes.js';
 import Stripe from 'stripe';
 
-const stripe = Stripe('ssk_test_51PiHnr2KRPeDwuZFKI57BPy89WXx6DOF7ACt1FYvnlkSWvuNjdGhze76d5egkL4akI45utD81sJv76nlBxIHJqgT00WUxgjKhy');
+const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
+dotenv.config();
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -58,31 +58,24 @@ const plans = {
 
 app.post('/create-subscription', async (req, res) => {
   try {
-    const { email, paymentMethodId, plan } = req.body;
-
-    const customer = await stripe.customers.create({
-      payment_method: paymentMethodId,
-      email: email,
-      invoice_settings: {
-        default_payment_method: paymentMethodId
-      }
+    const { plan } = req.body;
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
+      line_items: [
+        {
+          price: plans[plan],
+          quantity: 1,
+        },
+      ],
+      mode: 'subscription',
+      success_url: 'https://tu-torias.vercel.app/success',
+      cancel_url: 'https://tu-torias.vercel.app/cancel',
     });
-
-    const subscription = await stripe.subscriptions.create({
-      customer: customer.id,
-      items: [{ price: plans[plan] }],
-      expand: ['latest_invoice.payment_intent']
-    });
-
-    res.send({
-      subscriptionId: subscription.id,
-      clientSecret: subscription.latest_invoice.payment_intent.client_secret
-    });
+    res.json({ id: session.id });
   } catch (error) {
-    return res.status(400).send({ error: { message: error.message } });
+    res.status(400).send({ error: { message: error.message } });
   }
 });
-
 // Configuración de servidor HTTP y socket.io
 const server = http.createServer(app);
 

@@ -6,6 +6,8 @@ import { decryptValue,encryptionKey } from './components/hashes.jsx';
 //import { io } from 'socket.io-client';
 
 
+const Success = () => <h1>¡Pago realizado con éxito!</h1>;
+const Cancel = () => <h1>Pago cancelado. Inténtalo de nuevo.</h1>;
 //componentes
 import DashboardComponent from './DashboardComponent';
 import AboutUs from './components/AboutUs';
@@ -36,6 +38,7 @@ import DashboardAdmin from './DashboardAdmin.jsx';
 import SQLQueryForm from './components/SQLQueryForm';
 import TableList from './components/TableList';
 import SubscriptionPlans from './SubscriptionPlans.jsx';
+import SubscriptionForm from './SubscriptionForm';
 import withAuth from './hoc/withAuth';
 /*
 const socket = io('https://tutorias-five.vercel.app', {
@@ -100,7 +103,9 @@ function App() {
           <Route path="/cursos" element={<Cursos />} />
           <Route path="/tutores" element={<Tutores />} />
           <Route path="/suscripciones" element={<SubscriptionPlans />} />
-
+          <Route path="/subscribe/:plan" component={SubscriptionForm} />
+          <Route path="/success" element={<Success />} />
+          <Route path="/cancel" element={<Cancel />} />
           {/* Rutas protegidas */}
           <Route path="/account" element={withAuth(AccountComponent, ['administrador', 'estudiante', 'tutor'])()} />
           <Route path="/dashboardadmin" element={withAuth(DashboardAdmin, ['administrador'])()} >

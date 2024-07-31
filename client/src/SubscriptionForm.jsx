@@ -1,42 +1,21 @@
-import React, { useState } from 'react';
-import { CardElement, useElements, useStripe } from '@stripe/react-stripe-js';
-import axios from 'axios';
+import React from 'react';
+import { useParams } from 'react-router-dom';
+import { loadStripe } from '@stripe/stripe-js';
+import { Elements } from '@stripe/react-stripe-js';
+import PaymentForm from './PaymentForm';
 
-const SubscriptionForm = ({ plan }) => {
-  const stripe = useStripe();
-  const elements = useElements();
-  const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState('');
+const stripePromise = loadStripe('pk_test_51PiHnr2KRPeDwuZFCAB1w7KMHZfqM4C1uQC1Ba9WQncYBSTcgHQGq1bgPgENk5dV0avTNamCENrWiygqkyJrE17F00ZTlNurK1');
 
-  const handleSubscribe = async (event) => {
-    event.preventDefault();
-    setLoading(true);
-    setMessage('');
-
-    try {
-      const response = await axios.post('http://localhost:3000/create-checkout-session', { plan });
-      const sessionId = response.data.id;
-
-      const { error } = await stripe.redirectToCheckout({ sessionId });
-
-      if (error) {
-        setMessage(`Error: ${error.message}`);
-      }
-    } catch (error) {
-      setMessage(`Error creating checkout session: ${error.message}`);
-    } finally {
-      setLoading(false);
-    }
-  };
+const SubscriptionForm = () => {
+  const { plan } = useParams();
 
   return (
-    <form onSubmit={handleSubscribe}>
-      <CardElement />
-      <button type="submit" className="btn-primary mt-4" disabled={!stripe || !elements || loading}>
-        {loading ? 'Loading...' : 'Suscribirse'}
-      </button>
-      {message && <div className="mt-4 text-red-600">{message}</div>}
-    </form>
+    <div className="container mx-auto my-8">
+      <h1 className="text-3xl font-bold mb-6" style={{ color: '#336A41', fontFamily: 'Clear Sans Light, sans-serif' }}>Ingrese sus detalles de pago</h1>
+      <Elements stripe={stripePromise}>
+        <PaymentForm plan={plan} />
+      </Elements>
+    </div>
   );
 };
 

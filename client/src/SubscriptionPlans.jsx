@@ -1,7 +1,7 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import { loadStripe } from '@stripe/stripe-js';
-import { Elements } from '@stripe/react-stripe-js';
-import SubscriptionForm from './SubscriptionForm';
 
 const stripePromise = loadStripe('pk_test_51PiHnr2KRPeDwuZFCAB1w7KMHZfqM4C1uQC1Ba9WQncYBSTcgHQGq1bgPgENk5dV0avTNamCENrWiygqkyJrE17F00ZTlNurK1');
 
@@ -13,6 +13,18 @@ const plans = [
 ];
 
 const SubscriptionPlans = () => {
+  const navigate = useNavigate();
+
+  const handleSelectPlan = async (plan) => {
+    const stripe = await stripePromise;
+    const response = await axios.post('http://localhost:3000/create-subscription', {plan});
+    const sessionId = response.data.id;
+    const { error } = await stripe.redirectToCheckout({ sessionId });
+    if (error) {
+      console.error('Error redirecting to checkout:', error);
+    }
+  };
+
   return (
     <div className="container mx-auto my-8">
       <h1 className="text-3xl font-bold mb-6" style={{ color: '#336A41', fontFamily: 'Clear Sans Light, sans-serif' }}>Suscripciones</h1>
@@ -26,9 +38,9 @@ const SubscriptionPlans = () => {
                 <li key={index} className="mb-2">{feature}</li>
               ))}
             </ul>
-            <Elements stripe={stripePromise}>
-              <SubscriptionForm plan={plan.plan} />
-            </Elements>
+            <button onClick={() => handleSelectPlan(plan.plan)} className="btn-primary">
+              Seleccionar
+            </button>
           </div>
         ))}
       </div>

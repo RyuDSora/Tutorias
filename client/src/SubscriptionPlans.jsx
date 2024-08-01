@@ -45,9 +45,14 @@ const SubscriptionPlans = () => {
                 <li key={index} className="mb-2">{feature}</li>
               ))}
             </ul>
-            <button onClick={() => handleSelectPlan(plan.id)} className="btn-primary">
+            <button 
+              onClick={() => handleSelectPlan(plan.id)} 
+              className="btn-primary text-white font-semibold py-2 px-4 rounded shadow-lg transform transition-transform duration-300 ease-in-out hover:bg-green-700 hover:scale-105"
+              style={{ backgroundColor: '#336A41', fontFamily: 'Clear Sans Light, sans-serif' }}
+            >
               Seleccionar
             </button>
+
           </div>
         ))}
       </div>

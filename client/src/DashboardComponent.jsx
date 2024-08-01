@@ -6,14 +6,10 @@ import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
 
 export default function DashboardComponent() {
-  const [products, setProducts] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [addedToCart, setAddedToCart] = useState([]);
-  const productsPerPage = 8;
 
   // Ejemplo de imágenes locales (colocadas en la carpeta public/images)
   const images = [
-    { url: '/images/slide1.jpg', alt: 'Imagen 1' },
+    { url: '/images/slide1.png', alt: 'Imagen 1' },
     { url: '/images/slide2.png', alt: 'Imagen 2' },
     { url: '/images/slide3.png', alt: 'Imagen 3' },
     { url: '/images/slide4.jpg', alt: 'Imagen 4' },
@@ -32,58 +28,11 @@ export default function DashboardComponent() {
     { name: 'Carlos García', feedback: 'Muy buena experiencia, recomiendo esta plataforma a todos los estudiantes.', image: '/images/tutor1.jpg' },
   ];
 
-  const indexOfLastProduct = currentPage * productsPerPage;
-  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
-  const currentProducts = products.slice(indexOfFirstProduct, indexOfLastProduct);
-
-  const handleAddToCart = async (productId) => {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await axios.get(`${import.meta.env.VITE_API_URL}/cart`, {
-        headers: {
-          Authorization: token,
-        },
-      });
-      const cartItems = response.data;
-
-      const existingItem = cartItems.find((item) => item.product_id === productId);
-
-      if (existingItem) {
-        toast.info('El producto ya está agregado al carrito');
-        setAddedToCart([...addedToCart, productId]);
-      } else {
-        await axios.post(`${import.meta.env.VITE_API_URL}/cart/add`, { productId }, {
-          headers: {
-            Authorization: token,
-          },
-        });
-        console.log('Producto agregado al carrito');
-        toast.success('Producto agregado al carrito');
-        setAddedToCart([...addedToCart, productId]);
-      }
-    } catch (error) {
-      console.error('Error al agregar el producto al carrito:', error);
-      toast.error('Error al agregar el producto al carrito');
-    }
-  };
-
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}/product-list`);
-        setProducts(response.data);
-      } catch (error) {
-        console.error('Error al obtener la lista de productos:', error);
-      }
-    };
-    //fetchProducts();
-  }, [currentPage]);
-
   return (
     <div className="bg-white">
       <ToastContainer />
-      <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
-        <div className="Principal uppercase text-center txt_lg f_regular">Tutorías</div>  
+      <div className="mx-auto max-w-2xl px-4 py-8 sm:px-6 sm:py-12 lg:max-w-7xl lg:px-8">
+        <div className="Principal uppercase text-center txt_lg f_regular" style={{ marginTop: '-40px' }}>Tutorías</div>  
         <div className="Secundario text-center f_principal">Encuentra al tutor perfecto para ti</div>
         
         {/* Carrusel de imágenes */}
@@ -135,36 +84,6 @@ export default function DashboardComponent() {
               Resultados que todos amarán
             </p>
           </div>
-        </div>
-
-        {/* Lista de productos */}
-        <div className="mt-8 mb-8 grid grid-cols-1 gap-y-12 sm:grid-cols-2 sm:gap-x-6 lg:grid-cols-4 xl:gap-x-8">
-          {currentProducts.map((product) => (
-            <div key={product.product_id} className="border p-4 rounded-lg transition-all duration-300 transform hover:scale-105 relative">
-              <div className="overflow-hidden relative rounded-lg">
-                <img
-                  src={product.image_url}
-                  alt={product.name}
-                  className="h-72 w-full object-cover object-center"
-                />
-                <div className="p-4 text-center">
-                  <p className="text-lg font-semibold">L {product.price}</p>
-                  <p className="mt-2 text-sm font-medium text-gray-900">{product.name}</p>
-                  <p className="mt-1 text-sm text-gray-500">{product.description}</p>
-                  <button
-                    onClick={() => handleAddToCart(product.product_id)}
-                    disabled={addedToCart.includes(product.product_id)}
-                    className={`mt-4 rounded-md border-transparent px-4 py-2 text-sm font-medium ${addedToCart.includes(product.product_id)
-                      ? 'bg-green-500 text-white cursor-not-allowed'
-                      : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
-                      }`}
-                  >
-                    {addedToCart.includes(product.product_id) ? 'Agregado al carrito' : 'Agregar al carrito'}
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))}
         </div>
 
         {/* Nuevo apartado de feedback */}

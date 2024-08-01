@@ -5,8 +5,8 @@ import { loadStripe } from '@stripe/stripe-js';
 import { url } from './components/Urls';
 
 // Asegúrate de que estas variables estén definidas en tu archivo .env
-const stripePromise = loadStripe(import.meta.env.STRIPE_PUBLIC_KEY);
-const API_URL = import.meta.env.API_URL; // Usa la URL correcta
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
+const API_URL = import.meta.env.VITE_API_URL; // Usa la URL correcta
 
 const plans = [
   { id : "price_1PiI5X2KRPeDwuZFwN9hhxto", plan: 'basic', name: 'Plan Básico', price: '$20', features: ['Acceso a clases básicas'] },

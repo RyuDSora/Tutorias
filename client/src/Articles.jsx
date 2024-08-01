@@ -1,9 +1,9 @@
 import React from 'react';
 import { Row, Col, Card } from 'react-bootstrap';
-import img1 from "../public/images/gamificacion02-2-768x400-1.png"
-import img2 from "../public/images/crear-cursos-en-linea-coursifyme.jpg"
-import img3 from "../public/images/curso-virtual.jpg"
-import img4 from "../public/images/tip4.jpg"
+import img1 from "/images/gamificacion02-2-768x400-1.png"
+import img2 from "/images/crear-cursos-en-linea-coursifyme.jpg"
+import img3 from "/images/curso-virtual.jpg"
+import img4 from "/images/tip4.jpg"
 
 
 const Articles = () => {

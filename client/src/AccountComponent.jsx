@@ -190,7 +190,7 @@ function AccountComponent() {
                   </div>
                   <div className="row">
                     <div className="col-4">
-                      <img src={pre+formData.imagen_perfil} alt={formData.imagen_perfil} className="mt-2 rounded-4"/>
+                      <img src={`${pre}${formData.imagen_perfil}`} alt={formData.imagen_perfil} className="mt-2 rounded-4"/>
                       <select
                         className="form-control mt-2"
                         name="imagen_perfil"

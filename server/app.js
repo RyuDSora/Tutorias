@@ -15,15 +15,13 @@ import paymentRoute from './routes/paymentRoute.js';
 import ratingRoute from './routes/ratingRoute.js';
 import tutorsubjectRoute from './routes/tutorsubjectRoute.js';
 import chatRoutes from './routes/chatRoutes.js';
-import Stripe from 'stripe';
+import stripeRoute from './routes/stripeRoute.js'
 
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY); // Usa process.env para obtener la clave
 
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Configura CORS
+// Configura CORS, acepta peticiones get,post... desde tu-torias.vercel.app y desde localhost:5173
 app.use(cors({
   origin: ['https://tu-torias.vercel.app', 'http://localhost:5173'],
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
@@ -45,62 +43,8 @@ app.use('/payments', paymentRoute);
 app.use('/ratings', ratingRoute);
 app.use('/ts', tutorsubjectRoute);
 app.use('/api', chatRoutes);
+app.use('/stripe',stripeRoute);
 
-app.get('/', (req, res) => {
-  console.log('Stripe Secret Key:', process.env.STRIPE_SECRET_KEY); // Esto debería imprimir la clave de la API
-
-  res.status(200).json('Bienvenido, tu aplicación se ha ejecutado correctamente');
-});
-
-// Ruta para crear suscripciones
-const plans = {
-  basic: 'price_1PiI5X2KRPeDwuZFwN9hhxto', 
-  standard: 'price_1PiI6M2KRPeDwuZFMUoB5DrU',
-  advanced: 'price_1PiI732KRPeDwuZFV3XclDU3',
-  premium: 'price_1PiI7c2KRPeDwuZFU22BMEdq'
-};
-
-///direccion para verificar que se esta usando la secret key correcta
-app.get('/test-stripe-key', async (req, res) => {
-  try {
-    const response = await stripe.products.list(); // Listar productos como prueba
-    res.status(200).json({
-      success: true,
-      data: response, // Mostrar la respuesta de la API de Stripe
-    });
-  } catch (error) {
-    console.error('Error al verificar la clave de Stripe:', error);
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
-});
-
-//vrear la sesion de stripe
-app.post('/create-checkout-session', async (req, res) => {
-  console.log('Request received at /create-checkout-session');
-  try {
-    const { priceId } = req.body;
-    console.log('Plan:', priceId);
-    const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['card'],
-      line_items: [
-        {
-          price: priceId,
-          quantity: 1,
-        },
-      ],
-      mode: 'subscription',
-      success_url: 'https://tu-torias.vercel.app/success',
-      cancel_url: 'https://tu-torias.vercel.app/cancel',
-    });
-    res.json({ id: session.id });
-  } catch (error) {
-    console.error('Error creating checkout session:', error);
-    res.status(400).send({ error: { message: error.message } });
-  }
-});
 
 // Configuración de servidor HTTP y socket.io --aunq no funciona como deberia XD
 const server = http.createServer(app);
@@ -137,10 +81,11 @@ io.on('connection', (socket) => {
   });
 });
 
+//servidor principal con NodeJS
 server.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
 
-app.get('/test', (req, res) => {
-  res.status(200).send('Server is running');
+app.get('/', (req, res) => {
+  res.status(200).send('Bienvenido al servidor de Tutorias. ');  
 });

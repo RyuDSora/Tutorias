@@ -4,7 +4,7 @@ import axios from 'axios';
 import { loadStripe } from '@stripe/stripe-js';
 import { url } from './components/Urls';
 
-// Asegúrate de que estas variables estén definidas en tu archivo .env
+// Asegúrate de que estas variables estén definidas en tu archivo .env o en variables de Vercel
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
 const API_URL = import.meta.env.VITE_API_URL; // Usa la URL correcta
 
@@ -21,7 +21,7 @@ const SubscriptionPlans = () => {
   const handleSelectPlan = async (priceId) => {
     const stripe = await stripePromise;
     try {
-      const response = await axios.post(`${url}/create-checkout-session`, {priceId });
+      const response = await axios.post(`${url}/stripe/create-checkout-session`, {priceId });
       const sessionId = response.data.id;
       const { error } = await stripe.redirectToCheckout({ sessionId });
       if (error) {

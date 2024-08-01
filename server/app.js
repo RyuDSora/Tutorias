@@ -17,14 +17,15 @@ import tutorsubjectRoute from './routes/tutorsubjectRoute.js';
 import chatRoutes from './routes/chatRoutes.js';
 import Stripe from 'stripe';
 
-const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY); // Usa process.env para obtener la clave
 
 const app = express();
 const port = process.env.PORT || 3000;
-//, 'http://localhost:5173'
+
 // Configura CORS
 app.use(cors({
-  origin: ['https://tu-torias.vercel.app'],
+  origin: ['https://tu-torias.vercel.app', 'http://localhost:5173'],
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
   credentials: true,
 }));
@@ -46,6 +47,8 @@ app.use('/ts', tutorsubjectRoute);
 app.use('/api', chatRoutes);
 
 app.get('/', (req, res) => {
+  console.log('Stripe Secret Key:', process.env.STRIPE_SECRET_KEY); // Esto debería imprimir la clave de la API
+
   res.status(200).json('Bienvenido, tu aplicación se ha ejecutado correctamente');
 });
 
@@ -56,16 +59,35 @@ const plans = {
   advanced: 'price_1PiI732KRPeDwuZFV3XclDU3',
   premium: 'price_1PiI7c2KRPeDwuZFU22BMEdq'
 };
-app.post('/create-checkout-session', async (req, res) => {
-  console.log('Request received at /create-checkout-session'); // Log para verificar la solicitud
+
+///direccion para verificar que se esta usando la secret key correcta
+app.get('/test-stripe-key', async (req, res) => {
   try {
-    const { plan } = req.body;
-    console.log('Plan:', plan); // Log para verificar el plan recibido
+    const response = await stripe.products.list(); // Listar productos como prueba
+    res.status(200).json({
+      success: true,
+      data: response, // Mostrar la respuesta de la API de Stripe
+    });
+  } catch (error) {
+    console.error('Error al verificar la clave de Stripe:', error);
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+});
+
+//vrear la sesion de stripe
+app.post('/create-checkout-session', async (req, res) => {
+  console.log('Request received at /create-checkout-session');
+  try {
+    const { priceId } = req.body;
+    console.log('Plan:', priceId);
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: [
         {
-          price: plans[plan],
+          price: priceId,
           quantity: 1,
         },
       ],
@@ -79,12 +101,12 @@ app.post('/create-checkout-session', async (req, res) => {
     res.status(400).send({ error: { message: error.message } });
   }
 });
-// Configuración de servidor HTTP y socket.io
+
+// Configuración de servidor HTTP y socket.io --aunq no funciona como deberia XD
 const server = http.createServer(app);
-//, 'http://localhost:5173'
 const io = new Server(server, {
   cors: {
-    origin: ['https://tu-torias.vercel.app'],
+    origin: ['https://tu-torias.vercel.app', 'http://localhost:5173'],
     methods: ['GET', 'POST'],
     credentials: true,
   },

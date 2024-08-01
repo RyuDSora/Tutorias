@@ -2,25 +2,26 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { loadStripe } from '@stripe/stripe-js';
+import { url } from './components/Urls';
 
 // Asegúrate de que estas variables estén definidas en tu archivo .env
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
-const API_URL = import.meta.env.VITE_API_URL; // Usa la URL correcta
+const stripePromise = loadStripe(import.meta.env.STRIPE_PUBLIC_KEY);
+const API_URL = import.meta.env.API_URL; // Usa la URL correcta
 
 const plans = [
-  { plan: 'basic', name: 'Plan Básico', price: '$20', features: ['Acceso a clases básicas'] },
-  { plan: 'standard', name: 'Plan Estándar', price: '$40', features: ['Acceso a clases estándar'] },
-  { plan: 'advanced', name: 'Plan Avanzado', price: '$80', features: ['Acceso a clases avanzadas'] },
-  { plan: 'premium', name: 'Plan Premium', price: '$160', features: ['Acceso a todas las clases'] },
+  { id : "price_1PiI5X2KRPeDwuZFwN9hhxto", plan: 'basic', name: 'Plan Básico', price: '$20', features: ['Acceso a clases básicas'] },
+  { id : "price_1PiI6M2KRPeDwuZFMUoB5DrU", plan: 'standard', name: 'Plan Estándar', price: '$40', features: ['Acceso a clases estándar'] },
+  { id : "price_1PiI732KRPeDwuZFV3XclDU3", plan: 'advanced', name: 'Plan Avanzado', price: '$80', features: ['Acceso a clases avanzadas'] },
+  { id : "price_1PiI7c2KRPeDwuZFU22BMEdq", plan: 'premium', name: 'Plan Premium', price: '$160', features: ['Acceso a todas las clases'] },
 ];
 
 const SubscriptionPlans = () => {
   const navigate = useNavigate();
 
-  const handleSelectPlan = async (plan) => {
+  const handleSelectPlan = async (priceId) => {
     const stripe = await stripePromise;
     try {
-      const response = await axios.post(`${API_URL}/create-checkout-session`, { plan });
+      const response = await axios.post(`${url}/create-checkout-session`, {priceId });
       const sessionId = response.data.id;
       const { error } = await stripe.redirectToCheckout({ sessionId });
       if (error) {
@@ -44,7 +45,7 @@ const SubscriptionPlans = () => {
                 <li key={index} className="mb-2">{feature}</li>
               ))}
             </ul>
-            <button onClick={() => handleSelectPlan(plan.plan)} className="btn-primary">
+            <button onClick={() => handleSelectPlan(plan.id)} className="btn-primary">
               Seleccionar
             </button>
           </div>

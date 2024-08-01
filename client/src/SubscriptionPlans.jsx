@@ -9,10 +9,10 @@ const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
 const API_URL = import.meta.env.VITE_API_URL; // Usa la URL correcta
 
 const plans = [
-  { id : "price_1PiI5X2KRPeDwuZFwN9hhxto", plan: 'basic', name: 'Plan Básico', price: '$20', features: ['Acceso a clases básicas'] },
-  { id : "price_1PiI6M2KRPeDwuZFMUoB5DrU", plan: 'standard', name: 'Plan Estándar', price: '$40', features: ['Acceso a clases estándar'] },
-  { id : "price_1PiI732KRPeDwuZFV3XclDU3", plan: 'advanced', name: 'Plan Avanzado', price: '$80', features: ['Acceso a clases avanzadas'] },
-  { id : "price_1PiI7c2KRPeDwuZFU22BMEdq", plan: 'premium', name: 'Plan Premium', price: '$160', features: ['Acceso a todas las clases'] },
+  { id : "price_1PiI5X2KRPeDwuZFwN9hhxto", plan: 'basic', name: 'Plan Básico', price: '$20', features: ['Acceso a tutores básicos, 1 sesión al mes'] },
+  { id : "price_1PiI6M2KRPeDwuZFMUoB5DrU", plan: 'standard', name: 'Plan Estándar', price: '$40', features: ['Acceso a tutores estándar, 3 sesiones al mes'] },
+  { id : "price_1PiI732KRPeDwuZFV3XclDU3", plan: 'advanced', name: 'Plan Avanzado', price: '$80', features: ['Acceso a tutores avanzados, 5 sesiones al mes'] },
+  { id : "price_1PiI7c2KRPeDwuZFU22BMEdq", plan: 'premium', name: 'Plan Premium', price: '$160', features: ['Acceso a todos los tutores, Sesiones ilimitadas'] },
 ];
 
 const SubscriptionPlans = () => {

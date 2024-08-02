@@ -22,13 +22,16 @@ const plans = [
 const SubscriptionPlans = () => {
   const navigate = useNavigate();
   const [userRole, setUserRole] = useState('');
+  const [userId, setUserId] = useState('');
 
   useEffect(() => {
     if (Cookies.get('$3s1.4')) {
       const session = decryptValue(Cookies.get('$3s1.4'), encryptionKey);
       if (session) {
         const role = decryptValue(Cookies.get('&0l3'), encryptionKey);
+        const id = decryptValue(Cookies.get('userId'), encryptionKey); // Asumiendo que guardas el userId en una cookie
         setUserRole(role);
+        setUserId(id);
       }
     }
   }, []);
@@ -52,7 +55,7 @@ const SubscriptionPlans = () => {
 
     const stripe = await stripePromise;
     try {
-      const response = await axios.post(`${url}/stripe/create-checkout-session`, { priceId });
+      const response = await axios.post(`${url}/stripe/create-checkout-session`, { priceId, userId });
       const sessionId = response.data.id;
       const { error } = await stripe.redirectToCheckout({ sessionId });
       if (error) {

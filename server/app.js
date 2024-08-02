@@ -16,6 +16,7 @@ import ratingRoute from './routes/ratingRoute.js';
 import tutorsubjectRoute from './routes/tutorsubjectRoute.js';
 import chatRoutes from './routes/chatRoutes.js';
 import stripeRoute from './routes/stripeRoute.js'
+import subscriptionRoute from './routes/subscriptionRoute.js';
 
 
 const app = express();
@@ -44,6 +45,7 @@ app.use('/ratings', ratingRoute);
 app.use('/ts', tutorsubjectRoute);
 app.use('/api', chatRoutes);
 app.use('/stripe',stripeRoute);
+app.use('/subscriptions', subscriptionRoute);
 
 
 // Configuración de servidor HTTP y socket.io --aunq no funciona como deberia XD

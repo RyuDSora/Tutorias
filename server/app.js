@@ -16,6 +16,7 @@ import ratingRoute from './routes/ratingRoute.js';
 import tutorsubjectRoute from './routes/tutorsubjectRoute.js';
 import chatRoutes from './routes/chatRoutes.js';
 import stripeRoute from './routes/stripeRoute.js'
+import suscriptionRoute from './routes/suscriptionRoute.js'
 
 
 const app = express();
@@ -44,11 +45,12 @@ app.use('/ratings', ratingRoute);
 app.use('/ts', tutorsubjectRoute);
 app.use('/api', chatRoutes);
 app.use('/stripe',stripeRoute);
+app.use('/suscription',suscriptionRoute);
 
 
 // Configuración de servidor HTTP y socket.io --aunq no funciona como deberia XD
-const server = http.createServer(app);
-const io = new Server(server, {
+const serverIO = http.createServer(app);
+const io = new Server(serverIO, {
   cors: {
     origin: ['https://tu-torias.vercel.app', 'http://localhost:5173'],
     methods: ['GET', 'POST'],
@@ -82,8 +84,13 @@ io.on('connection', (socket) => {
 });
 
 //servidor principal con NodeJS
-server.listen(port, () => {
+app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
+});
+
+//servidor principal con NodeJS
+serverIO.listen(3001, () => {
+  console.log(`ServerIO is running on port ${3001}`);
 });
 
 app.get('/', (req, res) => {

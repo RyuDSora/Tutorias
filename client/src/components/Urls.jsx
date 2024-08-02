@@ -22,3 +22,6 @@ export const uritutorsubject = url + '/ts';
 
 //chats
 export const urichat = url + '/api/messages';
+
+//suscripciones
+export const URLsuscription = url + '/suscription';

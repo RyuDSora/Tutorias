@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { loadStripe } from '@stripe/stripe-js';
 import { url } from './components/Urls';
+import Cookies from 'js-cookie';
+import { decryptValue, encryptionKey } from './components/hashes';
 
 // Asegúrate de que estas variables estén definidas en tu archivo .env o en variables de Vercel
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
@@ -17,11 +19,27 @@ const plans = [
 
 const SubscriptionPlans = () => {
   const navigate = useNavigate();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    // Check if user is logged in
+    if (Cookies.get('$3s1.4')) {
+      const session = decryptValue(Cookies.get('$3s1.4'), encryptionKey);
+      if (session) {
+        setIsLoggedIn(true);
+      }
+    }
+  }, []);
 
   const handleSelectPlan = async (priceId) => {
+    if (!isLoggedIn) {
+      navigate('/login');
+      return;
+    }
+
     const stripe = await stripePromise;
     try {
-      const response = await axios.post(`${url}/stripe/create-checkout-session`, {priceId });
+      const response = await axios.post(`${url}/stripe/create-checkout-session`, { priceId });
       const sessionId = response.data.id;
       const { error } = await stripe.redirectToCheckout({ sessionId });
       if (error) {
@@ -40,7 +58,7 @@ const SubscriptionPlans = () => {
           <div key={plan.plan} className="border p-6 rounded-lg shadow-lg">
             <h2 className="text-xl font-semibold mb-4" style={{ color: '#336A41', fontFamily: 'Clear Sans Light, sans-serif' }}>{plan.name}</h2>
             <p className="text-2xl mb-4">{plan.price}</p>
-            <ul className="mb-4">
+            <ul className="mb-4 list-disc list-inside" style={{ fontFamily: 'Clear Sans Light, sans-serif' }}>
               {plan.features.map((feature, index) => (
                 <li key={index} className="mb-2">{feature}</li>
               ))}
@@ -52,7 +70,6 @@ const SubscriptionPlans = () => {
             >
               Seleccionar
             </button>
-
           </div>
         ))}
       </div>

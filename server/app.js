@@ -3,8 +3,6 @@ dotenv.config();
 import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
-import http from 'http';
-import { Server } from 'socket.io';
 import userRoute from './routes/userRoute.js';
 import tableRoute from './routes/tableRoute.js';
 import sqlRoute from './routes/sqlRoute.js';
@@ -48,50 +46,11 @@ app.use('/stripe',stripeRoute);
 app.use('/suscription',suscriptionRoute);
 
 
-// Configuración de servidor HTTP y socket.io --aunq no funciona como deberia XD
-const serverIO = http.createServer(app);
-const io = new Server(serverIO, {
-  cors: {
-    origin: ['https://tu-torias.vercel.app', 'http://localhost:5173'],
-    methods: ['GET', 'POST'],
-    credentials: true,
-  },
-});
-
-const connectedUsers = new Map();
-
-io.on('connection', (socket) => {
-  socket.on('user_connected', (userId) => {
-    connectedUsers.set(userId, socket.id);
-    io.emit('active_users', Array.from(connectedUsers.keys()));
-  });
-
-  socket.on('send_message', (msg) => {
-    const recipientSocketId = connectedUsers.get(msg.receptor);
-    if (recipientSocketId) {
-      io.to(recipientSocketId).emit('receive_message', msg);
-    }
-  });
-
-  socket.on('disconnect', () => {
-    connectedUsers.forEach((value, key) => {
-      if (value === socket.id) {
-        connectedUsers.delete(key);
-      }
-    });
-    io.emit('active_users', Array.from(connectedUsers.keys()));
-  });
-});
-
 //servidor principal con NodeJS
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
 
-//servidor principal con NodeJS
-serverIO.listen(3001, () => {
-  console.log(`ServerIO is running on port ${3001}`);
-});
 
 app.get('/', (req, res) => {
   res.status(200).send('Bienvenido al servidor de Tutorias. ');  

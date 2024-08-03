@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Container, Row, Col, ListGroup, Form, Button, Alert, Accordion, Card, Offcanvas } from 'react-bootstrap';
-//import { io } from 'socket.io-client';
+import { io } from 'socket.io-client';
 import axios from 'axios';
 import { FaChevronLeft } from "react-icons/fa";
-import { url, urichat, URIUser } from './Urls';
+import {  urichat, URIUser } from './Urls';
+const url = 'http://localhost:3001'
 
 const Chats = ({ userId }) => {
   const UserId = parseInt(userId);
@@ -17,8 +18,8 @@ const Chats = ({ userId }) => {
   const messagesEndRef = useRef(null);
   const [screenMid, setScreenMid] = useState(window.innerHeight);
   
-  /* useEffect(() => {
-    const socket = io('https://tutorias-five.vercel.app');
+   useEffect(() => {
+    const socket = io(url);
 
     socket.on('connect', () => {
       console.log('Connected to server');
@@ -31,12 +32,14 @@ const Chats = ({ userId }) => {
 
     socket.on('active_users', (users) => {
       setConnectedStudents(users);
+      console.log(users);
+      
     });
 
     return () => {
       socket.disconnect();
     };
-  }, [UserId]);*/
+  }, [UserId]);
 
   const fetchChatHistory = async (user1, user2) => {
     try {

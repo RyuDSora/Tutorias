@@ -4,7 +4,8 @@ import { io } from 'socket.io-client';
 import axios from 'axios';
 import { FaChevronLeft } from "react-icons/fa";
 import {  urichat, URIUser } from './Urls';
-const url = 'http://localhost:3001'
+//const url = 'http://localhost:3001'
+const url = 'https://tutorias-io.vercel.app'
 
 const Chats = ({ userId }) => {
   const UserId = parseInt(userId);

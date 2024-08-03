@@ -17,6 +17,7 @@ const io = socketIo(server, {
 app.get('/', (req, res) => {
   res.status(200).send('Bienvenido al servidorIo de Tutorias.');
 });
+
 const connectedUsers = new Map();
 
 io.on('connection', (socket) => {
@@ -25,21 +26,14 @@ io.on('connection', (socket) => {
     io.emit('active_users', Array.from(connectedUsers.keys()));
   });
 
-  socket.on('send_message', (msg) => {
-    const recipientSocketId = connectedUsers.get(msg.receptor);
-    if (recipientSocketId) {
-      io.to(recipientSocketId).emit('receive_message', msg);
-    }
-  });
-
   socket.on('disconnect', () => {
     connectedUsers.forEach((value, key) => {
       if (value === socket.id) {
         connectedUsers.delete(key);
       }
-    });
-    io.emit('active_users', Array.from(connectedUsers.keys()));
   });
+  
+  io.emit('active_users', Array.from(connectedUsers.keys()));});
 });
 
 server.listen(port, () => {

@@ -4,10 +4,10 @@ import { io } from 'socket.io-client';
 import axios from 'axios';
 import { FaChevronLeft } from "react-icons/fa";
 import {  urichat, URIUser } from './Urls';
-//const url = 'http://localhost:3001'
-const url = 'https://tutorias-io.vercel.app'
 
 const Chats = ({ userId }) => {
+  //const [url] = useState('http://localhost:3001');
+  const [url] = useState('https://tutorias-io.vercel.app');
   const UserId = parseInt(userId);
   const [messages, setMessages] = useState({});
   const [input, setInput] = useState('');

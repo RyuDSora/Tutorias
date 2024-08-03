@@ -8,7 +8,7 @@ const port = process.env.PORT || 3001;
 const server = http.createServer(app);
 const io = socketIo(server, {
   cors: {
-    origin: '*',
+    origin: '*', // Consider restrict origin in production
     methods: ['GET', 'POST']
   }
 });
@@ -21,22 +21,30 @@ app.get('/', (req, res) => {
 const connectedUsers = new Map();
 
 io.on('connection', (socket) => {
+  console.log(`User connected: ${socket.id}`);
+
   socket.on('user_connected', (userId) => {
+    console.log(`User ID ${userId} connected`);
     connectedUsers.set(userId, socket.id);
     io.emit('active_users', Array.from(connectedUsers.keys()));
   });
 
   socket.on('disconnect', () => {
+    console.log(`User disconnected: ${socket.id}`);
     connectedUsers.forEach((value, key) => {
       if (value === socket.id) {
         connectedUsers.delete(key);
       }
+    });
+    io.emit('active_users', Array.from(connectedUsers.keys()));
   });
-  
-  io.emit('active_users', Array.from(connectedUsers.keys()));});
+
+  // Optional: Handle connection errors
+  socket.on('connect_error', (error) => {
+    console.error('Connection Error:', error);
+  });
 });
 
 server.listen(port, () => {
   console.log(`Socket.IO server is running on port ${port}`);
 });
-

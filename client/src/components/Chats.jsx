@@ -1,14 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Container, Row, Col, ListGroup, Form, Button, Alert, Accordion, Card, Offcanvas } from 'react-bootstrap';
-import { io } from 'socket.io-client';
+
 import axios from 'axios';
 import { FaChevronLeft } from "react-icons/fa";
 import {  urichat, URIUser } from './Urls';
 
 const Chats = ({ userId }) => {
-  //const [url] = useState('http://localhost:3001');
-  //const [url] = useState('https://tutorias-io.vercel.app');
-  const url = 'ws://localhost:3001';
   const UserId = parseInt(userId);
   const [messages, setMessages] = useState({});
   const [input, setInput] = useState('');
@@ -19,49 +16,8 @@ const Chats = ({ userId }) => {
   const [showUsers, setShowUsers] = useState(false);
   const messagesEndRef = useRef(null);
   const [screenMid, setScreenMid] = useState(window.innerHeight);
-  const [ws, setWs] = useState(null);
   
-   useEffect(() => {
-    const socket = new WebSocket(url);
-    socket.onopen = () => {
-      socket.send(JSON.stringify({ type: 'user_connected', userId: UserId }));
-      setWs(socket);
-    };
-    socket.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      if (data.type === 'active_users') {
-        setConnectedStudents(data.users);
-      }
-    };
 
-    socket.onerror = (err) => {
-      console.error('WebSocket Error:', err);
-    };
-
-    return () => {
-      socket.close();
-    };
-/*
-
-    socket.on('connect', () => {
-      console.log('Connected to server');
-      socket.emit('user_connected', UserId);
-    });
-
-    socket.on('connect_error', (err) => {
-      console.error('Connection error:', err);
-    });
-
-    socket.on('active_users', (users) => {
-      setConnectedStudents(users);
-      console.log(users);
-      
-    });
-
-    return () => {
-      socket.disconnect();
-    };*/
-  }, [UserId]);
 
   const fetchChatHistory = async (user1, user2) => {
     try {
@@ -241,10 +197,10 @@ const Chats = ({ userId }) => {
                                   width: '10px',
                                   height: '10px',
                                   borderRadius: '50%',
-                                  backgroundColor: connectedStudents.includes(user.id) ? 'green' : 'red',
                                   display: 'inline-block',
                                   marginRight: '10px',
                                 }}
+                                className='bg_secundario'
                               />
                               {user.name + ' ' + user.last}
                             </ListGroup.Item>

@@ -7,7 +7,8 @@ import {  urichat, URIUser } from './Urls';
 
 const Chats = ({ userId }) => {
   //const [url] = useState('http://localhost:3001');
-  const [url] = useState('https://tutorias-io.vercel.app');
+  //const [url] = useState('https://tutorias-io.vercel.app');
+  const url = 'ws://localhost:3001';
   const UserId = parseInt(userId);
   const [messages, setMessages] = useState({});
   const [input, setInput] = useState('');
@@ -18,9 +19,29 @@ const Chats = ({ userId }) => {
   const [showUsers, setShowUsers] = useState(false);
   const messagesEndRef = useRef(null);
   const [screenMid, setScreenMid] = useState(window.innerHeight);
+  const [ws, setWs] = useState(null);
   
    useEffect(() => {
-    const socket = io(url);
+    const socket = new WebSocket(url);
+    socket.onopen = () => {
+      socket.send(JSON.stringify({ type: 'user_connected', userId: UserId }));
+      setWs(socket);
+    };
+    socket.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      if (data.type === 'active_users') {
+        setConnectedStudents(data.users);
+      }
+    };
+
+    socket.onerror = (err) => {
+      console.error('WebSocket Error:', err);
+    };
+
+    return () => {
+      socket.close();
+    };
+/*
 
     socket.on('connect', () => {
       console.log('Connected to server');
@@ -39,7 +60,7 @@ const Chats = ({ userId }) => {
 
     return () => {
       socket.disconnect();
-    };
+    };*/
   }, [UserId]);
 
   const fetchChatHistory = async (user1, user2) => {

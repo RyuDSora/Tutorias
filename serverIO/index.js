@@ -1,50 +1,56 @@
 const express = require('express');
 const http = require('http');
-const socketIo = require('socket.io');
+const WebSocket = require('ws');
 
 const app = express();
 const port = process.env.PORT || 3001;
 
 const server = http.createServer(app);
-const io = socketIo(server, {
-  cors: {
-    origin: '*', // Consider restrict origin in production
-    methods: ['GET', 'POST']
-  }
-});
-
-// Definir una ruta en Express
-app.get('/', (req, res) => {
-  res.status(200).send('Bienvenido al servidorIo de Tutorias.');
-});
+const wss = new WebSocket.Server({ server });
 
 const connectedUsers = new Map();
 
-io.on('connection', (socket) => {
-  console.log(`User connected: ${socket.id}`);
+app.get('/', (req, res) => {
+  res.status(200).send('Bienvenido al servidor de Tutorias.');
+});
 
-  socket.on('user_connected', (userId) => {
-    console.log(`User ID ${userId} connected`);
-    connectedUsers.set(userId, socket.id);
-    io.emit('active_users', Array.from(connectedUsers.keys()));
+wss.on('connection', (ws) => {
+  console.log('User connected');
+
+  ws.on('message', (message) => {
+    const data = JSON.parse(message);
+
+    if (data.type === 'user_connected') {
+      const { userId } = data;
+      console.log(`User ID ${userId} connected`);
+      connectedUsers.set(userId, ws);
+      broadcastActiveUsers();
+    }
   });
 
-  socket.on('disconnect', () => {
-    console.log(`User disconnected: ${socket.id}`);
+  ws.on('close', () => {
+    console.log('User disconnected');
     connectedUsers.forEach((value, key) => {
-      if (value === socket.id) {
+      if (value === ws) {
         connectedUsers.delete(key);
       }
     });
-    io.emit('active_users', Array.from(connectedUsers.keys()));
+    broadcastActiveUsers();
   });
 
-  // Optional: Handle connection errors
-  socket.on('connect_error', (error) => {
-    console.error('Connection Error:', error);
+  ws.on('error', (error) => {
+    console.error('WebSocket Error:', error);
   });
 });
 
+function broadcastActiveUsers() {
+  const activeUsers = Array.from(connectedUsers.keys());
+  const message = JSON.stringify({ type: 'active_users', users: activeUsers });
+  connectedUsers.forEach((ws) => {
+    ws.send(message);
+  });
+}
+
 server.listen(port, () => {
-  console.log(`Socket.IO server is running on port ${port}`);
+  console.log(`WebSocket server is running on port ${port}`);
 });

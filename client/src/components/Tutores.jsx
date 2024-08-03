@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { uritutor, URIUser } from './components/Urls';
+import { uritutor, URIUser } from './Urls';
+import { Card, Col, Row } from 'react-bootstrap';
 import axios from 'axios';
-import img from '../public/images/tutor1.jpg'
-import img2 from '../public/images/tutor2.jpg'
+import img from '/images/tutor1.jpg'
+import img2 from '/images/tutor2.jpg'
 
 // Componente para mostrar la tarjeta de un tutor
 const TutorCard = ({ tutor, user }) => {
@@ -13,15 +14,19 @@ const TutorCard = ({ tutor, user }) => {
     }
   },[])
   return (
-    <div className="card">
-      {female ? (<img src={img2} alt={tutor.name} className="image" />):(<img src={img} alt={tutor.name} className="image" />)}
-      
-      <div className="textContainer">
-        <h3 className="name">{user.name+" "+user.last }</h3>
-        <p className="description">{tutor.bio}</p>
-        <p className="additionalInfo">{user.additionalInfo}</p>
-      </div>
-    </div>
+    <>
+    <Col md={3}>
+      <Card className='m-2'>
+        <Card.Body>
+          <img src={female ? img2 : img} alt={tutor.name} className="image mt-1 rounded-3" />
+          <Card.Title className='Principal my-2'>{user.name+" "+user.last }</Card.Title>
+          <p className="description Principal my-2">{tutor.bio}</p>
+          <p className="additionalInfo Principal my-2">{user.additionalInfo}</p>
+        </Card.Body>
+      </Card>
+    </Col>
+    </>
+    
   );
 };
 
@@ -60,14 +65,14 @@ const Tutores = () => {
   }, []);
 
   return (
-    <div>
-      <h1 className="title">Nuestros Tutores</h1>
-      <div className="gridContainer">
-        {tutorDetails.map((tutor) => (
+    <>
+    <h1 className="title">Nuestros Tutores</h1>
+    <Row>
+      {tutorDetails.map((tutor) => (
           <TutorCard key={tutor.id} tutor={tutor} user={tutor.user} />
         ))}
-      </div>
-    </div>
+    </Row>
+    </>
   );
 };
 

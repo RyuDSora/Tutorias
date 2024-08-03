@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Card, Button, Modal, ListGroup } from 'react-bootstrap';
-import { UriCursos, uritutorsubject, uritutor } from '../components/Urls';
+import { UriCursos, uritutorsubject, uritutor } from '../Urls';
 import { confirmAlert } from 'react-confirm-alert';
 import Cookies from 'js-cookie';
-import { decryptValue,encryptionKey } from '../components/hashes';
+import { decryptValue,encryptionKey } from '../hashes';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 

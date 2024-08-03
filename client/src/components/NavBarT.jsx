@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Navbar, Nav, Container, NavDropdown } from "react-bootstrap";
 import Cookies from 'js-cookie';
-import { encryptionKey, decryptValue } from './components/hashes';
+import { encryptionKey, decryptValue } from './hashes';
 import { FaUser, FaTable, FaSignOutAlt, FaHome, FaBook, FaUsers, FaComments, FaFileAlt, FaTerminal } from "react-icons/fa";
 import { HiUserCircle } from 'react-icons/hi';
 

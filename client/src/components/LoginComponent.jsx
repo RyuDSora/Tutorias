@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { encryptionKey, encryptValue ,decryptValue} from './components/hashes';
+import { encryptionKey, encryptValue ,decryptValue} from './hashes';
 import Cookies from 'js-cookie';
 
-import {urilogin} from './components/Urls'
+import {urilogin} from './Urls'
 
 
 

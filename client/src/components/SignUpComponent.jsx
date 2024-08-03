@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { uriregister, uritutor } from './components/Urls';
-import { encryptionKey,encryptValue } from './components/hashes'; 
+import { uriregister, uritutor } from './Urls';
+import { encryptionKey,encryptValue } from './hashes'; 
 import Cookies from 'js-cookie';
 
 

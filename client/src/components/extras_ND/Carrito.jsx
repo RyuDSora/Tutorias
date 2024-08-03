@@ -4,19 +4,19 @@ import { QuestionMarkCircleIcon, XMarkIcon as XMarkIconMini } from '@heroicons/r
 import axios from 'axios'
 import { loadStripe } from '@stripe/stripe-js'; // Asegúrate de importar loadStripe
 
-
 const stripePromise = loadStripe('pk_test_51P0kZtL1xMfPwf6dxkOetgaYCWY2SNh3c3G9qY5KchoDmy5GtnCmqsWjNPVakxccJfPdM6O9yFSu5ZmQSBDnVTkx00ME56T6Ew');
-
-
-
-
-
-
 
 export default function Carrito() {
   const [showHeader, setShowHeader] = useState(true);
   const [cartItems, setCartItems] = useState([]);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/login');
+    }
+  }, [navigate]);
 
   const handleCheckout = async () => {
     // Calcula el total de impuestos primero
@@ -55,13 +55,6 @@ export default function Carrito() {
       console.error('Error al crear la sesión de Checkout:', error);
     }
   };
-  
-  
-  
-  
-
-
-
 
   const handleEditAddress = () => {
     navigate('/edit-address-form');
@@ -108,11 +101,6 @@ export default function Carrito() {
     }
   };
 
-
-
-
-
-
   const calculateTotals = () => {
     const subtotal = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
     const tax = subtotal * 0.12;
@@ -124,7 +112,6 @@ export default function Carrito() {
       total: total.toFixed(2),
     };
   };
-
 
   useEffect(() => {
     const fetchCartItems = async () => {
@@ -144,15 +131,13 @@ export default function Carrito() {
     fetchCartItems();
   }, []);
 
-
-
   return (
     <div className="bg-white">
       {showHeader && (
         <header className="relative bg-white">
           <div className="flex h-10 items-center justify-center bg-indigo-600 px-4 text-sm font-medium text-white sm:px-6 lg:px-8">
             <p className="flex-grow text-center">
-              Obtenga envio gratis a partir de compras mayores a L.200
+              Obtenga envío gratis a partir de compras mayores a L.200
             </p>
             <button
               className="ml-auto cursor-pointer"
@@ -169,10 +154,7 @@ export default function Carrito() {
 
         <form className="mt-12 lg:grid lg:grid-cols-12 lg:items-start lg:gap-x-12 xl:gap-x-16">
           <section aria-labelledby="cart-heading" className="lg:col-span-7">
-            <h2 id="cart-heading" className="sr-only">
-              Productos en el carrito
-            </h2>
-
+            <h2 id="cart-heading" className="sr-only">Productos en el carrito</h2>
             <ul role="list" className="divide-y divide-gray-200 border-b border-t border-gray-200">
               {cartItems.map((item) => (
                 <li key={item.item_id} className="flex py-6 sm:py-10">
@@ -225,15 +207,11 @@ export default function Carrito() {
                           </button>
                         </div>
                       </div>
-
-
-
                     </div>
                   </div>
                 </li>
               ))}
             </ul>
-
           </section>
 
           {/* Order summary */}
@@ -241,9 +219,7 @@ export default function Carrito() {
             aria-labelledby="summary-heading"
             className="mt-16 rounded-lg bg-gray-50 px-4 py-6 sm:p-6 lg:col-span-5 lg:mt-0 lg:p-8"
           >
-            <h2 id="summary-heading" className="text-lg font-medium text-gray-900">
-              Resumen de compra
-            </h2>
+            <h2 id="summary-heading" className="text-lg font-medium text-gray-900">Resumen de compra</h2>
 
             <dl className="mt-6 space-y-4">
               <div className="flex items-center justify-between">
@@ -265,16 +241,13 @@ export default function Carrito() {
               </div>
             </dl>
 
-
             <div className="mt-6">
               <button type="button" role="link" onClick={handleCheckout}
-                              className="w-full rounded-md border border-transparent bg-indigo-600 px-4 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50"
-
+                className="w-full rounded-md border border-transparent bg-indigo-600 px-4 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-50"
               >
                 Proceder al pago
               </button>
             </div>
-
 
             <section className="mt-8">
               <h2 className="text-lg font-medium text-gray-900">Dirección de envío</h2>
@@ -306,19 +279,9 @@ export default function Carrito() {
                 </div>
               )}
             </section>
-
           </section>
-
-
-
-
-
         </form>
-
-
       </main>
-
-
     </div>
   )
 }

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Container, Row, Col, ListGroup, Form, Button, Alert, Accordion, Card, Offcanvas } from 'react-bootstrap';
 
 import axios from 'axios';
-import { FaChevronLeft } from "react-icons/fa";
+import { FaChevronLeft, FaArrowLeft } from "react-icons/fa";
 import {  urichat, URIUser } from './Urls';
 
 const Chats = ({ userId }) => {
@@ -15,7 +15,7 @@ const Chats = ({ userId }) => {
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [showUsers, setShowUsers] = useState(false);
   const messagesEndRef = useRef(null);
-  const [screenMid, setScreenMid] = useState(window.innerHeight);
+  const [screenMid] = useState(window.innerHeight);
   
 
 
@@ -223,8 +223,13 @@ const Chats = ({ userId }) => {
       </button>
 
       <Offcanvas show={showUsers} onHide={() => setShowUsers(false)} placement="end">
-        <Offcanvas.Header closeButton>
-          <Offcanvas.Title>Usuarios</Offcanvas.Title>
+        <Offcanvas.Header>
+          <Offcanvas.Title>
+            <div className='d-flex align-items-center '>
+              <Button type="button" variant="primary" className='bg_secundario' onClick={()=>setShowUsers(false)}><FaArrowLeft /></Button>
+              <span className='ms-2'>Usuarios</span>  
+            </div>
+          </Offcanvas.Title>
         </Offcanvas.Header>
         <Offcanvas.Body>
           <Accordion defaultActiveKey="0">
@@ -246,10 +251,10 @@ const Chats = ({ userId }) => {
                               width: '10px',
                               height: '10px',
                               borderRadius: '50%',
-                              backgroundColor: connectedStudents.includes(user.id) ? 'green' : 'red',
                               display: 'inline-block',
                               marginRight: '10px',
                             }}
+                            className='bg_secundario'
                           />
                           {user.name + ' ' + user.last}
                         </ListGroup.Item>
@@ -259,7 +264,9 @@ const Chats = ({ userId }) => {
               </Accordion.Item>
             ))}
           </Accordion>
+         
         </Offcanvas.Body>
+        
       </Offcanvas>
     </div>
   );

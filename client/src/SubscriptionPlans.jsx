@@ -52,6 +52,7 @@ const SubscriptionPlans = () => {
 
     const stripe = await stripePromise;
     try {
+      sessionStorage.setItem('priceId',priceId);
       const response = await axios.post(`${url}/stripe/create-checkout-session`, { priceId });
       const sessionId = response.data.id;
       const { error } = await stripe.redirectToCheckout({ sessionId });

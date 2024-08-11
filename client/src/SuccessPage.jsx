@@ -1,30 +1,37 @@
-import { useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import axios from 'axios';
+import { Button } from 'react-bootstrap';
+import { encryptionKey,decryptValue } from './components/hashes';
+import Cookies from 'js-cookie';
+import { URLsuscription } from './components/Urls';
 
 const SuccessPage = () => {
   const navigate = useNavigate();
+  const saveSubs = async() =>{
+    const user_id = parseInt(decryptValue(Cookies.get('#gt156'),encryptionKey));
+    const plan_id = sessionStorage.getItem('priceId');
+    const subscription_date = new Date();
+    const status = true;
 
-  useEffect(() => {
-    const handlePageLoad = async () => {
-      try {
-        // Obtener el token de autenticación del usuario
-        const token = localStorage.getItem('token');
+    const response = await fetch(URLsuscription, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ user_id, plan_id, subscription_date, status }),
+    });
 
-        // Enviar una solicitud al servidor para limpiar el carrito y registrar la orden
-        await axios.get(`${import.meta.env.VITE_API_URL}/success`, {
-          headers: {
-            Authorization: token,
-          },
-        });
-      } catch (error) {
-        console.error('Error al procesar la orden:', error);
-      }
-    };
-
-    handlePageLoad();
-  }, [navigate]);
-
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || 'Error al registrar usuario');
+    }
+    try {
+      
+    } catch (error) {
+      console.log(error);
+      
+    }
+    navigate('/')
+  }
   return (
     <main className="grid min-h-full place-items-center bg-white px-6 py-24 sm:py-32 lg:px-8">
       <div className="text-center">
@@ -35,13 +42,13 @@ const SuccessPage = () => {
           ¡Tu pago se ha realizado con éxito! Gracias por tu compra.
         </h1>
         <div className="mt-10 flex items-center justify-center gap-x-6">
-          <Link
-            to="/"
+          <Button
+            onClick={() => saveSubs()}
             className="rounded-md px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-green-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
             style={{ backgroundColor: '#336A41', fontFamily: 'Clear Sans Light, sans-serif' }}
           >
             Ir al inicio
-          </Link>
+          </Button>
         </div>
       </div>
     </main>

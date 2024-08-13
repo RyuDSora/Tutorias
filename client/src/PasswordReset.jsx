@@ -1,55 +1,38 @@
-import { useState, useEffect } from "react";
-import axios from 'axios';
-import { ToastContainer, toast } from 'react-toastify';
+import { useState } from "react";
+import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
 import { IconEye, IconEyeOff } from "@tabler/icons-react";
-import 'react-toastify/dist/ReactToastify.css'; // Importa los estilos de react-toastify
+import "react-toastify/dist/ReactToastify.css";
 import { URIUser } from "./components/Urls";
-import { decryptValue,encryptionKey } from "./components/hashes";
-
-import Cookies from 'js-cookie';
 
 const PasswordReset = () => {
   const [newPassword, setNewPassword] = useState("");
-  const [user, setUser] = useState({});
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
-  
+
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
-  useEffect(() => {
-    if(Cookies.get('$3s1.4')){
-      if (decryptValue(Cookies.get('$3s1.4'),encryptionKey)) {
-        const fetchUser = async () => {
-          try {
-            const response = await axios.get(`${URIUser}${decryptValue(Cookies.get('#gt156'),encryptionKey)}`);
-            setUser(response.data);
-          } catch (error) {
-            console.log(error);
-          }
-        };
-        fetchUser();
-      }
-    }
-  }, []);
+  // El token se obtiene de los parámetros de la URL
+  const token = window.location.pathname.split("/").pop(); // Asumiendo que la URL es algo como /reset-password/:token
+
   // Función para manejar el cambio de contraseña
   const handleChangePassword = async () => {
     try {
-      const token = localStorage.getItem('token');
       await axios.patch(
-        `${URIUser}${user.id}/password`, // Usar URIUser para la URL
-        { password : newPassword },
-        { headers: { Authorization: `Bearer ${token}` } }
+        `${URIUser}reset-password/${token}`, // Endpoint para actualizar la contraseña con el token
+        { password: newPassword }
       );
       // Éxito al cambiar la contraseña
-      toast.success('Contraseña cambiada exitosamente');
-      setSuccessMessage('Contraseña cambiada exitosamente');
+      toast.success("Contraseña cambiada exitosamente");
+      setSuccessMessage("Contraseña cambiada exitosamente");
       setError("");
     } catch (error) {
       // Manejar errores
-      toast.error( 'Error al cambiar la contraseña');
-      setError('Error al cambiar la contraseña');
+      const errorMessage = error.response?.data || "Error al cambiar la contraseña";
+      toast.error(errorMessage);
+      setError(errorMessage);
       setSuccessMessage("");
     }
   };
@@ -88,59 +71,58 @@ const PasswordReset = () => {
   };
 
   return (
-    <div className="container my-5 Principal f_principal" >
+    <div className="container my-5 flex justify-center items-center">
       <ToastContainer />
-      <div className="row justify-content-center border_principal rounded-4 w-50 mx-auto">
-        <div className="col-md-8">
-          <div className="text-center my-3">
-            <span className="h2 py-2">
-              Restablecer Contraseña
-            </span>
-          </div>
-          <form onSubmit={validateAndSubmit} className="form-group my-5">
-            <div className="mb-3">
-              <label htmlFor="newPassword" className="form-label">Nueva Contraseña</label>
-              <div className="input-group">
-                <input
-                  id="newPassword"
-                  name="newPassword"
-                  type={passwordVisible ? "text" : "password"}
-                  autoComplete="off"
-                  required
-                  className="form-control border_principal"
-                  value={newPassword}
-                  onChange={handleNewPasswordChange}
-                />
-                <span className="input-group-text border_principal" onClick={togglePasswordVisibility}>
-                  {passwordVisible ? <IconEyeOff color="gray" size={24} /> : <IconEye color="gray" size={24} />}
-                </span>
-              </div>
-            </div>
-
-            <div className="mb-3">
-              <label htmlFor="confirmPassword" className="form-label">Confirmar Nueva Contraseña</label>
-              <div className="input-group">
-                <input
-                  id="confirmPassword"
-                  name="confirmPassword"
-                  type={confirmPasswordVisible ? "text" : "password"}
-                  autoComplete="off"
-                  required
-                  className="form-control border_principal"
-                  value={confirmPassword}
-                  onChange={handleConfirmPasswordChange}
-                />
-                <span className="input-group-text border_principal" onClick={toggleConfirmPasswordVisibility}>
-                  {confirmPasswordVisible ? <IconEyeOff color="gray" size={24} /> : <IconEye color="gray" size={24} />}
-                </span>
-              </div>
-            </div>
-
-            <button type="submit" className="btn bg_secundario Blanco w-100">
-              Restablecer Contraseña
-            </button>
-          </form>
+      <div className="bg-white shadow-md rounded-lg p-8 w-96 border border-gray-300">
+        <div className="text-center mb-5">
+          <h2 className="text-2xl font-bold text-gray-800">Restablecer Contraseña</h2>
         </div>
+        <form onSubmit={validateAndSubmit} className="space-y-4">
+          <div>
+            <label htmlFor="newPassword" className="block text-sm font-medium text-gray-700">Nueva Contraseña</label>
+            <div className="relative">
+              <input
+                id="newPassword"
+                name="newPassword"
+                type={passwordVisible ? "text" : "password"}
+                autoComplete="off"
+                required
+                className="border border-gray-300 rounded-md w-full py-2 px-3 mt-1"
+                value={newPassword}
+                onChange={handleNewPasswordChange}
+              />
+              <span className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer" onClick={togglePasswordVisibility}>
+                {passwordVisible ? <IconEyeOff color="gray" size={24} /> : <IconEye color="gray" size={24} />}
+              </span>
+            </div>
+          </div>
+
+          <div>
+            <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">Confirmar Nueva Contraseña</label>
+            <div className="relative">
+              <input
+                id="confirmPassword"
+                name="confirmPassword"
+                type={confirmPasswordVisible ? "text" : "password"}
+                autoComplete="off"
+                required
+                className="border border-gray-300 rounded-md w-full py-2 px-3 mt-1"
+                value={confirmPassword}
+                onChange={handleConfirmPasswordChange}
+              />
+              <span className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer" onClick={toggleConfirmPasswordVisibility}>
+                {confirmPasswordVisible ? <IconEyeOff color="gray" size={24} /> : <IconEye color="gray" size={24} />}
+              </span>
+            </div>
+          </div>
+
+          <button type="submit" className="w-full bg-indigo-600 text-white font-semibold py-2 rounded-md hover:bg-indigo-700">
+            Restablecer Contraseña
+          </button>
+
+          {error && <p className="text-red-500 text-sm">{error}</p>}
+          {successMessage && <p className="text-green-500 text-sm">{successMessage}</p>}
+        </form>
       </div>
     </div>
   );

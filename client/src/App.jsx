@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
-import { decryptValue,encryptionKey } from './components/hashes.jsx';
+import { decryptValue, encryptionKey } from './components/hashes.jsx';
 
 //import { io } from 'socket.io-client';
 
@@ -16,7 +16,6 @@ import LoginComponent from './components/LoginComponent';
 import SignUpComponent from './components/SignUpComponent';
 import NavBarT from './components/NavBarT.jsx';
 import AccountComponent from './AccountComponent';
-import PasswordReset from './PasswordReset';
 import Footer from './components/Footer';
 import UnAuthorized from './UnAuthorized';
 import CancelPage from './CancelPage';
@@ -24,7 +23,7 @@ import SuccessPage from './SuccessPage';
 import Tutores from './components/Tutores.jsx';
 import Cursos from './components/Cursos.jsx';
 import DashboardTutor from './components/DashboardTutor.jsx';
-import MyCourses from  './components/DashboardTutor/MyCourses';
+import MyCourses from './components/DashboardTutor/MyCourses';
 import MyStudents from './components/DashboardTutor/MyStudents';
 import Chats from './components/Chats.jsx';
 import Articles from './components/DashboardTutor/Articles2';
@@ -40,6 +39,9 @@ import TableList from './components/TableList';
 import SubscriptionPlans from './SubscriptionPlans.jsx';
 import SubscriptionForm from './SubscriptionForm';
 import withAuth from './hoc/withAuth';
+import PasswordReset from './PasswordReset';
+import PasswordResetRequest from './PasswordResetRequest.jsx';
+
 /*
 const socket = io('https://tutorias-five.vercel.app', {
   transports: ['websocket'],
@@ -59,32 +61,32 @@ function App() {
   const [userID, setUserID] = useState(0);
 
   useEffect(() => {
-    if(Cookies.get('$3s1.4')){
-      const session = decryptValue(Cookies.get('$3s1.4'),encryptionKey)
+    if (Cookies.get('$3s1.4')) {
+      const session = decryptValue(Cookies.get('$3s1.4'), encryptionKey)
       if (session) {
         const storedLoggedIn = localStorage.getItem('token');
         if (storedLoggedIn) {
           setIsLoggedIn(true);
-          const id = decryptValue(Cookies.get('#gt156'),encryptionKey);
+          const id = decryptValue(Cookies.get('#gt156'), encryptionKey);
           setUserID(parseInt(id));
         }
-      }  
+      }
     }
   }, []);
 
- /*useEffect(() => {
-    if (userID) {
-      // Emitir el evento de conexión del usuario
-      socket.emit('user_connected', userID);
-
-      // Desconectar el socket al desmontar el componente
-      return () => {
-        socket.emit('user_disconnected', userID);
-        socket.disconnect();
-      };
-    }
-  }, [userID]);
-*/
+  /*useEffect(() => {
+     if (userID) {
+       // Emitir el evento de conexión del usuario
+       socket.emit('user_connected', userID);
+ 
+       // Desconectar el socket al desmontar el componente
+       return () => {
+         socket.emit('user_disconnected', userID);
+         socket.disconnect();
+       };
+     }
+   }, [userID]);
+ */
   return (
     <Router>
       <div>
@@ -95,7 +97,8 @@ function App() {
           <Route path="/help-center" element={<HelpCenter />} />
           <Route path="/login" element={<LoginComponent setIsLoggedIn={setIsLoggedIn} />} />
           <Route path="/signup" element={<SignUpComponent setIsLoggedIn={setIsLoggedIn} />} />
-          <Route path="/reset-password" element={<PasswordReset />} />
+          <Route path="/reset-password/:token" element={<PasswordReset />} />
+          <Route path="/reset-password-request" element={<PasswordResetRequest />} />
           <Route path="/unauthorized" element={<UnAuthorized />} />
           <Route path="/dashboard" element={<DashboardComponent />} />
           <Route path="/cancel" element={<CancelPage />} />
@@ -112,7 +115,7 @@ function App() {
             <Route path='sql' element={<SQLQueryForm />} />
             <Route path='tables' element={<TableList />} />
             <Route path="chats" element={<Chats userId={userID} />} />
-            <Route/>
+            <Route />
           </Route>
           <Route path="/dashboardstudent" element={withAuth(DashboardStudent, ['estudiante'])()}>
             <Route path="dashst" element={<DashST />} />

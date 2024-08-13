@@ -170,7 +170,7 @@ export default function LoginComponent({ setIsLoggedIn }) {
                 </div>
 
                 <div className="text-sm leading-6">
-                  <a href="/reset-password" className="font-semibold Secundario text-sm">
+                  <a href="/reset-password-request" className="font-semibold Secundario text-sm">
                     ¿Olvidaste tu contraseña?
                   </a>
                 </div>

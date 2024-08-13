@@ -10,7 +10,9 @@ import {
   updateEmail,
   updateRole,
   login,
-  register 
+  register,
+  requestPasswordReset,
+  resetPassword
 } from '../controllers/userController.js';
 
 const router = express.Router();
@@ -35,10 +37,12 @@ router.get('/:id', generalLimiter,getUsuario);
 router.post('/', sensitiveRouteLimiter, createUsuario);
 router.post('/login', sensitiveRouteLimiter, login);
 router.post('/register', sensitiveRouteLimiter, register);
-router.put('/:id', sensitiveRouteLimiter, updateUsuario); 
+router.put('/:id', sensitiveRouteLimiter, updateUsuario);
 router.patch('/:id/password', sensitiveRouteLimiter, updatePassword); // Para actualizar solo la contraseña
 router.patch('/:id/email', sensitiveRouteLimiter, updateEmail); // Para actualizar solo el correo electrónico
 router.patch('/:id/role', sensitiveRouteLimiter, updateRole); // Para actualizar solo el rol
 router.delete('/:id', sensitiveRouteLimiter, deleteUsuario);
+router.post('/request-password-reset', sensitiveRouteLimiter, requestPasswordReset); // Nueva ruta para solicitar el restablecimiento de contraseña
+router.patch('/reset-password/:token', sensitiveRouteLimiter, resetPassword); //Ruta para actualiza la contraseña
 
 export default router;

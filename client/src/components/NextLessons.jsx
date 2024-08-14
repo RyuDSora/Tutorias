@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Card, ListGroup, ListGroupItem, Badge, Modal, Button } from 'react-bootstrap';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
@@ -11,90 +11,6 @@ const NextLessons = () => {
   const [date, setDate] = useState(new Date());
 
   const lessons = [
-    {
-      date: '2024-07-22',
-      title: 'Matemática Básica',
-      description: 'Aprende a sumar, restar, multiplicar y dividir',
-      time: '8:00 AM'
-    },
-    {
-      date: '2024-08-01',
-      title: 'Física elemental',
-      description: 'Comportamiento de los fluidos',
-      time: '10:00 AM'
-    },
-    { 
-      date: '2024-08-02', 
-      title: 'Biología', 
-      description: 'Introducción a la biología molecular', 
-      time: '11:00 AM' 
-    },
-    { 
-      date: '2024-08-03', 
-      title: 'Historia', 
-      description: 'Historia antigua y medieval', 
-      time: '1:00 PM' 
-    },
-    { 
-      date: '2024-08-04', 
-      title: 'Geografía', 
-      description: 'Geografía física y humana', 
-      time: '2:00 PM' 
-    },
-    { 
-      date: '2024-08-05', 
-      title: 'Inglés', 
-      description: 'Gramática y vocabulario', 
-      time: '8:00 AM' 
-    },
-    { 
-      date: '2024-08-06', 
-      title: 'Español', 
-      description: 'Literatura y composición', 
-      time: '10:00 AM' 
-    },
-    { 
-      date: '2024-08-07', 
-      title: 'Educación Física', 
-      description: 'Ejercicio y bienestar', 
-      time: '12:00 PM' 
-    },
-    { 
-      date: '2024-08-08', 
-      title: 'Música', 
-      description: 'Teoría musical y práctica', 
-      time: '3:00 PM' 
-    },
-    { 
-      date: '2024-08-09', 
-      title: 'Arte', 
-      description: 'Historia del arte y técnicas', 
-      time: '4:00 PM' 
-    },
-    { 
-      date: '2024-08-10', 
-      title: 'Tecnología', 
-      description: 'Tecnología de la información', 
-      time: '5:00 PM' 
-    },
-    { 
-      date: '2024-08-11', 
-      title: 'Cívica', 
-      description: 'Educación cívica y ética', 
-      time: '6:00 PM' 
-    },
-    { 
-      date: '2024-08-12', 
-      title: 'Cultura', 
-      description: 'Estudios culturales', 
-      time: '7:00 PM' 
-    },
-    { 
-      date: '2024-08-13', 
-      title: 'Filosofía', 
-      description: 'Introducción a la filosofía', 
-      time: '8:00 PM' 
-    },
     { 
       date: '2024-08-14', 
       title: 'Religión', 

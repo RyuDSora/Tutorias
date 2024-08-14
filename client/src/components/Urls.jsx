@@ -1,5 +1,5 @@
-//export const url = 'http://localhost:3000';               //para hacer pruebas en local
-export const url = 'https://tutorias-five.vercel.app';  //servidor de vercel
+export const url = 'http://localhost:3000';               //para hacer pruebas en local
+//export const url = 'https://tutorias-five.vercel.app';  //servidor de vercel
 
 
 //urls para trabajar con tablas en general
@@ -16,6 +16,9 @@ export const UriCursos = url + '/subjects';
 
 //tutor
 export const uritutor = url + '/teachers';
+
+//Create Event
+export const createEventEndpoint = url + '/create-event';
 
 //tutorsubject
 export const uritutorsubject = url + '/ts';

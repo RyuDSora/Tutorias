@@ -234,6 +234,60 @@ app.get('/events', async (req, res) => {
   }
 });
 
+// Endpoint para guardar la información de la sesión en la base de datos
+app.post('/save-session', async (req, res) => {
+  const { teacherId, subjectId, studentId, startTime, endTime, googleMeetLink } = req.body;
+
+  if (!teacherId || !subjectId || !startTime || !endTime || !googleMeetLink) {
+    return res.status(400).json({ error: 'Faltan campos requeridos' });
+  }
+
+  const client = await pool.connect();
+  try {
+    const query = `
+      INSERT INTO classes (teacher_id, subject_id, student_id, start_time, end_time, google_meet_link, created_at, updated_at)
+      VALUES ($1, $2, $3, $4, $5, $6, NOW(), NOW())
+      RETURNING *;
+    `;
+    const values = [teacherId, subjectId, studentId, startTime, endTime, googleMeetLink];
+
+    const result = await client.query(query, values);
+    res.status(201).json(result.rows[0]);
+  } catch (error) {
+    console.error('Error al guardar la sesión en la base de datos:', error);
+    res.status(500).json({ error: 'Error al guardar la sesión' });
+  } finally {
+    client.release();
+  }
+});
+
+// Endpoint para recuperar sesiones desde la base de datos
+app.get('/sessions', async (req, res) => {
+  const { teacherId, subjectId } = req.query;
+
+  let query = 'SELECT * FROM classes WHERE TRUE';
+  const values = [];
+
+  if (teacherId) {
+    query += ' AND teacher_id = $1';
+    values.push(teacherId);
+  }
+  if (subjectId) {
+    query += ' AND subject_id = $2';
+    values.push(subjectId);
+  }
+
+  const client = await pool.connect();
+  try {
+    const result = await client.query(query, values);
+    res.json(result.rows);
+  } catch (error) {
+    console.error('Error al recuperar sesiones de la base de datos:', error);
+    res.status(500).json({ error: 'Error al recuperar sesiones' });
+  } finally {
+    client.release();
+  }
+});
 
 //servidor principal con NodeJS
 app.listen(port, () => {

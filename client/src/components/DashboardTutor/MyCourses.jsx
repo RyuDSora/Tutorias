@@ -145,6 +145,23 @@ const MyCourses = () => {
           endTime: formattedEndTime
         });
 
+        // Verifica si la respuesta contiene la URL de Google Meet
+        if (!response.data || !response.data.meetingUrl) {
+          throw new Error('No se recibió la URL de Google Meet');
+        }
+
+        const googleMeetLink = response.data.meetingUrl;
+
+        // Luego, guarda la sesión en la base de datos
+        await axios.post('http://localhost:3000/save-session', {
+          teacherId: tutorId,  // Asegúrate de pasar el ID correcto del profesor
+          subjectId: selectedCourse.id,
+          studentId: null, // O el ID del estudiante si es necesario
+          startTime: formattedStartTime,
+          endTime: formattedEndTime,
+          googleMeetLink
+        });
+
         toast.success('Sesión agregada exitosamente');
         setShow(false);
         setAdd(true);

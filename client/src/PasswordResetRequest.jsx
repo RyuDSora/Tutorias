@@ -21,7 +21,7 @@ const PasswordResetRequest = () => {
         setSuccessMessage("");
 
         try {
-            const response = await axios.post(`${URIUser}/request-password-reset`, { email });
+            const response = await axios.post(`${URIUser}request-password-reset`, { email });
             toast.success(response.data);
             setSuccessMessage(response.data);
         } catch (error) {

@@ -157,6 +157,8 @@ const MyCourses = () => {
           teacherId: tutorId,  // Asegúrate de pasar el ID correcto del profesor
           subjectId: selectedCourse.id,
           studentId: null, // O el ID del estudiante si es necesario
+          title: title,
+          description: description,
           startTime: formattedStartTime,
           endTime: formattedEndTime,
           googleMeetLink

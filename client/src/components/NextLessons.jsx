@@ -62,7 +62,7 @@ const NextLessons = () => {
                   <div className='col-4 Principal'>
                     <div className="fw-bold my-auto">{format(parseISO(lesson.start_time), 'dd MMMM', { locale: es })}</div>
                     <Badge pill className='bg_secundario Blanco'>
-                      {format(parseISO(lesson.start_time), 'HH:mm', { locale: es })}
+                      {format(parseISO(lesson.start_time), 'h:mm a', { locale: es })} - {format(parseISO(lesson.end_time), 'h:mm a', { locale: es })}
                     </Badge>
                   </div>
                   <div className='col-8'>

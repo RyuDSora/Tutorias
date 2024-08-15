@@ -236,20 +236,20 @@ app.get('/events', async (req, res) => {
 
 // Endpoint para guardar la información de la sesión en la base de datos
 app.post('/save-session', async (req, res) => {
-  const { teacherId, subjectId, studentId, startTime, endTime, googleMeetLink } = req.body;
+  const { teacherId, subjectId, studentId, title, description, startTime, endTime, googleMeetLink } = req.body;
 
-  if (!teacherId || !subjectId || !startTime || !endTime || !googleMeetLink) {
+  if (!teacherId || !subjectId || !title || !description || !startTime || !endTime || !googleMeetLink ) {
     return res.status(400).json({ error: 'Faltan campos requeridos' });
   }
 
   const client = await pool.connect();
   try {
     const query = `
-      INSERT INTO classes (teacher_id, subject_id, student_id, start_time, end_time, google_meet_link, created_at, updated_at)
-      VALUES ($1, $2, $3, $4, $5, $6, NOW(), NOW())
+      INSERT INTO classes (teacher_id, subject_id, student_id, title, description, start_time, end_time, google_meet_link, created_at, updated_at)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW(), NOW())
       RETURNING *;
     `;
-    const values = [teacherId, subjectId, studentId, startTime, endTime, googleMeetLink];
+    const values = [teacherId, subjectId, studentId, title, description, startTime, endTime, googleMeetLink];
 
     const result = await client.query(query, values);
     res.status(201).json(result.rows[0]);

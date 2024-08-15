@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Container, Row, Col, ListGroup, Form, Button, Alert, Accordion, Offcanvas } from 'react-bootstrap';
+import { Container, Row, Col, ListGroup, Form, Button, Alert, Accordion, Card, Offcanvas } from 'react-bootstrap';
 import axios from 'axios';
 import { FaChevronLeft, FaArrowLeft } from "react-icons/fa";
 import { urichat, URIUser } from './Urls';
@@ -14,6 +14,7 @@ const Chats = ({ userId }) => {
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [showUsers, setShowUsers] = useState(false);
   const messagesEndRef = useRef(null);
+  const [screenMid] = useState(window.innerHeight);
 
   const fetchChatHistory = async (user1, user2) => {
     try {
@@ -72,7 +73,7 @@ const Chats = ({ userId }) => {
           }));
         });
       }
-    }, 5000);
+    }, 5000); // Verifica cada 5 segundos
 
     return () => clearInterval(interval);
   }, [selectedStudent]);
@@ -101,114 +102,126 @@ const Chats = ({ userId }) => {
   const handleStudentSelect = (student) => {
     setSelectedStudent(student);
     if (window.innerWidth < 768) {
-      setShowUsers(false); 
+      setShowUsers(false); // Oculta la lista de usuarios en pantallas pequeñas después de seleccionar un usuario
     }
   };
 
   return (
-    <Container fluid>
-      <Row className="mb-3">
-        <Col xs={12}>
-          <h3 className='Principal f_principal text-center'>Tus Chats</h3>
-        </Col>
-      </Row>
-
-      <Row>
-        <Col md={4} className={`d-md-block ${selectedStudent ? 'd-none d-md-block' : 'd-block'}`}>
-          <h4 className='Principal'>Usuarios</h4>
-          <Accordion defaultActiveKey="0">
-            {['administrador', 'tutor', 'estudiante'].map((role, idx) => (
-              <Accordion.Item eventKey={String(idx)} key={role}>
-                <Accordion.Header>{role.charAt(0).toUpperCase() + role.slice(1)}</Accordion.Header>
-                <Accordion.Body>
-                  <ListGroup variant="flush">
-                    {filteredUsers
-                      .filter(user => user.role === role)
-                      .map(user => (
-                        <ListGroup.Item
-                          key={user.id}
-                          onClick={() => handleStudentSelect(user)}
-                          style={{ cursor: 'pointer' }}
-                        >
-                          <span
-                            style={{
-                              width: '10px',
-                              height: '10px',
-                              borderRadius: '50%',
-                              display: 'inline-block',
-                              marginRight: '10px',
-                            }}
-                            className='bg_secundario'
-                          />
-                          {user.name + ' ' + user.last}
-                        </ListGroup.Item>
-                      ))}
-                  </ListGroup>
-                </Accordion.Body>
-              </Accordion.Item>
-            ))}
-          </Accordion>
-        </Col>
-
-        <Col md={8}>
-          <h4 className='Principal'>Chat con {selectedStudent ? selectedStudent.name : 'Selecciona un estudiante'}</h4>
-          {selectedStudent ? (
-            <>
-              <div
-                style={{
-                  border: '1px solid #ccc',
-                  borderRadius: '5px',
-                  padding: '10px',
-                  height: '400px',
-                  overflowY: 'auto',
-                  marginBottom: '20px',
-                }}
-                className='bg_secundario'
-              >
-                {messages[selectedStudent.id]?.map((message, index) => (
+    <div>
+      <div className='mb-3'><span className='h3 Principal f_principal'>Tus Chats</span></div>
+      <div className='container-fluid'>
+        <div className='d-flex flex-column flex-md-row'>
+          <div className='flex-fill'>
+            <div className=''>
+              <h1 className='mb-2 Principal'>Chatear con {selectedStudent ? selectedStudent.name : 'Selecciona un estudiante'}</h1>
+              {selectedStudent ? (
+                <>
                   <div
-                    key={index}
-                    className={`d-flex mb-2 ${message.emisor === UserId ? 'justify-content-end' : 'justify-content-start'}`}
+                    style={{
+                      border: '1px solid #ccc',
+                      borderRadius: '5px',
+                      padding: '10px',
+                      height: '400px',
+                      overflowY: 'auto',
+                      marginBottom: '20px',
+                    }}
+                    className='bg_secundario'
                   >
-                    <div
-                      style={{
-                        maxWidth: '70%',
-                        padding: '10px',
-                        borderRadius: '15px',
-                        border: '1px solid black',
-                        backgroundColor: 'rgba(255, 255, 255, 0.5)',
-                        wordBreak: 'break-word',
-                      }}
-                    >
-                      {message.mensaje}
-                    </div>
+                    {messages[selectedStudent.id]?.map((message, index) => (
+                      <div
+                        key={index}
+                        className={`d-flex mb-2 ${message.emisor === UserId ? 'justify-content-end' : 'justify-content-start'}`}
+                      >
+                        <div
+                          style={{
+                            maxWidth: '60%',
+                            padding: '10px',
+                            borderRadius: '15px',
+                            border: '1px solid black',
+                            backgroundColor: 'rgba(255, 255, 255, 0.5)',
+                            wordBreak: 'break-word',
+                          }}
+                        >
+                          {message.mensaje}
+                        </div>
+                      </div>
+                    ))}
+                    <div ref={messagesEndRef} />
                   </div>
+                  <Form onSubmit={handleSubmit} className='d-flex'>
+                    <Form.Control
+                      type="text"
+                      value={input}
+                      onChange={(e) => setInput(e.target.value)}
+                      placeholder="Escribe un mensaje..."
+                      className='flex-fill'
+                    />
+                    <Button type="submit" variant="primary" className='bg_secundario ms-2'>Enviar</Button>
+                  </Form>
+                </>
+              ) : (
+                <Alert variant="info" className='bg_secundario Blanco'>
+                  <div>No tienes ningun chat abierto.</div>
+                  <div>Selecciona un usuario para empezar a chatear.</div>
+                </Alert>
+              )}
+            </div>
+          </div>
+          <div className='d-none d-md-block ms-4 w-50'>
+            <div className="">
+              <h3 className='mb-2 Principal'>Usuarios</h3>
+              <Accordion defaultActiveKey="0">
+                {['administrador', 'tutor', 'estudiante'].map((role, idx) => (
+                  <Accordion.Item eventKey={String(idx)} key={role}>
+                    <Accordion.Header>{role.charAt(0).toUpperCase() + role.slice(1)}</Accordion.Header>
+                    <Accordion.Body>
+                      <ListGroup variant="flush">
+                        {filteredUsers
+                          .filter(user => user.role === role)
+                          .map(user => (
+                            <ListGroup.Item
+                              key={user.id}
+                              onClick={() => handleStudentSelect(user)}
+                              style={{ cursor: 'pointer', position: 'relative' }}
+                            >
+                              <span
+                                style={{
+                                  width: '10px',
+                                  height: '10px',
+                                  borderRadius: '50%',
+                                  display: 'inline-block',
+                                  marginRight: '10px',
+                                }}
+                                className='bg_secundario'
+                              />
+                              {user.name + ' ' + user.last}
+                            </ListGroup.Item>
+                          ))}
+                      </ListGroup>
+                    </Accordion.Body>
+                  </Accordion.Item>
                 ))}
-                <div ref={messagesEndRef} />
-              </div>
-              <Form onSubmit={handleSubmit} className='d-flex'>
-                <Form.Control
-                  type="text"
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  placeholder="Escribe un mensaje..."
-                  className='flex-fill'
-                />
-                <Button type="submit" variant="primary" className='bg_secundario ms-2'>Enviar</Button>
-              </Form>
-            </>
-          ) : (
-            <Alert variant="info" className='bg_secundario Blanco'>
-              <div>No tienes ningún chat abierto.</div>
-              <div>Selecciona un usuario para empezar a chatear.</div>
-            </Alert>
-          )}
-        </Col>
-      </Row>
+              </Accordion>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button
+        className="btn d-md-none border-none Negro px-1"
+        style={{ position: 'fixed', top: 0, right: '0px', backgroundColor: 'rgba(255, 255, 255, 0.5)', height: screenMid }}
+        onClick={() => setShowUsers(true)}
+      >
+        <FaChevronLeft />
+      </button>
 
       <Offcanvas show={showUsers} onHide={() => setShowUsers(false)} placement="end">
-        <Offcanvas.Header closeButton>
-          <Offcanvas.Title>Usuarios</Offcanvas.Title>
+        <Offcanvas.Header>
+          <Offcanvas.Title>
+            <div className='d-flex align-items-center'>
+              <Button type="button" variant="primary" className='bg_secundario' onClick={() => setShowUsers(false)}><FaArrowLeft /></Button>
+              <span className='ms-2'>Usuarios</span>
+            </div>
+          </Offcanvas.Title>
         </Offcanvas.Header>
         <Offcanvas.Body>
           <Accordion defaultActiveKey="0">
@@ -223,7 +236,7 @@ const Chats = ({ userId }) => {
                         <ListGroup.Item
                           key={user.id}
                           onClick={() => handleStudentSelect(user)}
-                          style={{ cursor: 'pointer' }}
+                          style={{ cursor: 'pointer', position: 'relative' }}
                         >
                           <span
                             style={{
@@ -245,7 +258,7 @@ const Chats = ({ userId }) => {
           </Accordion>
         </Offcanvas.Body>
       </Offcanvas>
-    </Container>
+    </div>
   );
 };
 

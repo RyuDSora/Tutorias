@@ -6,6 +6,7 @@ import { format, isSameDay, parseISO } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { FaCalendar } from 'react-icons/fa';
 import axios from 'axios';
+import { url } from './Urls';
 
 const NextLessons = () => {
   const [showModal, setShowModal] = useState(false);
@@ -24,7 +25,7 @@ const NextLessons = () => {
       const teacherId = 1;  // Ejemplo, reemplaza con el ID del profesor
       const subjectId = 1;  // Ejemplo, reemplaza con el ID de la materia
 
-      const response = await axios.get('http://localhost:3000/sessions', {
+      const response = await axios.get(url+'/sessions', {
         params: { teacherId, subjectId },
       });
 

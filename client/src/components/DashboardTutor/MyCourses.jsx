@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Card, Button, Modal, ListGroup, Form } from 'react-bootstrap';
-import { UriCursos, uritutorsubject, uritutor, createEventEndpoint } from '../Urls'; // Actualiza el import
+import { UriCursos, uritutorsubject, uritutor, createEventEndpoint, urigoogle,url } from '../Urls'; // Actualiza el import
 import { confirmAlert } from 'react-confirm-alert';
 import Cookies from 'js-cookie';
 import { decryptValue, encryptionKey } from '../hashes';
@@ -138,7 +138,7 @@ const MyCourses = () => {
         const formattedStartTime = new Date(startTime).toISOString();
         const formattedEndTime = new Date(endTime).toISOString();
 
-        const response = await axios.post(createEventEndpoint, {
+        const response = await axios.post(`${urigoogle}/create-event`, {
           title,
           description,
           startTime: formattedStartTime,
@@ -153,14 +153,14 @@ const MyCourses = () => {
         const googleMeetLink = response.data.meetingUrl;
 
         // Luego, guarda la sesión en la base de datos
-        await axios.post('http://localhost:3000/save-session', {
-          teacherId: tutorId,  // Asegúrate de pasar el ID correcto del profesor
-          subjectId: selectedCourse.id,
-          studentId: null, // O el ID del estudiante si es necesario
+        await axios.post(`${urigoogle}/save-session`, {
+          teacher_id: tutorId,  // Asegúrate de pasar el ID correcto del profesor
+          subject_id: selectedCourse.id,
+          //studentId: null, // O el ID del estudiante si es necesario
           title: title,
           description: description,
-          startTime: formattedStartTime,
-          endTime: formattedEndTime,
+          start_time: formattedStartTime,
+          end_time: formattedEndTime,
           googleMeetLink
         });
 

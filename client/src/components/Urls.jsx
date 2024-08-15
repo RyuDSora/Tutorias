@@ -28,3 +28,6 @@ export const urichat = url + '/api/messages';
 
 //suscripciones
 export const URLsuscription = url + '/suscription';
+
+//google
+export const urigoogle = url + '/apigoogle';

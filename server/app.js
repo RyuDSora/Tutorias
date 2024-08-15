@@ -92,7 +92,7 @@ app.get('/oauth2callback', async (req, res) => {
     await saveTokensToDatabase(tokens);
 
     // Redirigir a una página de éxito o mostrar un mensaje
-    res.redirect('http://localhost:5173/users/login'); // Aquí podrías redirigir a una página de éxito.
+    res.redirect('https://tu-torias.vercel.app/'); // Aquí podrías redirigir a una página de éxito.
   } catch (error) {
     console.error('Error retrieving access token:', error);
     res.status(500).send(`Error retrieving access token: ${error.message}`);

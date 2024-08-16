@@ -1,6 +1,6 @@
 import pool from '../database/db.js';
 
-// Mostrar todos los registros de clases
+// Mostrar todos los registros de clases por tutor
 export const getAllClasses = async (req, res) => {
   const client = await pool.connect();
   try {
@@ -19,11 +19,11 @@ export const getClass = async (req, res) => {
   const { id } = req.params;
   const client = await pool.connect();
   try {
-    const result = await client.query('SELECT * FROM classes WHERE id = $1', [id]);
+    const result = await client.query('SELECT * FROM classes WHERE teacher_id = $1', [id]);
     if (result.rows.length === 0) {
       res.status(404).send('Class not found.');
     } else {
-      res.json(result.rows[0]);
+      res.json(result.rows);
     }
   } catch (error) {
     console.error('Error fetching class:', error);

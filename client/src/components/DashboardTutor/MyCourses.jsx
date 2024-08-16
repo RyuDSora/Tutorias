@@ -132,17 +132,19 @@ const MyCourses = () => {
 
   const handleAddSession = async () => {
     const { title, description, startTime, endTime } = newSession;
+    
+    
     if (selectedCourse && title && description && startTime && endTime) {
       try {
         // Ajusta el formato de fecha y hora para que se envíe correctamente
         const formattedStartTime = new Date(startTime).toISOString();
         const formattedEndTime = new Date(endTime).toISOString();
-
+        //creamos la sesion en calendar de google
         const response = await axios.post(`${urigoogle}/create-event`, {
           title,
           description,
-          startTime: formattedStartTime,
-          endTime: formattedEndTime
+          start_time: formattedStartTime,
+          end_time: formattedEndTime
         });
 
         // Verifica si la respuesta contiene la URL de Google Meet
@@ -151,12 +153,12 @@ const MyCourses = () => {
         }
 
         const googleMeetLink = response.data.meetingUrl;
-
+        
+        
         // Luego, guarda la sesión en la base de datos
         await axios.post(`${urigoogle}/save-session`, {
           teacher_id: tutorId,  // Asegúrate de pasar el ID correcto del profesor
-          subject_id: selectedCourse.id,
-          //studentId: null, // O el ID del estudiante si es necesario
+          subject_id: selectedCourse.id_subject,
           title: title,
           description: description,
           start_time: formattedStartTime,

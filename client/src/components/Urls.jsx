@@ -11,8 +11,11 @@ export const urilogin = url + '/users/login';
 export const uriregister = url + '/users/register';
 export const URIUser = url + '/users/';
 
-//cursos
+//materias
 export const UriCursos = url + '/subjects';
+
+//lecciones
+export const UriLesson = url + '/classes'
 
 //tutor
 export const uritutor = url + '/teachers';

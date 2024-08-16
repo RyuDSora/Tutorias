@@ -42,19 +42,6 @@ import withAuth from './hoc/withAuth';
 import PasswordReset from './PasswordReset';
 import PasswordResetRequest from './PasswordResetRequest.jsx';
 
-/*
-const socket = io('https://tutorias-five.vercel.app', {
-  transports: ['websocket'],
-  withCredentials: true,
-});
-
-socket.on('connect', () => {
-  console.log('Connected to socket server:', socket.id);
-});
-
-socket.on('disconnect', () => {
-  console.log('Disconnected from socket server');
-});*/
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -74,19 +61,7 @@ function App() {
     }
   }, []);
 
-  /*useEffect(() => {
-     if (userID) {
-       // Emitir el evento de conexión del usuario
-       socket.emit('user_connected', userID);
- 
-       // Desconectar el socket al desmontar el componente
-       return () => {
-         socket.emit('user_disconnected', userID);
-         socket.disconnect();
-       };
-     }
-   }, [userID]);
- */
+
   return (
     <Router>
       <div>

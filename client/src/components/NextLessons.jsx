@@ -6,7 +6,9 @@ import { format, isSameDay, parseISO } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { FaCalendar } from 'react-icons/fa';
 import axios from 'axios';
-import { url } from './Urls';
+import { encryptionKey,decryptValue } from './hashes';
+import Cookies from 'js-cookie';
+import { url, urigoogle,UriLesson, uritutor } from './Urls';
 
 const NextLessons = () => {
   const [showModal, setShowModal] = useState(false);
@@ -21,19 +23,26 @@ const NextLessons = () => {
 
   const fetchLessons = async () => {
     try {
-      // Ajusta estos parámetros según sea necesario
-      const teacherId = 1;  // Ejemplo, reemplaza con el ID del profesor
-      const subjectId = 1;  // Ejemplo, reemplaza con el ID de la materia
-
-      const response = await axios.get(url+'/sessions', {
-        params: { teacherId, subjectId },
-      });
-
-      setLessons(response.data);
+      //con el id de usuario
+      const id = decryptValue(Cookies.get('#gt156'),encryptionKey);
+      //llamamos a los datos del tutor
+      const resp = await await axios.get(`${uritutor}/${id}`);
+      //recuperamos el id de tutor
+      const teacherId = resp.data.id;
+      
+      //llamamos todos los cursos del tutor
+      const response = await axios.get(`${UriLesson}/${teacherId}`);
+      console.log(response.data);
+      
+      const filteredLessons = response.data.filter(lesson => lesson.teacher_id === teacherId);
+  
+      console.log(filteredLessons);
+      setLessons(filteredLessons);
     } catch (error) {
       console.error('Error al recuperar sesiones:', error);
     }
   };
+  
 
   useEffect(() => {
     fetchLessons();
@@ -57,7 +66,8 @@ const NextLessons = () => {
         <hr />
         <Card.Body>
           <ListGroup variant="flush">
-            {upcomingLessons.map((lesson, index) => (
+            {upcomingLessons.length !==0 ?
+            (upcomingLessons.map((lesson, index) => (
               <ListGroupItem key={index}>
                 <div className='row'>
                   <div className='col-4 Principal'>
@@ -86,7 +96,7 @@ const NextLessons = () => {
                   </div>
                 </div>
               </ListGroupItem>
-            ))}
+            ))):(<>No hay lecciones pendientes</>)}
           </ListGroup>
         </Card.Body>
       </Card>

@@ -17,7 +17,8 @@ const oauth2Client = new google.auth.OAuth2(
 
 //generar tokens
 export const generarTokens = async(req,res) =>{
-    console.log(process.env.GOOGLE_REDIRECT_URL);
+    const {id} =req.params
+    res.cookie('userId', id, { httpOnly: true });
     
     const scopes = [
         'https://www.googleapis.com/auth/calendar',
@@ -28,8 +29,6 @@ export const generarTokens = async(req,res) =>{
         access_type: 'offline',
         scope: scopes,
       });
-      console.log(url);
-      //console.log(res.query.state);
       
       res.redirect(url);
 }
@@ -38,6 +37,8 @@ export const generarTokens = async(req,res) =>{
 export const autenticar = async(req,res) => {
     const code = req.query.code;
     const state = req.query.state; // Si decides usarlo para una mejor seguridad
+    const userId = req.cookies.userId;
+    
   if (!code) {
     return res.status(400).send('No code provided');
   }
@@ -47,10 +48,10 @@ export const autenticar = async(req,res) => {
     oauth2Client.setCredentials(tokens);
 
     // Guardar tokens en la base de datos
-    await saveTokensToDatabase(tokens);
+    await saveTokensToDatabase(tokens,userId);
 
     // Redirigir a una página de éxito o mostrar un mensaje
-    res.redirect('/'); // Aquí podrías redirigir a una página de éxito.
+    res.redirect(process.env.URL_FRONT_ORIGIN || 'http://localhost:5173/dashboardtutor/my-courses'); // Aquí podrías redirigir a una página de éxito.
   } catch (error) {
     console.error('Error retrieving access token:', error);
     res.status(500).send(`Error retrieving access token: ${error.message}`);
@@ -59,8 +60,10 @@ export const autenticar = async(req,res) => {
 
 //crear eventos con Google Calendar
 export const createEvent = async(req,res) =>{
+  const {id} = req.params;
+
     try {
-        const tokens = await getTokensFromDatabase();
+        const tokens = await getTokensFromDatabase(id);
         if (!tokens) {
           return res.status(400).send('No tokens found in database');
         }
@@ -206,7 +209,7 @@ export const getSessions = async(req,res) => {
 
 
 // Guardar tokens en la base de datos
-const saveTokensToDatabase = async (tokens) => {
+const saveTokensToDatabase = async (tokens,idtutor) => {
     const client = await pool.connect();
     try {
       // Crear la tabla oauth_tokens si no existe
@@ -219,13 +222,13 @@ const saveTokensToDatabase = async (tokens) => {
       `);
   
       // Eliminamos los tokens anteriores (si existen)
-      await client.query('DELETE FROM oauth_tokens');
+      await client.query('DELETE FROM oauth_tokens where id_tutor=$1',[idtutor]);
   
       // Insertamos los nuevos tokens
       await client.query(`
-        INSERT INTO oauth_tokens (access_token, refresh_token)
-        VALUES ($1, $2)`,
-        [tokens.access_token, tokens.refresh_token]
+        INSERT INTO oauth_tokens (access_token, refresh_token,id_tutor)
+        VALUES ($1, $2, $3)`,
+        [tokens.access_token, tokens.refresh_token, idtutor]
       );
     } finally {
       client.release();
@@ -233,10 +236,11 @@ const saveTokensToDatabase = async (tokens) => {
   };
   
   // Recuperar el último token desde la base de datos
-  const getTokensFromDatabase = async () => {
+  const getTokensFromDatabase = async (id) => {
     const client = await pool.connect();
     try {
-      const res = await client.query('SELECT access_token, refresh_token FROM oauth_tokens ORDER BY id DESC LIMIT 1');
+      const res = 
+      await client.query('SELECT access_token, refresh_token FROM oauth_tokens where id_tutor=$1 ORDER BY id DESC LIMIT 1',[id]);
   
       if (res.rows.length === 0) {
         return null; // Retorna null si no hay registros

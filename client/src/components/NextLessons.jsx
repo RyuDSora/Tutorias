@@ -29,10 +29,11 @@ const NextLessons = () => {
       const resp = await await axios.get(`${uritutor}/${id}`);
       //recuperamos el id de tutor
       const teacherId = resp.data.id;
+      console.log(teacherId);
       
       //llamamos todos los cursos del tutor
       const response = await axios.get(`${UriLesson}/${teacherId}`);
-      console.log(response.data);
+      
       
       const filteredLessons = response.data.filter(lesson => lesson.teacher_id === teacherId);
   

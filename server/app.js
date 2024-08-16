@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 import express from 'express';
 import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser'
 import cors from 'cors';
 import userRoute from './routes/userRoute.js';
 import tableRoute from './routes/tableRoute.js';
@@ -16,6 +17,7 @@ import chatRoutes from './routes/chatRoutes.js';
 import stripeRoute from './routes/stripeRoute.js'
 import suscriptionRoute from './routes/suscriptionRoute.js'
 import googleRoute from './routes/googleRoute.js'
+import oauth_tokensRoute from './routes/oauth_tokensRoute.js'
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -32,6 +34,8 @@ app.use(bodyParser.json());
 app.use(express.json()); // Para poder procesar JSON en el cuerpo de la solicitud
 app.use(bodyParser.urlencoded({ extended: true }));
 
+app.use(cookieParser());
+
 // Usar las rutas
 app.use('/users', userRoute);
 app.use('/tables', tableRoute);
@@ -46,6 +50,7 @@ app.use('/api', chatRoutes);
 app.use('/stripe', stripeRoute);
 app.use('/suscription', suscriptionRoute);
 app.use('/apigoogle', googleRoute);
+app.use('/oauth', oauth_tokensRoute);
 
 //servidor principal con NodeJS
 app.listen(port, () => {

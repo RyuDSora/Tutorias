@@ -34,3 +34,8 @@ export const URLsuscription = url + '/suscription';
 
 //google
 export const urigoogle = url + '/apigoogle';
+export const googleAuth = urigoogle+'/auth'
+
+///oauth
+
+export const UriOauth = url + '/oauth'

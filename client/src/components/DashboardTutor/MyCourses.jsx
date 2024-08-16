@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Card, Button, Modal, ListGroup, Form } from 'react-bootstrap';
-import { UriCursos, uritutorsubject, uritutor, createEventEndpoint, urigoogle,url } from '../Urls'; // Actualiza el import
+import { UriCursos, uritutorsubject, uritutor, createEventEndpoint, urigoogle,url,UriLesson,UriOauth,googleAuth } from '../Urls'; // Actualiza el import
 import { confirmAlert } from 'react-confirm-alert';
 import Cookies from 'js-cookie';
 import { decryptValue, encryptionKey } from '../hashes';
@@ -10,6 +10,7 @@ import { toast, ToastContainer } from 'react-toastify';
 const MyCourses = () => {
   const [show, setShow] = useState(false);
   const [show2, setShow2] = useState(false);
+  const [show3, setShow3] = useState(false);
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [courses, setCourses] = useState([]);
   const [cursosSelect, setCursosSelect] = useState([]);
@@ -21,8 +22,33 @@ const MyCourses = () => {
     startTime: '',
     endTime: ''
   });
+  const [oauthG,setOauthG]=useState(false);
   const pre = '/images/';
+  useEffect(()=>{
+    const revisarOauth = async () =>{
+      try {
+        //idtutor
+        const userId = decryptValue(Cookies.get('#gt156'), encryptionKey);
+        const responsetutor = await axios.get(`${uritutor}/${userId}`);
+        const idTutor = responsetutor.data.id;
+        //verificar si esta autorizado
+        const response = await axios.get(UriOauth);
+        const autorizado = response.data.some((item) => item.id_tutor === idTutor);
 
+        if (autorizado) {
+          console.log('El tutor está autorizado.');
+          setOauthG(true);
+        } else {
+          console.log('El tutor NO está autorizado.');
+          setOauthG(false);
+        }
+        
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    revisarOauth();
+  },[])
   useEffect(() => {
     const fetchCurses = async () => {
       try {
@@ -82,6 +108,7 @@ const MyCourses = () => {
   };
 
   const handleClose2 = () => setShow2(false);
+  const handleClose3 = () => setShow3(false);
 
   const handleShow = (course) => {
     setSelectedCourse(course);
@@ -89,6 +116,7 @@ const MyCourses = () => {
   };
 
   const handleShow2 = () => setShow2(true);
+  const handleShow3 = () => setShow3(true);
 
   const handleDeleteCourse = async (id) => {
     try {
@@ -140,7 +168,7 @@ const MyCourses = () => {
         const formattedStartTime = new Date(startTime).toISOString();
         const formattedEndTime = new Date(endTime).toISOString();
         //creamos la sesion en calendar de google
-        const response = await axios.post(`${urigoogle}/create-event`, {
+        const response = await axios.post(`${urigoogle}/create-event/${tutorId}`, {
           title,
           description,
           start_time: formattedStartTime,
@@ -167,7 +195,7 @@ const MyCourses = () => {
         });
 
         toast.success('Sesión agregada exitosamente');
-        setShow(false);
+        setShow3(false);
         setAdd(true);
       } catch (error) {
         console.error('Error adding session:', error);
@@ -178,6 +206,10 @@ const MyCourses = () => {
     }
   };
 
+  const handleLogin = () => {
+    const authUrl = `${googleAuth}/${tutorId}`;
+    window.location.href = authUrl;
+  };
   return (
     <>
       <div><span className='h3 Principal f_principal'>Tus Cursos</span></div>
@@ -213,51 +245,24 @@ const MyCourses = () => {
           {selectedCourse?.description}
           <div className='my-2'>
             <ListGroup>
+              <div><span>Sesiones para {selectedCourse?.name}</span></div>
               <ListGroup.Item>
-                <span>Aquí van las sesiones ya programadas para este curso de {selectedCourse?.name}</span>
+                
               </ListGroup.Item>
             </ListGroup>
           </div>
-          <div className='my-2'>
-            <Form>
-              <Form.Group controlId="sessionTitle">
-                <Form.Label>Título</Form.Label>
-                <Form.Control
-                  type="text"
-                  value={newSession.title}
-                  onChange={(e) => setNewSession({ ...newSession, title: e.target.value })}
-                />
-              </Form.Group>
-              <Form.Group controlId="sessionDescription">
-                <Form.Label>Descripción</Form.Label>
-                <Form.Control
-                  type="text"
-                  value={newSession.description}
-                  onChange={(e) => setNewSession({ ...newSession, description: e.target.value })}
-                />
-              </Form.Group>
-              <Form.Group controlId="sessionStartTime">
-                <Form.Label>Fecha y Hora de Inicio</Form.Label>
-                <Form.Control
-                  type="datetime-local"
-                  value={newSession.startTime}
-                  onChange={(e) => setNewSession({ ...newSession, startTime: e.target.value })}
-                />
-              </Form.Group>
-              <Form.Group controlId="sessionEndTime">
-                <Form.Label>Fecha y Hora de Fin</Form.Label>
-                <Form.Control
-                  type="datetime-local"
-                  value={newSession.endTime}
-                  onChange={(e) => setNewSession({ ...newSession, endTime: e.target.value })}
-                />
-              </Form.Group>
-            </Form>
-          </div>
           <div className='my-2 d-flex justify-content-end'>
-            <Button variant="secondary bg_principal Blanco" onClick={handleAddSession}>
-              Agregar Sesión
-            </Button>
+            {oauthG ? (<>
+              <Button variant="secondary bg_principal Blanco" onClick={handleShow3}>
+                Agregar Sesión
+              </Button>
+            </>):(<>
+              <div><span>para agregar una nueva sesion debes de acceder con Google</span></div>
+              <Button variant="secondary bg_principal Blanco" onClick={handleLogin}>
+                Acceder
+              </Button>
+            </>)}
+            
           </div>
         </Modal.Body>
         <Modal.Footer>
@@ -266,7 +271,7 @@ const MyCourses = () => {
           </Button>
         </Modal.Footer>
       </Modal>
-
+        {/**Modal para agregar un nuevo curso a la lista del tutor*/}
       <Modal show={show2} onHide={handleClose2}>
         <Modal.Header closeButton>
           <Modal.Title className='Principal f_principal'>Selecciona un curso</Modal.Title>
@@ -299,7 +304,60 @@ const MyCourses = () => {
           </Button>
         </Modal.Footer>
       </Modal>
-
+      {/**Modal para agregar una nueva sesion */}
+      <Modal show={show3} onHide={handleClose3}>
+        <Modal.Header closeButton>
+          <Modal.Title className='Principal f_principal'>Agrega una nueva sesion de meeting</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+        <div className='my-2'>
+            <Form>
+              <Form.Group controlId="sessionTitle">
+                <Form.Label>Título</Form.Label>
+                <Form.Control
+                  type="text"
+                  value={newSession.title = selectedCourse?.name }
+                  disabled
+                />
+              </Form.Group>
+              <Form.Group controlId="sessionDescription">
+                <Form.Label>Descripción</Form.Label>
+                <Form.Control
+                  type="text"
+                  value={newSession.description}
+                  onChange={(e) => setNewSession({ ...newSession, description: e.target.value })}
+                />
+              </Form.Group>
+              <Form.Group controlId="sessionStartTime">
+                <Form.Label>Fecha y Hora de Inicio</Form.Label>
+                <Form.Control
+                  type="datetime-local"
+                  value={newSession.startTime}
+                  onChange={(e) => setNewSession({ ...newSession, startTime: e.target.value })}
+                />
+              </Form.Group>
+              <Form.Group controlId="sessionEndTime">
+                <Form.Label>Fecha y Hora de Fin</Form.Label>
+                <Form.Control
+                  type="datetime-local"
+                  value={newSession.endTime}
+                  onChange={(e) => setNewSession({ ...newSession, endTime: e.target.value })}
+                />
+              </Form.Group>
+            </Form>
+          </div>
+          <div className='my-2 d-flex justify-content-end'>
+            <Button variant="secondary bg_principal Blanco" onClick={handleAddSession}>
+              Agregar
+            </Button>
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" className='bg_secundario' onClick={handleClose3}>
+            Cerrar
+          </Button>
+        </Modal.Footer>
+      </Modal>
       <ToastContainer />
     </>
   );

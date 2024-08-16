@@ -18,11 +18,11 @@ const generalLimiter = rateLimit({
   message: 'Too many requests from this IP, please try again after 15 minutes' // mensaje de error personalizado
 });
 
-router.get('/auth',generalLimiter,generarTokens );
+router.get('/auth/:id',generalLimiter,generarTokens );
 router.get('/oauth2callback',generalLimiter,autenticar);
-router.get('/events',generalLimiter,getEvents);
+router.get('/events/:id',generalLimiter,getEvents);
 router.get('/sessions',generalLimiter,getSessions);
-router.post('/create-event', sensitiveRouteLimiter,createEvent);
+router.post('/create-event/:id', sensitiveRouteLimiter,createEvent);
 router.post('/save-session', sensitiveRouteLimiter,SaveSession);
 
 export default router;

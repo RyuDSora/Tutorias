@@ -1,5 +1,5 @@
 import express from 'express';
-import { createTeacher, deleteTeacher, getAllTeachers, getTeacher, updateTeacher } from '../controllers/teacherController.js';
+import { createTeacher, deleteTeacher, getAllTeachers, getTeacher, getTeacher2, updateTeacher } from '../controllers/teacherController.js';
 import rateLimit from 'express-rate-limit';
 
 const router = express.Router();
@@ -19,6 +19,7 @@ const sensitiveRouteLimiter = rateLimit({
 // Rutas del Profesor
 router.get('/',    generalLimiter, getAllTeachers);
 router.get('/:id', generalLimiter, getTeacher);
+router.get('/teacher/:id', generalLimiter, getTeacher2);
 router.post('/',      sensitiveRouteLimiter,createTeacher);
 router.put('/:id',    sensitiveRouteLimiter,updateTeacher);
 router.delete('/:id', sensitiveRouteLimiter,deleteTeacher);

@@ -1,6 +1,6 @@
 import express from 'express';
 import rateLimit from 'express-rate-limit';
-import { generarTokens,autenticar,getEvents,getSessions,createEvent,SaveSession } from "../controllers/googleControllers.js";
+import { generarTokens,autenticar,getEvents,getSessions,createEvent,SaveSession,deleteEvent } from "../controllers/googleControllers.js";
 
 const router = express.Router();
 
@@ -24,5 +24,6 @@ router.get('/events/:id',generalLimiter,getEvents);
 router.get('/sessions',generalLimiter,getSessions);
 router.post('/create-event/:id', sensitiveRouteLimiter,createEvent);
 router.post('/save-session', sensitiveRouteLimiter,SaveSession);
+router.delete('/delete-event/:id', deleteEvent);
 
 export default router;

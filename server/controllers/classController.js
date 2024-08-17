@@ -89,7 +89,11 @@ export const deleteClass = async (req, res) => {
     if (result.rows.length === 0) {
       res.status(404).send('Class not found.');
     } else {
-      res.json(result.rows[0]);
+      const resultado = {
+        message: 'Event deleted successfully',
+        data: result.rows[0]
+      };
+      res.status(200).json(resultado);
     }
   } catch (error) {
     console.error('Error deleting class:', error);

@@ -93,15 +93,18 @@ export const createEvent = async(req,res) =>{
               },
             },
           },
+          visibility: 'public', // Asegura que el evento sea público
+          guestsCanSeeOtherGuests: true, // Permite que los invitados se vean entre sí
         };
     
         const response = await meetClient.events.insert({
           calendarId: 'primary',
           resource: event,
           conferenceDataVersion: 1,
+          sendUpdates:'all',
         });
-    
-        res.json({ meetingUrl: response.data.hangoutLink });
+        
+        res.json({ meetingUrl: response.data.hangoutLink, meetId:response.data.id });
       } catch (error) {
         console.error('Error al crear reunión:', error);
         res.status(500).json({ error: 'Error al crear reunión' });
@@ -110,8 +113,9 @@ export const createEvent = async(req,res) =>{
 
 //obtener eventos desde Google Calendar
 export const getEvents = async(req,res) => {
+    const {id} = req.params;
     try {
-        const tokens = await getTokensFromDatabase();
+        const tokens = await getTokensFromDatabase(id);
         if (!tokens) {
           return res.status(400).send('No tokens found in database');
         }
@@ -148,25 +152,52 @@ export const getEvents = async(req,res) => {
         res.status(500).json({ error: 'Error retrieving events' });
       }
 }
-
-//borrar evento desde Google Calendar
+  // Borrar evento desde Google Calendar
+  export const deleteEvent = async (req, res) => {
+    const { id } = req.params; // ID del tutor
+    const { eventId } = req.body; // ID del evento a eliminar
+    try {
+      const tokens = await getTokensFromDatabase(id);
+      if (!tokens) {
+        return res.status(400).send('No tokens found in database');
+      }
+  
+      oauth2Client.setCredentials({
+        access_token: tokens.access_token,
+        refresh_token: tokens.refresh_token,
+      });
+  
+      const calendar = google.calendar({ version: 'v3', auth: oauth2Client });
+  
+      await calendar.events.delete({
+        calendarId: 'primary',
+        eventId: eventId,
+      });
+  
+      res.status(200).send({ message: 'Event deleted successfully' });
+    } catch (error) {
+      console.error('Error deleting event:', error);
+      res.status(500).send({ message: 'Failed to delete event', error: error.message });
+    }
+  };
+  
 
 //guardar la información de la sesión en la base de datos
 export const SaveSession = async(req,res) => {
-    const { teacher_id, subject_id, title, description, start_time, end_time, googleMeetLink } = req.body;
+    const { teacher_id, subject_id, title, description, start_time, end_time, googleMeetLink, meetid } = req.body;
 
-    if (!teacher_id || !subject_id || !title || !description || !start_time || !end_time || !googleMeetLink ) {
+    if (!teacher_id || !subject_id || !title || !description || !start_time || !end_time || !googleMeetLink || !meetid) {
       return res.status(400).json({ error: 'Faltan campos requeridos' });
     }
 
     const client = await pool.connect();
     try {
       const query = `
-        INSERT INTO classes (teacher_id, subject_id, title, description, start_time, end_time, google_meet_link, created_at, updated_at)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, NOW(), NOW())
+        INSERT INTO classes (teacher_id, subject_id, title, description, start_time, end_time, google_meet_link, meetid, created_at, updated_at)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW(), NOW())
         RETURNING *;
       `;
-      const values = [teacher_id, subject_id, title, description, start_time, end_time, googleMeetLink];
+      const values = [teacher_id, subject_id, title, description, start_time, end_time, googleMeetLink,meetid];
 
       const result = await client.query(query, values);
       res.status(201).json(result.rows[0]);
@@ -254,3 +285,4 @@ const saveTokensToDatabase = async (tokens,idtutor) => {
       client.release();
     }
   };
+

@@ -4,55 +4,120 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import { format, isSameDay, parseISO } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { FaCalendar } from 'react-icons/fa';
+import { FaCalendar,FaTrashAlt } from 'react-icons/fa';
+import { FaArrowRightToBracket } from "react-icons/fa6";
 import axios from 'axios';
 import { encryptionKey,decryptValue } from './hashes';
 import Cookies from 'js-cookie';
 import { url, urigoogle,UriLesson, uritutor } from './Urls';
+import { confirmAlert } from 'react-confirm-alert';
+import { toast, ToastContainer } from 'react-toastify';
+
 
 const NextLessons = () => {
   const [showModal, setShowModal] = useState(false);
   const [date, setDate] = useState(new Date());
   const [lessons, setLessons] = useState([]);
-
+  const [deleteSD,setDeleteSD]= useState(false)
+  const [upcomingLessons,setUpcomingLessons]=useState([])
   const toggleModal = () => setShowModal(!showModal);
 
   const onChange = (date) => {
     setDate(date);
   };
 
-  const fetchLessons = async () => {
-    try {
-      //con el id de usuario
-      const id = decryptValue(Cookies.get('#gt156'),encryptionKey);
-      //llamamos a los datos del tutor
-      const resp = await await axios.get(`${uritutor}/${id}`);
-      //recuperamos el id de tutor
-      const teacherId = resp.data.id;
-      console.log(teacherId);
-      
-      //llamamos todos los cursos del tutor
-      const response = await axios.get(`${UriLesson}/${teacherId}`);
-      
-      
-      const filteredLessons = response.data.filter(lesson => lesson.teacher_id === teacherId);
+  const openMeetLink = (url) => {
+    const width = 800;
+    const height = 600;
+    const left = (window.innerWidth / 2) - (width / 2);
+    const top = (window.innerHeight / 2) - (height / 2);
   
-      console.log(filteredLessons);
-      setLessons(filteredLessons);
-    } catch (error) {
-      console.error('Error al recuperar sesiones:', error);
-    }
+    window.open(
+      url,
+      'GoogleMeetWindow',
+      `width=${width},height=${height},top=${top},left=${left},scrollbars=yes,resizable=yes`
+    );
   };
-  
 
   useEffect(() => {
+    const fetchLessons = async () => {
+      try {
+        //con el id de usuario
+        const id = decryptValue(Cookies.get('#gt156'),encryptionKey);
+        //llamamos a los datos del tutor
+        const resp = await axios.get(`${uritutor}/${id}`);
+        //recuperamos el id de tutor
+        const teacherId = resp.data.id;
+        
+        //llamamos todos los cursos del tutor
+        const response = await axios.get(`${UriLesson}/${teacherId}`);
+        
+        
+        const filteredLessons = response.data
+        .filter(lesson => lesson.teacher_id === teacherId)
+        .sort((a, b) => new Date(a.start_time) - new Date(b.start_time));
+        
+        setLessons(filteredLessons);
+        const only3 = filteredLessons
+        .filter(lesson => parseISO(lesson.start_time) >= new Date())
+        .slice(0, 3);
+        setUpcomingLessons(only3)
+      } catch (error) {
+        //console.error('Error al recuperar sesiones:', error);
+      }
+    };
     fetchLessons();
-  }, []);
+    setDeleteSD(false)
+  }, [deleteSD]);
 
-  const upcomingLessons = lessons
-    .filter(lesson => parseISO(lesson.start_time) >= new Date())
-    .slice(0, 3);
+  
 
+  const handleDeleteSesion = (lesson) =>{
+    const deleteS = async () =>{
+      try {
+        const response = await axios.delete(`${urigoogle}/delete-event/${lesson.teacher_id}`, {
+          data: { eventId: lesson.meetid },
+        });
+        if (response.status === 200) {
+          toast.success('leccion borrada correctamente en calendar de google');
+        } else {
+          console.error('Failed to delete event');
+        }
+        const response1 = await axios.delete(`${UriLesson}/${lesson.id}`, {
+          data: { eventId: lesson.meetid },
+        });
+        if (response1.status === 200) {
+          toast.success('leccion borrada correctamente en BD');
+        } else {
+          console.error('Failed to delete event');
+        }
+        setDeleteSD(true)
+        Window.href='/dashboardtutor/dash'
+      } catch (error) {
+        toast.error(error)
+      }
+    }
+    deleteS()
+    toast.error('se borro la sesión')
+  }
+  const confirmDelete = (id,title,description) => {
+    setShowModal(false)
+    confirmAlert({
+      title: `Confirmar eliminación de la Leccion de ${title}?`,
+      message: `¿Estás seguro de que deseas eliminar ${description}?`,
+      buttons: [
+        {
+          label: 'Sí',
+          onClick: () => {handleDeleteSesion(id)},
+        },
+        {
+          label: 'No',
+
+          onClick: () => {},
+        },
+      ],
+    });
+  };  
   return (
     <>
       <Card className="Principal mx-auto" style={{ width: '95%' }}>
@@ -79,17 +144,26 @@ const NextLessons = () => {
                   </div>
                   <div className='col-8'>
                     <div className='row'>
-                      <div className='Principal'>{lesson.title}</div>
+                      <div className='Principal'>{lesson.title }</div>
                       <small className='Secundario'>{lesson.description}</small>
                       {lesson.google_meet_link && (
                         <div className='mt-2'>
                           <Button
-                            variant="primary"
-                            href={lesson.google_meet_link}
-                            target="_blank"
+                            title='Borrar esta leccion'
+                            className='me-2'
+                            variant="danger"
+                            onClick={()=>{confirmDelete(lesson)}}
                             rel="noopener noreferrer"
                           >
-                            Unirme
+                            <FaTrashAlt />
+                          </Button>
+                          <Button
+                            variant="primary"
+                            onClick={() => openMeetLink(lesson.google_meet_link)}
+                            rel="noopener noreferrer"
+                            title='Unirme a esta leccion'
+                          >
+                            <FaArrowRightToBracket />
                           </Button>
                         </div>
                       )}
@@ -124,7 +198,17 @@ const NextLessons = () => {
                       {lesson.google_meet_link && (
                         <div className='mt-2'>
                           <Button
+                            title='Borrar esta leccion'
+                            className='me-2'
+                            variant="danger"
+                            onClick={()=>{confirmDelete(lesson)}}
+                            rel="noopener noreferrer"
+                          >
+                            Borrar
+                          </Button>
+                          <Button
                             variant="primary"
+                            title='Unirme a esta leccion'
                             href={lesson.google_meet_link}
                             target="_blank"
                             rel="noopener noreferrer"
@@ -145,6 +229,7 @@ const NextLessons = () => {
           </Button>
         </Modal.Footer>
       </Modal>
+      <ToastContainer></ToastContainer>
     </>
   );
 };

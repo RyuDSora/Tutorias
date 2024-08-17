@@ -32,6 +32,23 @@ export const getTeacher = async (req, res) => {
     client.release();
   }
 };
+export const getTeacher2 = async (req, res) => {
+  const { id } = req.params;
+  const client = await pool.connect();
+  try {
+    const result = await client.query('SELECT * FROM teachers WHERE id = $1', [id]);
+    if (result.rows.length === 0) {
+      res.status(404).send('Teacher not found.');
+    } else {
+      res.json(result.rows[0]);
+    }
+  } catch (error) {
+    console.error('Error fetching teacher:', error);
+    res.status(500).send('Error fetching teacher.');
+  } finally {
+    client.release();
+  }
+};
 
 // Crear un nuevo profesor
 export const createTeacher = async (req, res) => {

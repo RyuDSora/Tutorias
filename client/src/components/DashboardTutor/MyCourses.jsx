@@ -36,10 +36,8 @@ const MyCourses = () => {
         const autorizado = response.data.some((item) => item.id_tutor === idTutor);
 
         if (autorizado) {
-          console.log('El tutor está autorizado.');
           setOauthG(true);
         } else {
-          console.log('El tutor NO está autorizado.');
           setOauthG(false);
         }
         
@@ -108,7 +106,12 @@ const MyCourses = () => {
   };
 
   const handleClose2 = () => setShow2(false);
-  const handleClose3 = () => setShow3(false);
+  const handleClose3 = () => {setShow3(false);setNewSession({
+    title: '',
+    description: '',
+    startTime: '',
+    endTime: ''
+  });}
 
   const handleShow = (course) => {
     setSelectedCourse(course);
@@ -165,8 +168,15 @@ const MyCourses = () => {
     if (selectedCourse && title && description && startTime && endTime) {
       try {
         // Ajusta el formato de fecha y hora para que se envíe correctamente
+        
+        
         const formattedStartTime = new Date(startTime).toISOString();
+        //console.log('esta es la fecha del imput: '+startTime);
+        //console.log('esta es la fecha formateada'+formattedStartTime);
+        
         const formattedEndTime = new Date(endTime).toISOString();
+        //console.log(formattedEndTime);
+        
         //creamos la sesion en calendar de google
         const response = await axios.post(`${urigoogle}/create-event/${tutorId}`, {
           title,
@@ -181,6 +191,8 @@ const MyCourses = () => {
         }
 
         const googleMeetLink = response.data.meetingUrl;
+        const meetid = response.data.meetId;
+        console.log(meetid);
         
         
         // Luego, guarda la sesión en la base de datos
@@ -189,13 +201,14 @@ const MyCourses = () => {
           subject_id: selectedCourse.id_subject,
           title: title,
           description: description,
-          start_time: formattedStartTime,
-          end_time: formattedEndTime,
-          googleMeetLink
+          start_time: startTime,
+          end_time: endTime,
+          googleMeetLink,
+          meetid
         });
 
         toast.success('Sesión agregada exitosamente');
-        setShow3(false);
+        handleClose3();
         setAdd(true);
       } catch (error) {
         console.error('Error adding session:', error);

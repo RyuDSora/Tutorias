@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Card, Button, Modal, ListGroup, ListGroupItem } from'react-bootstrap';
 import axios from'axios';
-import { format, isSameDay, parseISO } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { toast, ToastContainer } from'react-toastify';
-import { UriCursos, UriLesson, uritutor, uritutorsubject, URIUser } from'../Urls';
+import Cookies from 'js-cookie';
+import { confirmAlert } from 'react-confirm-alert';
+import { decryptValue, encryptionKey } from '../hashes';
+import { UriCursos, uriestudisubject, UriLesson, uritutor, uritutorsubject, URIUser } from'../Urls';
 import { FaArrowRight, FaArrowLeft, FaPlus } from'react-icons/fa'; // Importar íconos de flechas
 const MyCoursesST = () => {
   const [show, setShow] = useState(false);
@@ -15,12 +18,14 @@ const MyCoursesST = () => {
   const [misCursos, setMisCursos] = useState([]);
   const [tutors, setTutors] = useState([]); // Para almacenar los tutores disponibles
   const [sessionesD,setSessionesD] = useState([]); 
+  const [add, setAdd] = useState(false);
+  const [UserId, setUserId] = useState(0);
   const pre = '/images/';
 
   const handleClose = () => setShow(false);
   const handleShow = async (course) => {
     setSelectedCourse(course);
-    await tutorSubjects(course.id); // Llamar a tutorSubjects antes de mostrar el modal
+    await tutorSubjects(course.id_subject); // Llamar a tutorSubjects antes de mostrar el modal
     setShow(true);
   };
 
@@ -41,21 +46,58 @@ const MyCoursesST = () => {
     setShow2(false);
     setSessionesD([])
   }
+/**aqui llamamos las materias y filtramos las que no ha seleccionado*/
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchCurses = async () => {
       try {
-        const materiasResponse = await axios.get(UriCursos);
-        setMaterias(materiasResponse.data);
+        const response = await axios.get(UriCursos);
+        const cursos = response.data;
+
+        const filteredCursos = cursos.filter(curso =>
+          !misCursos.some(course => course.id_subject === curso.id)
+        );
+
+        setMaterias(filteredCursos);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchCurses();
+  }, [misCursos]);
+  /**aqui llamamos las materias y filtramos las que ha seleccionado*/
+  useEffect(() => {
+    const fetchSubject = async () => {
+      try {
+        const userId = decryptValue(Cookies.get('#gt156'), encryptionKey);
+        setUserId(userId);
+        const response = await axios.get(`${uriestudisubject}/${userId}`);
+        const EstudiSubjects = response.data;
+        
+        const coursesData = await Promise.all(
+          EstudiSubjects.map(async (tutorSubject) => {
+            const courseResponse = await axios.get(`${UriCursos}/${tutorSubject.id_subject}`);
+            return {
+              ...courseResponse.data,
+              ...tutorSubject
+            };
+          })
+        );
+        setMisCursos(coursesData);
       } catch (error) {
         console.error(error);
       }
     };
 
-    fetchData();
-  }, []);
+    fetchSubject();
+    setAdd(false);
+  }, [add]);
+  
+  
   const tutorSubjects = async (subjectId) => {
     try {
       const response = await axios.get(uritutorsubject);
+      
       const filteredTutors = response.data.filter(ts => ts.id_subject === subjectId);
       const completeTutors = await Promise.all(filteredTutors.map(async (tutor) => {
         const tutorDetails = (await axios.get(`${uritutor}/teacher/${tutor.id_tutor}`)).data;
@@ -72,14 +114,45 @@ const MyCoursesST = () => {
     }
   };
   const moveToMisCursos = (materia) => {
-    setMisCursos([...misCursos, materia]);
-    setMaterias(materias.filter((m) => m.id !== materia.id));
+    const addCourse = async (courseId) => {
+      try {
+        await axios.post(uriestudisubject, {
+          "estudi_id": UserId,
+          "subject_id": courseId
+        });
+        setShow2(false);
+        setAdd(true);
+      } catch (error) {
+        console.error('Error adding course:', error);
+      }
+    };
+    addCourse(materia.id)
   };
-  const moveToOtrosCursos = (curso) => {
-    setMaterias([...materias, curso]);
-    setMisCursos(misCursos.filter((c) => c.id !== curso.id));
+  const handleDeleteCourse = async (id) => {
+    try {
+      await axios.delete(uriestudisubject + '/' + id);
+      toast.success('Curso Eliminado exitosamente');
+      setAdd(true);
+    } catch (error) {
+      console.log(error);
+    }
   };
-
+  const confirmDelete = (curso) => {
+    confirmAlert({
+      title: 'Confirmar eliminación',
+      message: '¿Estás seguro de que deseas eliminar el curso?  si ya llev@ alguna sesion con este curso perderan los datos ',
+      buttons: [
+        {
+          label: 'Sí',
+          onClick: () => { handleDeleteCourse(curso.id) },
+        },
+        {
+          label: 'No',
+          onClick: () => { },
+        },
+      ],
+    });
+  };
   return (
     <>
     <ToastContainer />
@@ -88,7 +161,7 @@ const MyCoursesST = () => {
     </div>
     <div className="row">
       <div className='col-md-8'>
-        <h5>Mis Cursos</h5>
+        <h5 className='my-2 Principal'>Mis Cursos</h5>
         <div className='row'>
             {misCursos.length !== 0 ? (
               misCursos.map(curso => (
@@ -109,18 +182,18 @@ const MyCoursesST = () => {
                       </Button>
                       <Button variant="secondary" 
                               className='bg_secundario Blanco' 
-                              onClick={() => moveToOtrosCursos(curso)} 
+                              onClick={() => confirmDelete(curso)} 
                               title="Mover a Otros Cursos">
-                        <FaArrowLeft /> 
+                        <FaArrowRight /> 
                       </Button>
                     </Card.Body>
                   </Card></div>
               ))
-            ) : (<>No has Agregado Ningún Curso</>)}
+            ) : (<div className='my-5 Secundario'>No has Agregado Ningún Curso</div>)}
           </div>
         </div>
         <div className='col-md-4'>
-          <h5>Otros Cursos</h5>
+          <h5 className='my-2 Principal'>Otros Cursos</h5>
           <ListGroup>
             {materias.length !== 0 ? (
               materias.map(materia => (
@@ -131,35 +204,35 @@ const MyCoursesST = () => {
                           className='bg_secundario Blanco' 
                           onClick={() => moveToMisCursos(materia)} 
                           title="Mover a Mis Cursos">
-                    <FaArrowRight /> {/* Flecha hacia la derecha */}
+                    <FaArrowLeft /> 
                   </Button>
                 </ListGroupItem>
               ))
-            ) : (<>Ya No hay más Cursos Disponibles</>)}
+            ) : (<div className='my-5 Secundario'>Ya No hay más Cursos Disponibles</div>)}
           </ListGroup>
         </div>
       </div>
-      <Modal show={show} onHide={handleClose}>
-        <Modal.Header closeButton>
-          <Modal.Title>{selectedCourse?.name}</Modal.Title>
+      <Modal show={show} onHide={handleClose} size="md" fullscreen>
+        <Modal.Header>
+          <Modal.Title className='mx-auto Principal'>{selectedCourse?.name}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <div>
-            <span>Descripción del Curso:</span>
-            <p>{selectedCourse?.description}</p>
+          <div className='mt-1 mb-3'>
+            <dt className='Principal'>Descripción del Curso:</dt>
+            <dd className='Secundario'>- {selectedCourse?.description}</dd>
           </div>
-          <div>
-            <span>Tutores Disponibles:</span>
+          <div className='mt-1 mb-3'>
+            <dt  className='Principal'>Tutores Disponibles:</dt>
             {tutors.length > 0 ? (
-              <ul>
+              <ol>
                 {tutors.map(tutor => (
                   <li key={tutor.id}>
-                    <button onClick={()=>{handleShow2(tutor)}} title={'Ver sesiones disponibles de '+tutor.name}>
+                    <button className='Secundario' onClick={()=>{handleShow2(tutor)}} title={'Ver sesiones disponibles de '+tutor.name}>
                       - {tutor.name}  {tutor.last}
                       </button>
                   </li>
                 ))}
-              </ul>
+              </ol>
             ) : (
               <p>No hay tutores disponibles para este curso.</p>
             )}
@@ -172,43 +245,51 @@ const MyCoursesST = () => {
         </Modal.Footer>
       </Modal>
       <Modal show={show2} onHide={handleClose2}>
-        <Modal.Header closeButton>
-          <Modal.Title>{selectedTutor?.name+' '+selectedTutor?.last}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <div>
-            <span>Sesiones Disponibles de {selectedTutor?.name}:</span>
-            <ListGroup>
-            {sessionesD.length !== 0 ? (
-              sessionesD.map(materia => (
-                <ListGroupItem key={materia.id} 
-                               className="d-flex justify-content-between align-items-center">
-                  <div>
-                    <span>Descripcion: {materia.description}</span>
-                    <br /><span>Hora Inicio: {format(parseISO(materia.start_time), 'EEEE dd/MM/yy hh:mm aa', { locale: es })}</span>
-                    <br /><span>Hora Final: {format(parseISO(materia.end_time), 'EEEE dd/MM/yy hh:mm aa', { locale: es })}</span>
-                  </div>
-                  <Button variant="primary" 
-                          className='bg_secundario Blanco' 
-                          
-                          title="Agregar Sesion">
-                    <FaPlus /> {/* Flecha hacia la derecha */}
+  <Modal.Header closeButton>
+    <Modal.Title>{selectedTutor?.name + ' ' + selectedTutor?.last}</Modal.Title>
+  </Modal.Header>
+  <Modal.Body>
+    <div>
+      <span>Sesiones Disponibles de {selectedTutor?.name}:</span>
+      {sessionesD.length !== 0 ? (
+        <table className='table'>
+          <thead>
+            <tr>
+              <th>Descripción</th>
+              <th>Día</th>
+              <th>Hora Inicio</th>
+              <th>Hora Fin</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {sessionesD.map(materia => (
+              <tr key={materia.id}>
+                <td>{materia.description}</td>
+                <td>{format(parseISO(materia.start_time), 'dd/MM/yy', { locale: es })}</td>
+                <td>{format(parseISO(materia.start_time), 'hh:mm aa', { locale: es })}</td>
+                <td>{format(parseISO(materia.end_time), 'hh:mm aa', { locale: es })}</td>
+                <td>
+                  <Button variant="primary" className='bg_secundario Blanco' title="Agregar Sesión">
+                    <FaPlus /> {/* Icono de agregar */}
                   </Button>
-                </ListGroupItem>
-              ))
-            ) : (<>No hay Seciones Disponibles</>)}
-          </ListGroup>
-          </div>
-          <div>
-            
-          </div>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" className='bg_secundario' onClick={handleClose2}>
-            Cerrar
-          </Button>
-        </Modal.Footer>
-      </Modal>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      ) : (
+        <p>No hay Sesiones Disponibles</p>
+      )}
+    </div>
+  </Modal.Body>
+  <Modal.Footer>
+    <Button variant="secondary" className='bg_secundario' onClick={handleClose2}>
+      Cerrar
+    </Button>
+  </Modal.Footer>
+</Modal>
+
     </>
   );
 };

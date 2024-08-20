@@ -26,6 +26,9 @@ export const createEventEndpoint = url + '/create-event';
 //tutorsubject
 export const uritutorsubject = url + '/ts';
 
+//Estudiante-Cursos
+export const uriestudisubject = url + '/estudisub';
+
 //chats
 export const urichat = url + '/api/messages';
 
@@ -39,3 +42,10 @@ export const googleAuth = urigoogle+'/auth'
 ///oauth
 
 export const UriOauth = url + '/oauth'
+
+//planes
+export const uriplanes = url + '/planes'
+
+
+//estudiante x classes
+export const uriestudiclasses = url + '/estclases'

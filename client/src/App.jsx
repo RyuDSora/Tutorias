@@ -3,9 +3,6 @@ import { useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
 import { decryptValue, encryptionKey } from './components/hashes.jsx';
 
-//import { io } from 'socket.io-client';
-
-
 const Success = () => <h1>¡Pago realizado con éxito!</h1>;
 const Cancel = () => <h1>Pago cancelado. Inténtalo de nuevo.</h1>;
 //componentes
@@ -76,14 +73,13 @@ function App() {
           <Route path="/reset-password-request" element={<PasswordResetRequest />} />
           <Route path="/unauthorized" element={<UnAuthorized />} />
           <Route path="/dashboard" element={<DashboardComponent />} />
-          <Route path="/cancel" element={<CancelPage />} />
-          <Route path="/success" element={<SuccessPage />} />
           <Route path="/cursos" element={<Cursos />} />
           <Route path="/tutores" element={<Tutores />} />
           <Route path="/suscripciones" element={<SubscriptionPlans />} />
           <Route path="/subscribe/:plan" component={SubscriptionForm} />
           <Route path="/success" element={<Success />} />
           <Route path="/cancel" element={<Cancel />} />
+
           {/* Rutas protegidas */}
           <Route path="/account" element={withAuth(AccountComponent, ['administrador', 'estudiante', 'tutor'])()} />
           <Route path="/dashboardadmin" element={withAuth(DashboardAdmin, ['administrador'])()} >

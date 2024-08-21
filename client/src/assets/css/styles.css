@@ -36,7 +36,7 @@ body {
 }
 
 .Principal {
-    color: #336a41;
+    color: #336a41 !important;
 }
 .rect {
     height: 50px;

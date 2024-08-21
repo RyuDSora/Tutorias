@@ -1,7 +1,7 @@
 import React from 'react';
 import TopSellingCourses from '../TopSellingCourses';
 import Articles from "../Articles";
-import NextLessons from '../NextLessons';
+import NextLessons from '../NextLessonsST';
 
 const Mytutors = () => {
   return (

@@ -7,8 +7,12 @@ import { toast, ToastContainer } from'react-toastify';
 import Cookies from 'js-cookie';
 import { confirmAlert } from 'react-confirm-alert';
 import { decryptValue, encryptionKey } from '../hashes';
-import { UriCursos, uriestudisubject, UriLesson, uritutor, uritutorsubject, URIUser } from'../Urls';
-import { FaArrowRight, FaArrowLeft, FaPlus } from'react-icons/fa'; // Importar íconos de flechas
+import { UriCursos, uriestudisubject, UriLesson, 
+         uritutor, uritutorsubject, URIUser,
+         uriestudiclasses } from'../Urls';
+import { FaPlus, FaTrash } from'react-icons/fa'; 
+import { CiBookmarkPlus } from "react-icons/ci";
+
 const MyCoursesST = () => {
   const [show, setShow] = useState(false);
   const [show2, setShow2] = useState(false);
@@ -16,7 +20,7 @@ const MyCoursesST = () => {
   const [selectedTutor, setSelectedTutor] = useState(null);
   const [materias, setMaterias] = useState([]);
   const [misCursos, setMisCursos] = useState([]);
-  const [tutors, setTutors] = useState([]); // Para almacenar los tutores disponibles
+  const [tutors, setTutors] = useState([]);
   const [sessionesD,setSessionesD] = useState([]); 
   const [add, setAdd] = useState(false);
   const [UserId, setUserId] = useState(0);
@@ -25,7 +29,7 @@ const MyCoursesST = () => {
   const handleClose = () => setShow(false);
   const handleShow = async (course) => {
     setSelectedCourse(course);
-    await tutorSubjects(course.id_subject); // Llamar a tutorSubjects antes de mostrar el modal
+    await tutorSubjects(course.id_subject); 
     setShow(true);
   };
 
@@ -153,11 +157,47 @@ const MyCoursesST = () => {
       ],
     });
   };
+  const handleAddClass = (sesion) =>{
+    
+    const agregarSesion = async(sesionId) => {
+      try {
+        const x = await axios.get(uriestudiclasses);
+        
+        const verificar = x.data;
+        // Verificar si existe alguna sesión activa con los mismos parámetros
+        const sesionActiva = verificar.find(sesion => 
+          parseInt(sesion.student_id) === parseInt(UserId) && 
+          parseInt(sesion.class_id) === parseInt(sesionId) && 
+          sesion.active 
+        );
+        if (sesionActiva) {
+          // Si la sesión ya está activa, muestra un mensaje de advertencia
+          toast.warning('Ya tienes esta sesión agregada.');
+        } else {
+          // Si no hay una sesión activa, procede a guardar la nueva sesión
+          const response = await axios.post(uriestudiclasses, {
+            student_id: parseInt(UserId),
+            class_id: parseInt(sesionId)
+          });
+    
+          // Mostrar mensaje de éxito
+          toast.success('Sesión agregada con éxito');
+          setShow2(false) // Descomentar si quieres cerrar el modal o hacer alguna acción adicional
+        }
+      } catch (error) {
+        // Manejo de errores
+        console.error('Error al agregar sesión:', error);
+        toast.error('Ocurrió un error al agregar la sesión.');
+      }
+    };
+    
+    agregarSesion(sesion.id);
+  }
   return (
     <>
     <ToastContainer />
     <div>
-      <span className='h3 Principal f_principal'>Tus Cursos</span>
+      <span className='h3 Principal f_principal'>Cursos</span>
     </div>
     <div className="row">
       <div className='col-md-8'>
@@ -166,7 +206,7 @@ const MyCoursesST = () => {
             {misCursos.length !== 0 ? (
               misCursos.map(curso => (
                 <div key={curso.id}className=''>
-                  <Card>
+                  <Card title={curso.description}>
                     <Card.Body>
                       <div className='d-flex justify-content-center'>
                         <img src={pre + curso.imagen} 
@@ -175,17 +215,20 @@ const MyCoursesST = () => {
                              style={{ height: 100, width: 300 }}/>
                       </div>
                       <Card.Title className='Principal'>{curso.name}</Card.Title>
-                      <Button variant="primary" 
-                              className='bg_principal Blanco me-2' 
-                              onClick={() => { handleShow(curso) }}>
-                        Más información
-                      </Button>
-                      <Button variant="secondary" 
-                              className='bg_secundario Blanco' 
-                              onClick={() => confirmDelete(curso)} 
-                              title="Mover a Otros Cursos">
-                        <FaArrowRight /> 
-                      </Button>
+                      <div className='d-flex justify-content-center'>
+                        <Button variant="primary" 
+                                className='bg_principal Blanco me-2' 
+                                onClick={() => { handleShow(curso) }}>
+                          Más información
+                        </Button>
+                        <Button variant="danger" 
+                                className='Blanco'
+                                style={{backgroundColor:'red'}} 
+                                onClick={() => confirmDelete(curso)} 
+                                title="Quitar de mis Cursos">
+                          <FaTrash /> 
+                        </Button>
+                      </div>
                     </Card.Body>
                   </Card></div>
               ))
@@ -199,13 +242,14 @@ const MyCoursesST = () => {
               materias.map(materia => (
                 <ListGroupItem key={materia.id} 
                                className="d-flex justify-content-between align-items-center">
-                  <span>{materia.name}</span>
-                  <Button variant="primary" 
-                          className='bg_secundario Blanco' 
-                          onClick={() => moveToMisCursos(materia)} 
-                          title="Mover a Mis Cursos">
-                    <FaArrowLeft /> 
-                  </Button>
+                  <div className='d-flex justify-content-center'>
+                    <button className='me-3'
+                            onClick={() => moveToMisCursos(materia)} 
+                            title="Agregar a Mis Cursos">
+                      <CiBookmarkPlus className='Secundario'/>
+                    </button>
+                    <span>{materia.name}</span>
+                  </div>
                 </ListGroupItem>
               ))
             ) : (<div className='my-5 Secundario'>Ya No hay más Cursos Disponibles</div>)}
@@ -246,33 +290,36 @@ const MyCoursesST = () => {
       </Modal>
       <Modal show={show2} onHide={handleClose2}>
   <Modal.Header closeButton>
-    <Modal.Title>{selectedTutor?.name + ' ' + selectedTutor?.last}</Modal.Title>
+    <Modal.Title className='Principal'>{selectedTutor?.name + ' ' + selectedTutor?.last}</Modal.Title>
   </Modal.Header>
   <Modal.Body>
     <div>
-      <span>Sesiones Disponibles de {selectedTutor?.name}:</span>
+      <span className='Secundario ms-2'>Sesiones Disponibles de {selectedTutor?.name}:</span>
       {sessionesD.length !== 0 ? (
-        <table className='table'>
-          <thead>
-            <tr>
-              <th>Descripción</th>
-              <th>Día</th>
-              <th>Hora Inicio</th>
-              <th>Hora Fin</th>
-              <th>Acciones</th>
+        <table className='table mt-3'>
+          <thead >
+            <tr >
+              <th className='Principal'>Descripción</th>
+              <th className='Principal'>Día</th>
+              <th className='Principal'>Hora Inicio</th>
+              <th className='Principal'>Hora Fin</th>
+              <th className='Principal'>Acciones</th>
             </tr>
           </thead>
           <tbody>
             {sessionesD.map(materia => (
               <tr key={materia.id}>
-                <td>{materia.description}</td>
-                <td>{format(parseISO(materia.start_time), 'dd/MM/yy', { locale: es })}</td>
-                <td>{format(parseISO(materia.start_time), 'hh:mm aa', { locale: es })}</td>
-                <td>{format(parseISO(materia.end_time), 'hh:mm aa', { locale: es })}</td>
-                <td>
-                  <Button variant="primary" className='bg_secundario Blanco' title="Agregar Sesión">
-                    <FaPlus /> {/* Icono de agregar */}
-                  </Button>
+                <td className='Secundario'>{materia.description}</td>
+                <td className='Secundario'>{format(parseISO(materia.start_time), 'dd/MM/yy', { locale: es })}</td>
+                <td className='Secundario'>{format(parseISO(materia.start_time), 'hh:mm aa', { locale: es })}</td>
+                <td className='Secundario'>{format(parseISO(materia.end_time), 'hh:mm aa', { locale: es })}</td>
+                <td className='Secundario'>
+                  <div className='d-flex justify-content-center'>
+                    <Button variant="primary" className='bg_principal Blanco rounded-5 p-2' title="Agregar Sesión"
+                            onClick={()=>{handleAddClass(materia)}}>
+                      <FaPlus />
+                    </Button>
+                  </div>
                 </td>
               </tr>
             ))}

@@ -3,8 +3,6 @@ import { useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
 import { decryptValue, encryptionKey } from './components/hashes.jsx';
 
-const Success = () => <h1>¡Pago realizado con éxito!</h1>;
-const Cancel = () => <h1>Pago cancelado. Inténtalo de nuevo.</h1>;
 //componentes
 import DashboardComponent from './DashboardComponent';
 import AboutUs from './components/AboutUs';
@@ -77,8 +75,8 @@ function App() {
           <Route path="/tutores" element={<Tutores />} />
           <Route path="/suscripciones" element={<SubscriptionPlans />} />
           <Route path="/subscribe/:plan" component={SubscriptionForm} />
-          <Route path="/success" element={<Success />} />
-          <Route path="/cancel" element={<Cancel />} />
+          
+          
 
           {/* Rutas protegidas */}
           <Route path="/account" element={withAuth(AccountComponent, ['administrador', 'estudiante', 'tutor'])()} />
@@ -88,12 +86,15 @@ function App() {
             <Route path="chats" element={<Chats userId={userID} />} />
             <Route />
           </Route>
+          <Route path="/success" element={withAuth(SuccessPage,['estudiante'])()} />
+          <Route path="/cancel" element={withAuth(CancelPage, ['estudiante'])()} />
           <Route path="/dashboardstudent" element={withAuth(DashboardStudent, ['estudiante'])()}>
             <Route path="dashst" element={<DashST />} />
             <Route path="my-coursesST" element={<MyCoursesST />} />
             <Route path="my-tutor" element={<MyTutor />} />
             <Route path="chatsST" element={<Chats userId={userID} />} />
             <Route path="articlesST" element={<ArticlesST />} />
+            
           </Route>
           <Route path="/dashboardtutor" element={withAuth(DashboardTutor, ['tutor'])()}>
             <Route path="dash" element={<Dash />} />

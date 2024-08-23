@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { NavItem } from './NavItem'; 
 import { Nav } from 'react-bootstrap';
 import { FaHome, FaBook, FaUsers, FaComments, FaFileAlt } from 'react-icons/fa'; // Importing icons from react-icons
@@ -11,7 +11,7 @@ const SidebarST = () => {
         <NavItem url="/DashboardStudent/my-coursesST" icon={FaBook} etiqueta="Cursos" />
         <NavItem url="/DashboardStudent/my-tutor" icon={FaUsers} etiqueta="Tutores" />
         <NavItem url="/DashboardStudent/chatsST" icon={FaComments} etiqueta="Chats" />
-        <NavItem url="/DashboardStudent/articlesST" icon={FaFileAlt} etiqueta="Libros" />
+        <NavItem url="/DashboardStudent/articles-st" icon={FaFileAlt} etiqueta="Artículos" />
       </div>
     </Nav>
   );

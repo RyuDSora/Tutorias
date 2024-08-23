@@ -94,7 +94,7 @@ export default function LoginComponent({ setIsLoggedIn }) {
           window.location.href = '/dashboardadmin/sql';
         }
         if (role === 'tutor') {
-          window.location.href = '/dashboardtutor/dash';
+          window.location.href = '/dashboardtutor/dash-tu';
         }
         if (role === 'estudiante') {
           window.location.href = '/dashboardStudent/dashst';

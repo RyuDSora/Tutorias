@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Card, Button, Modal, ListGroup, Form } from 'react-bootstrap';
-import { UriCursos, uritutorsubject, uritutor, createEventEndpoint, urigoogle,url,UriLesson,UriOauth,googleAuth } from '../Urls'; // Actualiza el import
+import { UriCursos, uritutorsubject, uritutor, createEventEndpoint, urigoogle, url, UriLesson, UriOauth,googleAuth } from '../Urls'; // Actualiza el import
 import { confirmAlert } from 'react-confirm-alert';
 import Cookies from 'js-cookie';
 import { decryptValue, encryptionKey } from '../hashes';

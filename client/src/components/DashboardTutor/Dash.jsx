@@ -1,6 +1,7 @@
-import React from 'react';
+
 import TopSellingCourses from '../TopSellingCourses';
-import Articles from "../Articles";
+import Articles from '../Articles';
+
 import NextLessons from '../NextLessons'
 const MyDash = () => {
   return (
@@ -10,7 +11,7 @@ const MyDash = () => {
       </div>
       <div className='row my-2 pt-3'>
         <div className='col-sm-8'>
-          <div><TopSellingCourses /></div>  
+          <div><TopSellingCourses /></div>
         </div>
         <div className='col-sm-4'>
           <div><NextLessons /></div>

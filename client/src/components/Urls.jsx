@@ -1,24 +1,25 @@
-//export const url = 'http://localhost:3000';               //para hacer pruebas en local
-export const url = 'https://tutorias-five.vercel.app';  //servidor de vercel
+export const url = 'http://localhost:3000';               //para hacer pruebas en local
+//export const url = 'https://tutorias-five.vercel.app';  //servidor de vercel
 
 
 //urls para trabajar con tablas en general: Administrador 
-export const URIgetTables    = url  + '/tables/get-tables/';    //ver todas las tablas
-export const URUsql          = url  + '/sql/execute';     
+export const URIgetTables = url + '/tables/get-tables/';    //ver todas las tablas
+export const URUsql = url + '/sql/execute';
 
 //user
-export const urilogin        = url  + '/users/login';
-export const uriregister     = url  + '/users/register';
-export const URIUser         = url  + '/users/';
+export const urilogin = url + '/users/login';
+export const uriregister = url + '/users/register';
+export const URIUser = url + '/users/';
 
 //materias
-export const UriCursos       = url  + '/subjects';
+export const UriCursos = url + '/subjects';
 
 //lecciones
-export const UriLesson       = url  + '/classes'
+export const UriLesson = url + '/classes'
 
 //tutor
-export const uritutor        = url  + '/teachers';
+export const uritutor = url + '/teachers';
+export const uriArticles = url + '/articles/';
 
 //Create Event
 export const createEventEndpoint = url + '/create-event';
@@ -37,7 +38,7 @@ export const URLsuscription = url + '/suscription';
 
 //google
 export const urigoogle = url + '/apigoogle';
-export const googleAuth = urigoogle+'/auth'
+export const googleAuth = urigoogle + '/auth'
 
 ///oauth
 export const UriOauth = url + '/oauth'

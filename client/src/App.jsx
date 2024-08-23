@@ -21,7 +21,7 @@ import DashboardTutor from './components/DashboardTutor.jsx';
 import MyCourses from './components/DashboardTutor/MyCourses';
 import MyStudents from './components/DashboardTutor/MyStudents';
 import Chats from './components/Chats.jsx';
-import Articles from './components/DashboardTutor/Articles2';
+import ArticlesTU from './components/DashboardTutor/ArticlesTU';
 import Dash from './components/DashboardTutor/Dash.jsx';
 import DashboardStudent from './components/DashboardStudent.jsx';
 import MyCoursesST from './components/DashboardStudent/MyCoursesST';
@@ -93,15 +93,15 @@ function App() {
             <Route path="my-coursesST" element={<MyCoursesST />} />
             <Route path="my-tutor" element={<MyTutor />} />
             <Route path="chatsST" element={<Chats userId={userID} />} />
-            <Route path="articlesST" element={<ArticlesST />} />
+            <Route path="articles-st" element={<ArticlesST />} />
             
           </Route>
           <Route path="/dashboardtutor" element={withAuth(DashboardTutor, ['tutor'])()}>
-            <Route path="dash" element={<Dash />} />
+            <Route path="dash-tu" element={<Dash />} />
             <Route path="my-courses" element={<MyCourses />} />
             <Route path="my-students" element={<MyStudents />} />
             <Route path="chats" element={<Chats userId={userID} />} />
-            <Route path="articles" element={<Articles />} />
+            <Route path="articles-tu" element={<ArticlesTU />} />
           </Route>
         </Routes>
         <Footer />

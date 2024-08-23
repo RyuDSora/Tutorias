@@ -21,6 +21,8 @@ import googleRoute from './routes/googleRoute.js'
 import oauth_tokensRoute from './routes/oauth_tokensRoute.js'
 import planesRoute from './routes/planesRoute.js'
 import studiClases from './routes/student_classesRoute.js'
+import articlesRoutes from './routes/articlesRoutes.js'
+import commentsRoutes from './routes/commentsRoutes.js'
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -57,6 +59,8 @@ app.use('/oauth', oauth_tokensRoute);
 app.use('/planes',planesRoute);
 app.use('/estudisub',estudisubjectRoute);
 app.use('/estclases',studiClases)
+app.use('/articles', articlesRoutes);
+app.use('/comments', commentsRoutes);
 
 //servidor principal con NodeJS
 app.listen(port, () => {

@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
 import { Row, Col, Card, Modal, Button } from 'react-bootstrap';
-import { url } from './Urls';
+import { url,uritutor } from './Urls';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import { decryptValue, encryptionKey } from './hashes';
+import { toast, ToastContainer } from 'react-toastify';
+
 
 const Articles = () => {
   const [articles, setArticles] = useState([]);
@@ -18,8 +20,21 @@ const Articles = () => {
     const session = Cookies.get('$3s1.4') ? decryptValue(Cookies.get('$3s1.4'), encryptionKey) : null;
     if (session) {
       const id = decryptValue(Cookies.get('#gt156'), encryptionKey); // Obtiene el ID del profesor
+      const leerTutor = async(ID) =>{
+        try {
+          const response = await axios.get(`${uritutor}/${ID}`);
+          const idTutor = response.data.id;
+          setTeacherId(idTutor)
+        } catch (error) {
+          
+        }
+      }
+      
       const role = decryptValue(Cookies.get('&0l3'), encryptionKey); // Obtiene el rol del usuario
-      setTeacherId(id);
+      if (userRole === 'tutor') {
+        leerTutor(id)
+      }
+
       setUserRole(role); // Establece el rol del usuario
       setIsLoggedIn(true); // Si hay sesión, marcamos que el usuario está logueado
     }
@@ -30,6 +45,7 @@ const Articles = () => {
     const fetchArticles = async () => {
       try {
         let response;
+        
         if (userRole === 'tutor' && teacherId) {
           // Obtener todos los artículos del tutor
           response = await axios.get(`${url}/articles/teacher/${teacherId}`);
@@ -43,7 +59,7 @@ const Articles = () => {
 
         // Si el usuario es tutor, ordenamos por comentarios de mayor a menor
         if (userRole === 'tutor') {
-          articlesData.sort((a, b) => b.comments.length - a.comments.length); // Suponiendo que 'comments' es un array en cada artículo
+          //articlesData.sort((a, b) => b.comments.length - a.comments.length); // Suponiendo que 'comments' es un array en cada artículo
         }
 
         setArticles(articlesData);
@@ -69,6 +85,7 @@ const Articles = () => {
 
   return (
     <>
+      <ToastContainer/>
       {isLoggedIn ? (
         <>
           <Row style={{ width: '100%' }}>

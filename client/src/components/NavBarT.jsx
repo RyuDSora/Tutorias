@@ -84,7 +84,7 @@ function NavBarT({ isLoggedIn }) {
                 </>):(
                   <>{Tutor ? (<>
                   {/**aqui van las opciones del tutor */}
-                    {lista("/dashboardtutor/dash",<FaHome />,'Mi Panel')}
+                    {lista("/dashboardtutor/dash-tu",<FaHome />,'Mi Panel')}
                     {lista("/dashboardtutor/my-courses",<FaBook />,'Mis Cursos')}
                     {lista("/dashboardtutor/my-students",<FaUsers />,'Mis Estudiantes')}
                     {lista("/dashboardtutor/chats",<FaComments />,'Chats')}

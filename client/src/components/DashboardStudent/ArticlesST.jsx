@@ -4,6 +4,7 @@ import Cookies from 'js-cookie';
 import { decryptValue, encryptionKey } from '../hashes';
 import { url } from '../Urls';
 import axios from 'axios';
+import { toast, ToastContainer } from 'react-toastify';
 
 const ArticlesST = () => {
   const [articles, setArticles] = useState([]);
@@ -73,11 +74,17 @@ const ArticlesST = () => {
       });
 
       // Actualiza artículos para incluir el nuevo comentario
+      setSelectedArticle(prev => ({
+        ...prev,
+        comments: [...(prev.comments || []), response.data]
+      }) );
+
       setArticles(prevArticles =>
         prevArticles.map(article =>
           article.id === articleId ? { ...article, comments: [...(article.comments || []), response.data] } : article
         )
       );
+      toast.success('se agregó su comentario')
       setNewComment(""); // Resetea el comentario
     } catch (error) {
       console.error('Error adding comment:', error);
@@ -87,7 +94,8 @@ const ArticlesST = () => {
 
   return (
     <Container>
-      <h1>Libros</h1>
+      <ToastContainer/>
+      <div className='mb-3'><span className='h3 Principal f_principal'>Tus Artículos</span></div>
       {loading ? (
         <Spinner animation="border" />
       ) : error ? (
@@ -145,7 +153,7 @@ const ArticlesST = () => {
                     required
                   />
                 </Form.Group>
-                <Button variant="primary" type="submit" className="mt-2">Enviar</Button>
+                <Button variant="primary" type="submit" className="mt-2 bg_secundario">Enviar</Button>
               </Form>
             ) : (
               <p>Debes estar autenticado para agregar comentarios.</p>

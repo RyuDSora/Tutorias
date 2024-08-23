@@ -2,8 +2,11 @@ import { useEffect, useState, useCallback } from 'react';
 import { Row, Col, Card, Modal, Button, Form } from 'react-bootstrap';
 import axios from 'axios';
 import Cookies from 'js-cookie';
+import { confirmAlert } from 'react-confirm-alert';
 import { decryptValue, encryptionKey } from '../hashes';
-import { url } from '../Urls';  // Asegúrate de que la URL está configurada correctamente
+import { url, uritutor } from '../Urls';  // Asegúrate de que la URL está configurada correctamente
+import { toast, ToastContainer } from 'react-toastify';
+import { FaTrash, FaEdit } from 'react-icons/fa';
 
 const ArticlesTU = () => {
   const [articles, setArticles] = useState([]);
@@ -21,8 +24,18 @@ const ArticlesTU = () => {
     if (session) {
       const role = decryptValue(Cookies.get('&0l3'), encryptionKey);
       const id = decryptValue(Cookies.get('#gt156'), encryptionKey); // Esto obtiene el ID del usuario
+      const leerTutor = async(ID) =>{
+        try {
+          const response = await axios.get(`${uritutor}/${ID}`);
+          const idTutor = response.data.id;
+          setTeacherId(idTutor)
+        } catch (error) {
+          
+        }
+      }
+      leerTutor(id);
+        
       setUserRole(role);
-      setTeacherId(id);
     }
   }, []);
 
@@ -66,31 +79,52 @@ const ArticlesTU = () => {
     try {
       if (isEditing) {
         await axios.put(`${url}/articles/${selectedArticle.id}`, { ...formData });
+        toast.success('Se ha modificado el artículo exitosamente')
       } else {
         await axios.post(`${url}/articles`, { ...formData, teacher_id: teacherId });
+        toast.success('Se ha creado el artículo exitosamente')
       }
       fetchArticles();
       handleCloseModal();
     } catch (error) {
       console.error('Error saving article:', error);
+      toast.error('No se puede crear el artículo')
     }
   };
 
   const handleDelete = async (id) => {
     try {
       await axios.delete(`${url}/articles/${id}`);
+      toast.warning('Se eliminó el artículo exitosamente')
       fetchArticles();
     } catch (error) {
       console.error('Error deleting article:', error);
     }
   };
-
+  const confirmDelete = (id) => {
+    confirmAlert({
+      title: 'Confirmar eliminación',
+      message: '¿Estás seguro de que deseas eliminar el Artículo?',
+      buttons: [
+        {
+          label: 'Sí',
+          onClick: () => { handleDelete(id) },
+        },
+        {
+          label: 'No',
+          onClick: () => { },
+        },
+      ],
+    });
+  };
   return (
     <>
+      <ToastContainer/>
+      <div><span className='h3 Principal f_principal'>Tus Artículos</span></div>
       {userRole && ( // Comprobación del rol de usuario
         <div>
-          <h2>Gestión de Artículos</h2>
-          <Button variant="primary" onClick={() => { setShowModal(true); setIsEditing(false); setFormData({ title: '', content: '' }); }}>
+          <h2 className='Principal my-2'>Gestión de Artículos</h2>
+          <Button variant="primary" className='bg_secundario' onClick={() => { setShowModal(true); setIsEditing(false); setFormData({ title: '', content: '' }); }}>
             Crear Artículo
           </Button>
 
@@ -101,8 +135,8 @@ const ArticlesTU = () => {
                   <Card.Body>
                     <Card.Title className='small'>{article.title}</Card.Title>
                     <Card.Subtitle className="mb-2 text-muted">{new Date(article.created_at).toLocaleDateString()}</Card.Subtitle>
-                    <Button variant="secondary" onClick={() => handleCardClick(article)} style={{ marginRight: '5px' }}>Editar</Button>
-                    <Button variant="danger" onClick={() => handleDelete(article.id)}>Eliminar</Button>
+                    <Button className='bg_principal' title='Editar' variant="secondary" onClick={() => handleCardClick(article)} style={{ marginRight: '5px' }}><FaEdit/></Button>
+                    <Button variant="danger" title='Borrar' style={{backgroundColor:'red'}} onClick={() => confirmDelete(article.id)}><FaTrash/></Button>
                   </Card.Body>
                 </Card>
               </Col>

@@ -1,5 +1,5 @@
 
-import TopSellingCourses from '../TopSellingCourses';
+import TopSellingCourses from '../TopSellingCoursesST';
 import Articles from "../Articles";
 import NextLessons from '../NextLessonsST';
 

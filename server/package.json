@@ -20,10 +20,10 @@
     "express": "^4.18.2",
     "express-rate-limit": "^7.4.0",
     "express-session": "^1.18.0",
-    "googleapis": "^140.0.1",
+    "googleapis": "^174.0.1",
     "jsonwebtoken": "^9.0.2",
-    "multer": "^1.4.5-lts.1",
-    "nodemailer": "^6.9.14",
+    "multer": "^2.2.0",
+    "nodemailer": "^9.0.1",
     "pg": "^8.11.3",
     "socket.io": "^4.7.5",
     "stripe": "^14.24.0"
